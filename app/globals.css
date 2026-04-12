@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F2ECEA;
+  --foreground: #2F2A2B;
+  --primary: #622831;
+  --secondary: #AC2E18;
+  --button-bg: #2F2A2B;
+  --button-text: #F2ECEA;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-button-bg: var(--button-bg);
+  --color-button-text: var(--button-text);
+  --font-sans: var(--font-poppins);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), sans-serif;
+}
+
+@media (min-width: 768px) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.3s ease-out both;
+}
+
+.animation-delay-200 {
+  animation-delay: 60ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 120ms;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-3deg); }
+  40% { transform: rotate(3deg); }
+  60% { transform: rotate(-2deg); }
+  80% { transform: rotate(2deg); }
+}
+
+.hover-wiggle:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
