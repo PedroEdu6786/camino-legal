@@ -6,9 +6,9 @@ import { useState } from "react";
 
 const navLinks = [
   { href: "#services", label: "Servicios" },
+  { href: "#process", label: "Proceso" },
   { href: "#about", label: "Nosotros" },
-  { href: "#team", label: "Equipo" },
-  { href: "#contact", label: "Contacto" },
+  { href: "#faq", label: "Preguntas" },
 ];
 
 export default function Navbar() {

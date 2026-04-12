@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import TermsModal from "./ui/TermsModal";
+import TermsModal from "../ui/TermsModal";
 
 export default function Footer() {
   const [termsOpen, setTermsOpen] = useState(false);

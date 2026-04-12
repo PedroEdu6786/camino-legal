@@ -1,4 +1,4 @@
-import ServiceCard from "./ui/ServiceCard";
+import ServiceCard from "../ui/ServiceCard";
 
 const TrademarkIcon = () => (
   <svg className="h-8 w-8 lg:h-10 lg:w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

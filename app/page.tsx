@@ -1,8 +1,10 @@
-import Navbar from "./components/navigation/Navbar";
-import Hero from "./components/Hero";
-import Services from "./components/Services";
-import About from "./components/About";
-import Footer from "./components/Footer";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Hero from "./components/sections/Hero";
+import Services from "./components/sections/Services";
+import Process from "./components/sections/Process";
+import About from "./components/sections/About";
+import FAQ from "./components/sections/FAQ";
 import BackgroundCurves from "./components/ui/BackgroundCurves";
 
 export default function Home() {
@@ -13,7 +15,9 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Services />
+        <Process />
         <About />
+        <FAQ />
       </main>
       <Footer />
     </div>
