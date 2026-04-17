@@ -25,6 +25,12 @@ const bellaboo = localFont({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: [
+      { url: "/favicon-black.ico", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon.ico", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
   title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
   description:
     "Camino Legal ofrece registro de marca ante el IMPI, contratos y convenios, derechos de autor, t\u00e9rminos y condiciones, avisos de privacidad y asesor\u00eda legal personalizada para emprendedores y negocios en M\u00e9xico.",
