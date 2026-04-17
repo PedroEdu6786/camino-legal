@@ -25,31 +25,38 @@ const bellaboo = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Camino Legal | Registro de Marca en M\u00e9xico",
+  title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
   description:
-    "Camino Legal te acompa\u00f1a en el registro y protecci\u00f3n de tu marca ante el IMPI. Asesor\u00eda legal especializada en propiedad intelectual para emprendedores y negocios en M\u00e9xico.",
+    "Camino Legal ofrece registro de marca ante el IMPI, contratos y convenios, derechos de autor, t\u00e9rminos y condiciones, avisos de privacidad y asesor\u00eda legal personalizada para emprendedores y negocios en M\u00e9xico.",
   keywords: [
     "registro de marca",
     "IMPI",
     "propiedad intelectual",
     "marca registrada",
+    "derechos de autor",
+    "INDAUTOR",
+    "contratos y convenios",
+    "acuerdo de confidencialidad",
+    "t\u00e9rminos y condiciones",
+    "aviso de privacidad",
+    "protecci\u00f3n de datos",
+    "asesor\u00eda legal",
     "M\u00e9xico",
     "Camino Legal",
-    "asesor\u00eda legal",
   ],
   openGraph: {
-    title: "Camino Legal | Registro de Marca en M\u00e9xico",
+    title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
     description:
-      "Te acompa\u00f1amos en el registro y protecci\u00f3n de tu marca ante el IMPI. Servicio cercano, transparente y profesional.",
+      "Registro de marca, derechos de autor, contratos, t\u00e9rminos y condiciones, aviso de privacidad y asesor\u00eda legal. Protecci\u00f3n jur\u00eddica integral para tu negocio en M\u00e9xico.",
     type: "website",
     locale: "es_MX",
     siteName: "Camino Legal",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Camino Legal | Registro de Marca en M\u00e9xico",
+    title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
     description:
-      "Te acompa\u00f1amos en el registro y protecci\u00f3n de tu marca ante el IMPI. Servicio cercano, transparente y profesional.",
+      "Registro de marca, derechos de autor, contratos, t\u00e9rminos y condiciones, aviso de privacidad y asesor\u00eda legal. Protecci\u00f3n jur\u00eddica integral para tu negocio en M\u00e9xico.",
   },
 };
 
