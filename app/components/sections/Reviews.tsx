@@ -46,7 +46,11 @@ export default function Reviews() {
     if (!container) return;
     const card = container.children[index] as HTMLElement;
     if (!card) return;
-    container.scrollTo({ left: card.offsetLeft, behavior: "smooth" });
+    const scrollLeft =
+      container.scrollLeft +
+      card.getBoundingClientRect().left -
+      container.getBoundingClientRect().left;
+    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
     setCurrent(index);
   }, []);
 
@@ -57,10 +61,15 @@ export default function Reviews() {
     const container = containerRef.current;
     if (!container) return;
     const onScroll = () => {
-      const card = container.children[0] as HTMLElement;
-      if (!card) return;
-      const index = Math.round(container.scrollLeft / card.offsetWidth);
-      setCurrent(Math.min(index, maxIndex));
+      const cards = Array.from(container.children) as HTMLElement[];
+      const containerLeft = container.getBoundingClientRect().left;
+      let closest = 0;
+      let minDiff = Infinity;
+      cards.forEach((card, i) => {
+        const diff = Math.abs(card.getBoundingClientRect().left - containerLeft);
+        if (diff < minDiff) { minDiff = diff; closest = i; }
+      });
+      setCurrent(Math.min(closest, maxIndex));
     };
     container.addEventListener("scroll", onScroll, { passive: true });
     return () => container.removeEventListener("scroll", onScroll);
