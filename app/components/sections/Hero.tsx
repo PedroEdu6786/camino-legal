@@ -54,7 +54,7 @@ export default function Hero() {
 
         {/* Subtitle */}
         <p className="text-xs md:text-base lg:text-lg max-w-xl lg:max-w-2xl opacity-70 animate-fade-up animation-delay-200 leading-relaxed">
-          Acompañamiento legal para artistas, personas creadoras y negocios. 
+          Acompañamiento legal para artistas, personas creadoras y negocios.
         </p>
 
         {/* CTA */}
@@ -67,26 +67,6 @@ export default function Hero() {
           >
             Escr&iacute;benos
           </a>
-        </div>
-
-        {/* Trust indicators */}
-        <div className="grid grid-cols-2 w-full max-w-[14rem] md:max-w-xs border-t border-foreground/10 pt-6 animate-fade-up animation-delay-400 gap-4">
-          <div className="flex flex-col gap-0.5 items-center">
-            <span className="text-lg md:text-xl font-black text-foreground [font-family:var(--font-poppins)]">
-              &Aacute;gil
-            </span>
-            <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">
-              Y eficiente
-            </span>
-          </div>
-          <div className="flex flex-col gap-0.5 items-center border-l border-foreground/10 pl-4">
-            <span className="text-lg md:text-xl font-black text-foreground [font-family:var(--font-poppins)]">
-              Seguro
-            </span>
-            <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">
-              Y transparente
-            </span>
-          </div>
         </div>
       </div>
     </section>
