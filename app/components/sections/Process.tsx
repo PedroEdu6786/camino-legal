@@ -5,37 +5,43 @@ import { useEffect, useRef, useState } from "react";
 const steps = [
   {
     number: "01",
-    title: "Nos cuentas qu\u00e9 necesitas",
+    title: "Da el primer paso",
     description:
-      "Agenda una consulta con nosotros y cu\u00e9ntanos tu situaci\u00f3n. Sin tecnicismos, sin prisa \u2014 solo escuchamos.",
+      "Cont\u00e1ctanos para conocer tus necesidades y resolver tus dudas. A partir de esto, identificamos si es momento de iniciar el proceso o si conviene comenzar con una asesor\u00eda.",
   },
   {
     number: "02",
-    title: "Analizamos tu caso",
+    title: "Recibe tu propuesta",
     description:
-      "Revisamos tu situaci\u00f3n y te explicamos claramente qu\u00e9 se puede hacer, c\u00f3mo y cu\u00e1nto cuesta. Sin sorpresas.",
+      "Con base en lo que necesitas, te compartimos una cotizaci\u00f3n y el paso a paso de tu proceso: c\u00f3mo se llevar\u00e1 a cabo, tiempos y costos claros, sin sorpresas.",
   },
   {
     number: "03",
-    title: "Nos ponemos a trabajar",
+    title: "Trabajamos en conjunto",
     description:
-      "Una vez de acuerdo, nos encargamos de todo el proceso legal por ti \u2014 redacci\u00f3n, tr\u00e1mites, gestiones y m\u00e1s.",
+      "Cuando llegue el momento de iniciar, avanzamos con base en la estrategia definida y dentro de los plazos establecidos. Mantendremos comunicaci\u00f3n constante por correo para seguimiento y aclaraciones.",
   },
   {
     number: "04",
-    title: "Revisamos juntos",
+    title: "Revisi\u00f3n continua",
     description:
-      "Te mantenemos informado en cada etapa y revisamos contigo el resultado antes de finalizar.",
+      "Te mantenemos al tanto en cada etapa y revisamos en conjunto los avances para asegurar que todo est\u00e9 en orden.",
   },
   {
     number: "05",
-    title: "\u00a1Listo, est\u00e1s protegido!",
+    title: "Cierre del proceso",
     description:
-      "Te entregamos todo en orden y resolvemos cualquier duda. Tu negocio queda protegido legalmente.",
+      "Seg\u00fan el servicio, recibir\u00e1s todos los entregables con instrucciones para su uso y materiales de apoyo. Adem\u00e1s, damos seguimiento para acompa\u00f1arte durante el proceso.",
   },
 ];
 
-function StepCard({ step, index }: { step: typeof steps[number]; index: number }) {
+function StepCard({
+  step,
+  index,
+}: {
+  step: (typeof steps)[number];
+  index: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -50,7 +56,7 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
           observer.unobserve(el);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(el);
@@ -74,8 +80,12 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
         )}
       </div>
       <div className="pb-10 lg:pb-12">
-        <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-1 lg:mb-2">{step.title}</h3>
-        <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-70">{step.description}</p>
+        <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-1 lg:mb-2">
+          {step.title}
+        </h3>
+        <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-70">
+          {step.description}
+        </p>
       </div>
     </div>
   );
@@ -83,9 +93,12 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
 
 export default function Process() {
   return (
-    <section id="process" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+    <section
+      id="process"
+      className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
+    >
       <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-10 md:mb-14 lg:mb-16">
-        &iquest;C&oacute;mo funciona?
+        ¿Cómo funciona Camino?
       </h2>
       <div className="max-w-2xl lg:max-w-3xl">
         {steps.map((step, i) => (

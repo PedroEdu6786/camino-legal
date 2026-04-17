@@ -7,32 +7,32 @@ const faqs = [
   {
     question: "\u00bfQu\u00e9 servicios ofrecen?",
     answer:
-      "Ofrecemos registro de marca, redacci\u00f3n de contratos y convenios, protecci\u00f3n de derechos de autor, t\u00e9rminos y condiciones, avisos de privacidad y asesor\u00eda legal general. Si tienes una necesidad legal para tu negocio, con gusto la revisamos contigo.",
+      "Brindamos servicios legales en temas corporativos, derechos de autor y propiedad industrial, adaptados para proteger el trabajo de artistas, personas creadoras y negocios.",
   },
   {
     question: "\u00bfCu\u00e1nto tiempo tarda cada servicio?",
     answer:
-      "Depende del servicio. Documentos como contratos, t\u00e9rminos y condiciones o avisos de privacidad pueden estar listos en pocos d\u00edas. El registro de marca ante el IMPI puede tomar entre 4 y 6 meses. En tu consulta inicial te damos un estimado claro seg\u00fan tu caso.",
+      "Depende de cada caso. Cuando nos contactes, te compartimos un estimado claro de los tiempos.",
   },
   {
     question: "\u00bfCu\u00e1nto cuesta trabajar con ustedes?",
     answer:
-      "Cada caso es diferente, por eso te damos un presupuesto personalizado desde la consulta inicial. Siempre claro, sin costos ocultos y sin sorpresas.",
+      "Cada proceso es diferente, por lo que te damos una cotizaci\u00f3n seg\u00fan lo que necesites.",
   },
   {
     question: "\u00bfNecesito saber de leyes para contactarlos?",
     answer:
-      "Para nada. Nos especializamos en explicar todo de forma sencilla y sin tecnicismos. T\u00fa nos cuentas qu\u00e9 necesitas y nosotros nos encargamos del resto.",
+      "Para nada. Nos encargamos de explicarte todo de forma sencilla y sin tecnicismos. T\u00fa solo cu\u00e9ntanos qu\u00e9 necesitas.",
   },
   {
-    question: "\u00bfAtienden a negocios de cualquier tama\u00f1o?",
+    question: "\u00bfNecesito ser una empresa grande?",
     answer:
-      "S\u00ed, trabajamos con emprendedores, freelancers, peque\u00f1as empresas y negocios en crecimiento. Nuestros servicios est\u00e1n dise\u00f1ados para ser accesibles sin importar en qu\u00e9 etapa est\u00e9s.",
+      "No. Lo mejor es proteger tu trabajo desde el principio para que puedas crecer con seguridad.",
   },
   {
     question: "\u00bfPueden ayudarme si ya tengo un problema legal?",
     answer:
-      "S\u00ed. Si ya tienes un conflicto relacionado con tu marca, un contrato o cualquier tema de propiedad intelectual, podemos asesorarte y analizar las opciones disponibles para tu situaci\u00f3n.",
+      "S\u00ed. Revisamos tu situaci\u00f3n contigo, te guiamos sobre los siguientes pasos y vemos si somos el equipo adecuado para acompa\u00f1arte.",
   },
 ];
 
