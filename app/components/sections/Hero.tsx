@@ -25,12 +25,12 @@ export default function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-4xl md:text-6xl lg:text-8xl font-black tracking-tight max-w-4xl animate-fade-up animation-delay-200 [font-family:var(--font-poppins)] leading-[1.05]">
+        <h1 className="text-3xl md:text-5xl lg:text-7xl font-black tracking-tight max-w-4xl animate-fade-up animation-delay-200 [font-family:var(--font-poppins)] leading-[1.05]">
           El <span className="text-secondary">camino</span> se hace al decidir avanzar
         </h1>
 
         {/* Subtitle */}
-        <p className="text-sm md:text-lg lg:text-xl max-w-xl lg:max-w-2xl opacity-70 animate-fade-up animation-delay-200 leading-relaxed">
+        <p className="text-xs md:text-base lg:text-lg max-w-xl lg:max-w-2xl opacity-70 animate-fade-up animation-delay-200 leading-relaxed">
           Marcas, contratos, derechos de autor, t&eacute;rminos y condiciones, avisos de privacidad y asesor&iacute;a legal &mdash; todo lo que tu negocio necesita para estar protegido.
         </p>
 
@@ -49,11 +49,11 @@ export default function Hero() {
         {/* Trust indicators */}
         <div className="grid grid-cols-2 w-full max-w-[14rem] md:max-w-xs border-t border-foreground/10 pt-6 animate-fade-up animation-delay-400 gap-4">
           <div className="flex flex-col gap-0.5 items-center">
-            <span className="text-xl md:text-2xl font-black text-foreground [font-family:var(--font-poppins)]">&Aacute;gil</span>
+            <span className="text-lg md:text-xl font-black text-foreground [font-family:var(--font-poppins)]">&Aacute;gil</span>
             <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">Y eficiente</span>
           </div>
           <div className="flex flex-col gap-0.5 items-center border-l border-foreground/10 pl-4">
-            <span className="text-xl md:text-2xl font-black text-foreground [font-family:var(--font-poppins)]">Seguro</span>
+            <span className="text-lg md:text-xl font-black text-foreground [font-family:var(--font-poppins)]">Seguro</span>
             <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">Y transparente</span>
           </div>
         </div>

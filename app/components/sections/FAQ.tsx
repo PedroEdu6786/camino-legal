@@ -45,7 +45,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between py-5 lg:py-6 text-left"
       >
-        <span className="text-sm md:text-base lg:text-lg font-medium pr-4">{question}</span>
+        <span className="text-xs md:text-sm lg:text-base font-medium pr-4">{question}</span>
         <svg
           className={`h-5 w-5 lg:h-6 lg:w-6 shrink-0 text-foreground/50 transition-transform duration-300 ${
             open ? "rotate-180" : ""
@@ -63,7 +63,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           open ? "max-h-96 pb-5 lg:pb-6" : "max-h-0"
         }`}
       >
-        <p className="text-sm md:text-base lg:text-lg leading-relaxed opacity-70">{answer}</p>
+        <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-70">{answer}</p>
       </div>
     </div>
   );
@@ -71,9 +71,9 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function FAQ() {
   return (
-    <section id="faq" className="mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
+    <section id="faq" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
       <div className="flex items-center gap-4 mb-10 md:mb-14 lg:mb-16">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
           Preguntas Frecuentes
         </h2>
         <Image src="/stickers/Recurso 79.png" alt="" width={60} height={60} aria-hidden

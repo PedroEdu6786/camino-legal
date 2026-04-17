@@ -25,18 +25,18 @@ export default function Footer() {
 
             {/* Company info */}
             <div className="flex flex-col gap-3 lg:gap-4">
-              <h3 className="text-lg lg:text-2xl font-bold">Camino Legal&reg;</h3>
-              <p className="text-sm lg:text-base opacity-70">
+              <h3 className="text-base lg:text-xl font-bold">Camino Legal&reg;</h3>
+              <p className="text-xs lg:text-sm opacity-70">
                 Tu aliado legal para proteger y hacer crecer tu negocio en M&eacute;xico.
               </p>
             </div>
 
             {/* Contact info */}
             <div className="flex flex-col gap-3 lg:gap-4">
-              <h3 className="text-sm lg:text-base font-semibold uppercase tracking-wider">Contacto</h3>
+              <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">Contacto</h3>
               <a
                 href="mailto:info@caminolegal.com.mx"
-                className="text-sm lg:text-base opacity-70 transition-opacity hover:opacity-100"
+                className="text-xs lg:text-sm opacity-70 transition-opacity hover:opacity-100"
               >
                 info@caminolegal.com.mx
               </a>
@@ -44,7 +44,7 @@ export default function Footer() {
 
             {/* Social & legal */}
             <div className="flex flex-col gap-3 lg:gap-4">
-              <h3 className="text-sm lg:text-base font-semibold uppercase tracking-wider">S&iacute;guenos</h3>
+              <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">S&iacute;guenos</h3>
               <div className="flex gap-4 lg:gap-5">
                 <a
                   href="https://www.instagram.com/caminolegalmx/"
@@ -86,7 +86,7 @@ export default function Footer() {
           {/* Bottom bar */}
           <button
             onClick={() => setTermsOpen(true)}
-            className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-sm opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
+            className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-xs opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
           >
             &copy; {new Date().getFullYear()} Camino Legal. Todos los derechos reservados.
           </button>

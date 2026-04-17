@@ -7,7 +7,7 @@ export default function Banner() {
 
         {/* Text */}
         <div className="flex flex-col justify-center py-16 lg:py-28 flex-1 self-center">
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tight [font-family:var(--font-poppins)] leading-[1.05] text-foreground max-w-2xl">
+          <h2 className="text-3xl md:text-4xl lg:text-6xl font-black tracking-tight [font-family:var(--font-poppins)] leading-[1.05] text-foreground max-w-2xl">
             El <span className="text-white">camino</span> se hace al decidir avanzar
           </h2>
         </div>

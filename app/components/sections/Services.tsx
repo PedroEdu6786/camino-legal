@@ -41,14 +41,14 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
+    <section id="services" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
 
       {/* Section header */}
       <div className="flex flex-col gap-3 mb-10 md:mb-14">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
           &iquest;En qu&eacute; podemos ayudarte?
         </h2>
-        <p className="text-base md:text-lg opacity-60 leading-relaxed">
+        <p className="text-sm md:text-base opacity-60 leading-relaxed">
           Desde registrar tu marca hasta redactar tus contratos, estamos para acompa&ntilde;arte en todo lo legal.
         </p>
       </div>
@@ -74,8 +74,8 @@ export default function Services() {
 
             {/* Text */}
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg md:text-xl font-semibold leading-snug">{service.title}</h3>
-              <p className="text-base md:text-lg leading-relaxed opacity-60">{service.description}</p>
+              <h3 className="text-base md:text-lg font-semibold leading-snug">{service.title}</h3>
+              <p className="text-sm md:text-base leading-relaxed opacity-60">{service.description}</p>
             </div>
           </div>
         ))}

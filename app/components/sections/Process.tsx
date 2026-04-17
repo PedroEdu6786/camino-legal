@@ -66,7 +66,7 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
       style={{ transitionDelay: `${index * 100}ms` }}
     >
       <div className="flex flex-col items-center">
-        <div className="flex h-10 w-10 lg:h-12 lg:w-12 shrink-0 items-center justify-center rounded-full bg-primary text-background text-sm lg:text-base font-bold">
+        <div className="flex h-10 w-10 lg:h-12 lg:w-12 shrink-0 items-center justify-center rounded-full bg-primary text-background text-xs lg:text-sm font-bold">
           {step.number}
         </div>
         {index < steps.length - 1 && (
@@ -74,8 +74,8 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
         )}
       </div>
       <div className="pb-10 lg:pb-12">
-        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-1 lg:mb-2">{step.title}</h3>
-        <p className="text-sm md:text-base lg:text-lg leading-relaxed opacity-70">{step.description}</p>
+        <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-1 lg:mb-2">{step.title}</h3>
+        <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-70">{step.description}</p>
       </div>
     </div>
   );
@@ -83,8 +83,8 @@ function StepCard({ step, index }: { step: typeof steps[number]; index: number }
 
 export default function Process() {
   return (
-    <section id="process" className="mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-10 md:mb-14 lg:mb-16">
+    <section id="process" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+      <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-10 md:mb-14 lg:mb-16">
         &iquest;C&oacute;mo funciona?
       </h2>
       <div className="max-w-2xl lg:max-w-3xl">

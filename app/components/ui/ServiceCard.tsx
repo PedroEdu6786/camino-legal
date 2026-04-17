@@ -41,8 +41,8 @@ export default function ServiceCard({ title, description, icon, className = "", 
       } ${className}`}
     >
       {icon && <div className="mb-1 opacity-80">{icon}</div>}
-      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">{title}</h3>
-      <p className="text-sm md:text-base lg:text-lg leading-relaxed opacity-80">{description}</p>
+      <h3 className="text-base md:text-lg lg:text-xl font-semibold">{title}</h3>
+      <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-80">{description}</p>
     </div>
   );
 }
