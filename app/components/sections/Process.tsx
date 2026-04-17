@@ -17,9 +17,9 @@ const steps = [
   },
   {
     number: "03",
-    title: "Trabajamos en conjunto",
+    title: "Trabajamos en equipo",
     description:
-      "Cuando llegue el momento de iniciar, avanzamos con base en la estrategia definida y dentro de los plazos establecidos. Mantendremos comunicaci\u00f3n constante por correo para seguimiento y aclaraciones.",
+      "Realiza tu pago y partir de ese momento, avanzamos conforme a la estrategia definida y en las etapas establecidas. Mantendremos una comunicación constante por correo para dar seguimiento y resolver cualquier aclaración.",
   },
   {
     number: "04",

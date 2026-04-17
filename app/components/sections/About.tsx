@@ -51,7 +51,7 @@ export default function About() {
                   "Solo buscas que validen tus decisiones sin an\u00e1lisis.",
                   "No te importa asumir riesgos con tal de \u201cavanzar r\u00e1pido\u201d.",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-xs md:text-sm leading-relaxed opacity-60">
+                  <li key={item} className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed opacity-60">
                     <span className="w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0 mt-1.5" />
                     {item}
                   </li>
@@ -73,7 +73,7 @@ export default function About() {
                   "Evaluamos viabilidad y buscamos alternativas \u2014 no decimos \u201cs\u00ed\u201d a todo.",
                   "Acompa\u00f1amiento cercano, honesto y estrat\u00e9gico.",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-xs md:text-sm leading-relaxed text-background/70">
+                  <li key={item} className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-background/70">
                     <span className="w-1.5 h-1.5 rounded-full bg-background/50 shrink-0 mt-1.5" />
                     {item}
                   </li>

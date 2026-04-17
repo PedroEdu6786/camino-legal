@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Banner() {
   return (
-    <section className="w-full bg-[#97B1C8] overflow-hidden mt-24 md:mt-36 lg:mt-52">
+    <section className="w-full bg-[#97B1C8] overflow-hidden mt-24 md:mt-36 lg:mt-52 mb-8 md:mb-12 lg:mb-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col lg:flex-row items-end justify-between">
         {/* Text */}
         <div className="flex flex-col justify-center py-16 lg:py-28 flex-1 self-center">

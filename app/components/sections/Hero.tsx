@@ -39,17 +39,45 @@ export default function Hero() {
       <div className="flex flex-col items-center text-center gap-10 md:gap-12 w-full">
         {/* Eyebrow label */}
         <div className="flex items-center gap-3 animate-fade-up">
-          <span className="h-px w-6 bg-secondary opacity-60" />
+          <svg
+            width="28"
+            height="8"
+            viewBox="0 0 28 8"
+            fill="none"
+            aria-hidden
+            className="opacity-60 text-secondary"
+          >
+            <path
+              d="M0 4 Q7 0 14 4 Q21 8 28 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
           <span className="text-[14px] uppercase tracking-[0.25em] text-secondary font-semibold">
-            Asesor&iacute;a Legal &middot; M&eacute;xico
+            Servicios Legales &middot; M&eacute;xico
           </span>
-          <span className="h-px w-6 bg-secondary opacity-60" />
+          <svg
+            width="28"
+            height="8"
+            viewBox="0 0 28 8"
+            fill="none"
+            aria-hidden
+            className="opacity-60 text-secondary"
+          >
+            <path
+              d="M0 4 Q7 0 14 4 Q21 8 28 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
         </div>
 
         {/* Headline */}
         <h1 className="text-3xl md:text-5xl lg:text-7xl font-black tracking-tight max-w-4xl animate-fade-up animation-delay-200 [font-family:var(--font-poppins)] leading-[1.05]">
           El <span className="text-secondary">camino</span> se hace al decidir
-          avanzar
+           <span className="text-secondary"> avanzar</span>
         </h1>
 
         {/* Subtitle */}
