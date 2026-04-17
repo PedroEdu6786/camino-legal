@@ -54,9 +54,7 @@ export default function Hero() {
 
         {/* Subtitle */}
         <p className="text-xs md:text-base lg:text-lg max-w-xl lg:max-w-2xl opacity-70 animate-fade-up animation-delay-200 leading-relaxed">
-          Marcas, contratos, derechos de autor, t&eacute;rminos y condiciones,
-          avisos de privacidad y asesor&iacute;a legal &mdash; todo lo que tu
-          negocio necesita para estar protegido.
+          Acompañamiento legal para artistas, personas creadoras y negocios. 
         </p>
 
         {/* CTA */}
