@@ -27,7 +27,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3 lg:gap-4">
               <h3 className="text-lg lg:text-2xl font-bold">Camino Legal&reg;</h3>
               <p className="text-sm lg:text-base opacity-70">
-                Tu aliado en el registro y protecci&oacute;n de marcas.
+                Tu aliado legal para proteger y hacer crecer tu negocio en M&eacute;xico.
               </p>
             </div>
 
@@ -86,7 +86,7 @@ export default function Footer() {
           {/* Bottom bar */}
           <button
             onClick={() => setTermsOpen(true)}
-            className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-xs lg:text-sm opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
+            className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-sm opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
           >
             &copy; {new Date().getFullYear()} Camino Legal. Todos los derechos reservados.
           </button>

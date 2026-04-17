@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import CustomCursor from "./components/ui/CustomCursor";
 import "./globals.css";
 
@@ -7,6 +8,19 @@ const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const bellaboo = localFont({
+  src: "../public/fonts/Bellaboo.otf",
+  variable: "--font-bellaboo",
   display: "swap",
 });
 
@@ -45,7 +59,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${dmSans.variable} ${bellaboo.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col md:cursor-none">
         <CustomCursor />
         {children}

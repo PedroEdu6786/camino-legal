@@ -5,33 +5,33 @@ import { useEffect, useRef, useState } from "react";
 const steps = [
   {
     number: "01",
-    title: "Consulta inicial",
+    title: "Nos cuentas qu\u00e9 necesitas",
     description:
-      "Analizamos tu caso y evaluamos la viabilidad de registro de tu marca ante el IMPI.",
+      "Agenda una consulta con nosotros y cu\u00e9ntanos tu situaci\u00f3n. Sin tecnicismos, sin prisa \u2014 solo escuchamos.",
   },
   {
     number: "02",
-    title: "B\u00fasqueda de anterioridades",
+    title: "Analizamos tu caso",
     description:
-      "Realizamos una b\u00fasqueda exhaustiva para verificar que tu marca no tenga conflictos con registros existentes.",
+      "Revisamos tu situaci\u00f3n y te explicamos claramente qu\u00e9 se puede hacer, c\u00f3mo y cu\u00e1nto cuesta. Sin sorpresas.",
   },
   {
     number: "03",
-    title: "Presentaci\u00f3n ante el IMPI",
+    title: "Nos ponemos a trabajar",
     description:
-      "Preparamos y presentamos tu solicitud de registro con toda la documentaci\u00f3n necesaria.",
+      "Una vez de acuerdo, nos encargamos de todo el proceso legal por ti \u2014 redacci\u00f3n, tr\u00e1mites, gestiones y m\u00e1s.",
   },
   {
     number: "04",
-    title: "Seguimiento del tr\u00e1mite",
+    title: "Revisamos juntos",
     description:
-      "Monitoreamos el proceso y respondemos a cualquier requerimiento de la autoridad.",
+      "Te mantenemos informado en cada etapa y revisamos contigo el resultado antes de finalizar.",
   },
   {
     number: "05",
-    title: "Obtenci\u00f3n del t\u00edtulo",
+    title: "\u00a1Listo, est\u00e1s protegido!",
     description:
-      "Recibimos tu t\u00edtulo de registro de marca y te lo entregamos. \u00a1Tu marca est\u00e1 protegida!",
+      "Te entregamos todo en orden y resolvemos cualquier duda. Tu negocio queda protegido legalmente.",
   },
 ];
 

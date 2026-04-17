@@ -1,37 +1,38 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const faqs = [
   {
-    question: "\u00bfCu\u00e1nto tiempo tarda el registro de una marca?",
+    question: "\u00bfQu\u00e9 servicios ofrecen?",
     answer:
-      "El proceso ante el IMPI generalmente toma entre 4 y 6 meses desde la presentaci\u00f3n de la solicitud hasta la emisi\u00f3n del t\u00edtulo de registro, dependiendo de la carga de trabajo de la autoridad y de que no existan oposiciones.",
+      "Ofrecemos registro de marca, redacci\u00f3n de contratos y convenios, protecci\u00f3n de derechos de autor, t\u00e9rminos y condiciones, avisos de privacidad y asesor\u00eda legal general. Si tienes una necesidad legal para tu negocio, con gusto la revisamos contigo.",
   },
   {
-    question: "\u00bfQu\u00e9 necesito para registrar mi marca?",
+    question: "\u00bfCu\u00e1nto tiempo tarda cada servicio?",
     answer:
-      "Necesitas definir el nombre o logotipo que deseas registrar, la clase o clases de productos y servicios que ampara, y proporcionarnos tus datos como titular. Nosotros nos encargamos del resto.",
+      "Depende del servicio. Documentos como contratos, t\u00e9rminos y condiciones o avisos de privacidad pueden estar listos en pocos d\u00edas. El registro de marca ante el IMPI puede tomar entre 4 y 6 meses. En tu consulta inicial te damos un estimado claro seg\u00fan tu caso.",
   },
   {
-    question: "\u00bfCu\u00e1nto cuesta registrar una marca?",
+    question: "\u00bfCu\u00e1nto cuesta trabajar con ustedes?",
     answer:
-      "Los costos incluyen nuestros honorarios profesionales y las tarifas oficiales del IMPI. Te proporcionamos un presupuesto claro y detallado desde la consulta inicial, sin costos ocultos.",
+      "Cada caso es diferente, por eso te damos un presupuesto personalizado desde la consulta inicial. Siempre claro, sin costos ocultos y sin sorpresas.",
   },
   {
-    question: "\u00bfQu\u00e9 pasa si mi marca es rechazada?",
+    question: "\u00bfNecesito saber de leyes para contactarlos?",
     answer:
-      "Si el IMPI emite un impedimento, analizamos las opciones disponibles: responder al requerimiento con argumentos legales, modificar la solicitud o asesorarte sobre alternativas para proteger tu identidad de marca.",
+      "Para nada. Nos especializamos en explicar todo de forma sencilla y sin tecnicismos. T\u00fa nos cuentas qu\u00e9 necesitas y nosotros nos encargamos del resto.",
   },
   {
-    question: "\u00bfPor cu\u00e1nto tiempo est\u00e1 protegida mi marca?",
+    question: "\u00bfAtienden a negocios de cualquier tama\u00f1o?",
     answer:
-      "El registro de marca en M\u00e9xico tiene una vigencia de 10 a\u00f1os a partir de la fecha de otorgamiento, y puede renovarse por per\u00edodos iguales de forma indefinida.",
+      "S\u00ed, trabajamos con emprendedores, freelancers, peque\u00f1as empresas y negocios en crecimiento. Nuestros servicios est\u00e1n dise\u00f1ados para ser accesibles sin importar en qu\u00e9 etapa est\u00e9s.",
   },
   {
-    question: "\u00bfPueden ayudarme si ya tengo un problema legal con mi marca?",
+    question: "\u00bfPueden ayudarme si ya tengo un problema legal?",
     answer:
-      "S\u00ed, ofrecemos asesor\u00eda en casos de infracci\u00f3n, uso indebido de marca por terceros, oposiciones y cualquier controversia relacionada con propiedad intelectual.",
+      "S\u00ed. Si ya tienes un conflicto relacionado con tu marca, un contrato o cualquier tema de propiedad intelectual, podemos asesorarte y analizar las opciones disponibles para tu situaci\u00f3n.",
   },
 ];
 
@@ -71,9 +72,13 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 export default function FAQ() {
   return (
     <section id="faq" className="mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-10 md:mb-14 lg:mb-16">
-        Preguntas Frecuentes
-      </h2>
+      <div className="flex items-center gap-4 mb-10 md:mb-14 lg:mb-16">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+          Preguntas Frecuentes
+        </h2>
+        <Image src="/stickers/Recurso 79.png" alt="" width={60} height={60} aria-hidden
+          className="w-10 lg:w-14 rotate-12 opacity-75 pointer-events-none select-none shrink-0" />
+      </div>
       <div className="max-w-3xl lg:max-w-4xl">
         {faqs.map((faq, i) => (
           <FAQItem key={i} question={faq.question} answer={faq.answer} />

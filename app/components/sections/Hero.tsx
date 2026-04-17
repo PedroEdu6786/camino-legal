@@ -1,23 +1,64 @@
+import Image from "next/image";
+
 export default function Hero() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-15 md:py-24 lg:min-h-[calc(100vh-6rem)] lg:py-0 lg:px-8 flex flex-col justify-center lg:items-center lg:text-center gap-8 lg:gap-10">
-      <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight max-w-4xl animate-fade-up">
-        El <span className="text-secondary">camino</span> se hace al decidir
-        avanzar
-      </h1>
-      <p className="text-sm md:text-base lg:text-xl max-w-2xl lg:max-w-3xl animate-fade-up animation-delay-200">
-        En <span className="font-bold">Camino Legal&reg;</span> te acompañamos en todo el proceso de
-        registro de tu marca para que puedas proteger tu negocio de forma
-        clara, segura y sin complicaciones.
-      </p>
-      <a
-        href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="self-start rounded-md bg-button-bg px-4 py-2 text-sm font-semibold text-button-text transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 active:shadow-none md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg lg:self-center animate-fade-up animation-delay-400"
-      >
-        Contactanos
-      </a>
+    <section className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0">
+
+      {/* Decorative stickers — desktop only */}
+      <Image src="/stickers/Recurso 91.png" alt="" width={100} height={100} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute top-14 right-10 w-20 rotate-12 opacity-60" />
+      <Image src="/stickers/Recurso 93.png" alt="" width={70} height={70} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50" />
+      <Image src="/stickers/Recurso 85.png" alt="" width={140} height={70} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute bottom-20 right-8 w-28 -rotate-6 opacity-55" />
+      <Image src="/stickers/Recurso 84.png" alt="" width={80} height={80} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute bottom-1/4 left-4 w-14 rotate-6 opacity-50" />
+      <div className="flex flex-col items-center text-center gap-10 md:gap-12 w-full">
+
+        {/* Eyebrow label */}
+        <div className="flex items-center gap-3 animate-fade-up">
+          <span className="h-px w-6 bg-secondary opacity-60" />
+          <span className="text-[14px] uppercase tracking-[0.25em] text-secondary font-semibold">
+            Asesor&iacute;a Legal &middot; M&eacute;xico
+          </span>
+          <span className="h-px w-6 bg-secondary opacity-60" />
+        </div>
+
+        {/* Headline */}
+        <h1 className="text-4xl md:text-6xl lg:text-8xl font-black tracking-tight max-w-4xl animate-fade-up animation-delay-200 [font-family:var(--font-poppins)] leading-[1.05]">
+          El <span className="text-secondary">camino</span> se hace al decidir avanzar
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-sm md:text-lg lg:text-xl max-w-xl lg:max-w-2xl opacity-70 animate-fade-up animation-delay-200 leading-relaxed">
+          Marcas, contratos, derechos de autor, t&eacute;rminos y condiciones, avisos de privacidad y asesor&iacute;a legal &mdash; todo lo que tu negocio necesita para estar protegido.
+        </p>
+
+        {/* CTA */}
+        <div className="flex animate-fade-up animation-delay-400">
+          <a
+            href="https://linktr.ee/caminolegalmx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
+          >
+            M&aacute;s informaci&oacute;n
+          </a>
+        </div>
+
+        {/* Trust indicators */}
+        <div className="grid grid-cols-2 w-full max-w-[14rem] md:max-w-xs border-t border-foreground/10 pt-6 animate-fade-up animation-delay-400 gap-4">
+          <div className="flex flex-col gap-0.5 items-center">
+            <span className="text-xl md:text-2xl font-black text-foreground [font-family:var(--font-poppins)]">&Aacute;gil</span>
+            <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">Y eficiente</span>
+          </div>
+          <div className="flex flex-col gap-0.5 items-center border-l border-foreground/10 pl-4">
+            <span className="text-xl md:text-2xl font-black text-foreground [font-family:var(--font-poppins)]">Seguro</span>
+            <span className="text-[14px] tracking-wide uppercase text-foreground/50 leading-tight">Y transparente</span>
+          </div>
+        </div>
+
+      </div>
     </section>
   );
 }

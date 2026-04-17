@@ -1,22 +1,31 @@
+import Image from "next/image";
+
 export default function About() {
   return (
-    <section id="about" className="mx-auto max-w-7xl px-6 py-16 pb-24 md:py-20 md:pb-32 lg:py-40 lg:pb-52 lg:px-8">
+    <section id="about" className="relative mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
+      {/* Decorative stickers */}
+      <Image src="/stickers/Recurso 100.png" alt="" width={90} height={90} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute top-12 right-6 w-20 -rotate-6 opacity-65" />
+      <Image src="/stickers/Recurso 101.png" alt="" width={90} height={90} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute bottom-24 right-10 w-20 rotate-6 opacity-65" />
+      <Image src="/stickers/Recurso 82.png" alt="" width={100} height={110} aria-hidden
+        className="hidden lg:block pointer-events-none select-none absolute bottom-16 left-4 w-20 -rotate-3 opacity-55" />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-center">
         <div className="flex flex-col gap-5 lg:gap-6">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
             &iquest;Qui&eacute;nes somos?
           </h2>
           <p className="text-sm md:text-base lg:text-lg leading-relaxed">
-            <span className="font-bold">Camino Legal&reg;</span> naci&oacute; con una
-            misi&oacute;n clara: hacer accesible la protecci&oacute;n legal de marcas para
-            emprendedores y negocios en M&eacute;xico. Creemos que cada idea merece ser
-            protegida y que el proceso no tiene por qu&eacute; ser complicado.
+            <span className="font-bold">Camino Legal&reg;</span> naci&oacute; con una idea
+            sencilla: que los emprendedores y negocios en M&eacute;xico puedan acceder a
+            asesor&iacute;a legal de calidad, sin lenguaje complicado ni procesos engorrosos.
           </p>
           <p className="text-sm md:text-base lg:text-lg leading-relaxed">
-            Somos un equipo de profesionales especializados en propiedad intelectual,
-            con experiencia en el registro de marcas ante el Instituto Mexicano de la
-            Propiedad Industrial (IMPI). Acompa&ntilde;amos a nuestros clientes desde la
-            consulta inicial hasta la obtenci&oacute;n de su t&iacute;tulo de registro.
+            Somos un equipo de profesionales legales especializados en derecho empresarial
+            y propiedad intelectual. Te acompa&ntilde;amos en contratos, marcas, derechos de
+            autor, t&eacute;rminos y condiciones, avisos de privacidad y mucho m&aacute;s &mdash;
+            siempre de forma cercana, clara y a tu ritmo.
           </p>
         </div>
 
@@ -24,15 +33,15 @@ export default function About() {
           <div className="rounded-xl bg-primary/10 p-6 md:p-8">
             <h3 className="text-lg md:text-xl font-semibold mb-2">Nuestra misi&oacute;n</h3>
             <p className="text-sm md:text-base leading-relaxed">
-              Simplificar el camino hacia la protecci&oacute;n de tu marca, brind&aacute;ndote
-              un servicio cercano, transparente y profesional en cada etapa del proceso.
+              Hacer el derecho accesible. Que ning&uacute;n emprendedor tenga que navegar
+              solo el mundo legal &mdash; estamos aqu&iacute; para simplificar cada paso.
             </p>
           </div>
           <div className="rounded-xl bg-secondary/10 p-6 md:p-8">
             <h3 className="text-lg md:text-xl font-semibold mb-2">Nuestra visi&oacute;n</h3>
             <p className="text-sm md:text-base leading-relaxed">
-              Ser el aliado de confianza para todo emprendedor que busca proteger su
-              identidad de marca en M&eacute;xico, con un servicio &aacute;gil y accesible.
+              Ser el aliado legal de confianza para todo negocio en M&eacute;xico &mdash;
+              desde el primer contrato hasta la protecci&oacute;n completa de su identidad y operaciones.
             </p>
           </div>
         </div>

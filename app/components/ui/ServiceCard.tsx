@@ -8,10 +8,9 @@ interface ServiceCardProps {
   icon?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  tiltDeg?: number;
 }
 
-export default function ServiceCard({ title, description, icon, className = "", style, tiltDeg = 0 }: ServiceCardProps) {
+export default function ServiceCard({ title, description, icon, className = "", style }: ServiceCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -32,31 +31,6 @@ export default function ServiceCard({ title, description, icon, className = "", 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (tiltDeg === 0) return;
-
-    const el = ref.current;
-    if (!el) return;
-
-    const onScroll = () => {
-      if (window.innerWidth < 1024) {
-        el.style.transform = "";
-        return;
-      }
-
-      const rect = el.getBoundingClientRect();
-      const viewH = window.innerHeight;
-      const progress = 1 - Math.max(0, Math.min(1, rect.top / viewH));
-      const currentTilt = tiltDeg * (1 - progress);
-
-      el.style.transform = `rotate(${currentTilt}deg)`;
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [tiltDeg]);
 
   return (
     <div

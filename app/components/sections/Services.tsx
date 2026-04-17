@@ -1,66 +1,86 @@
-import ServiceCard from "../ui/ServiceCard";
-
-const TrademarkIcon = () => (
-  <svg className="h-8 w-8 lg:h-10 lg:w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-  </svg>
-);
-
-const ScalesIcon = () => (
-  <svg className="h-8 w-8 lg:h-10 lg:w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z" />
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg className="h-8 w-8 lg:h-10 lg:w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-  </svg>
-);
+import Image from "next/image";
 
 const services = [
   {
     title: "Registro de Marca",
-    description:
-      "Te guiamos paso a paso en el proceso de registro de tu marca ante el IMPI, asegurando que tu identidad quede protegida legalmente.",
-    className: "bg-primary text-background",
-    tiltDeg: -5,
-    icon: <TrademarkIcon />,
+    description: "Te guiamos en cada paso para registrar tu marca ante el IMPI y proteger tu identidad legalmente.",
+    sticker: "/stickers/Recurso 81.png",
+    accent: "bg-primary/10",
   },
   {
-    title: "Consultoría Legal",
-    description:
-      "Analizamos tu caso particular y te brindamos asesoría personalizada para que tomes las mejores decisiones legales para tu negocio.",
-    className: "bg-foreground text-background",
-    tiltDeg: 0,
-    icon: <ScalesIcon />,
+    title: "Contratos y Convenios",
+    description: "Redactamos y revisamos contratos de servicios, acuerdos de confidencialidad y convenios a tu medida.",
+    sticker: "/stickers/Recurso 80.png",
+    accent: "bg-[#2A3D4F]/10",
   },
   {
-    title: "Protección de Propiedad Intelectual",
-    description:
-      "Protegemos tus creaciones, diseños y obras con estrategias legales que resguardan tu propiedad intelectual ante terceros.",
-    className: "bg-secondary text-background",
-    tiltDeg: 5,
-    icon: <ShieldIcon />,
+    title: "Derechos de Autor",
+    description: "Protegemos tus obras, dise\u00f1os y creaciones intelectuales ante el INDAUTOR.",
+    sticker: "/stickers/Recurso 94.png",
+    accent: "bg-secondary/10",
+  },
+  {
+    title: "T\u00e9rminos y Condiciones",
+    description: "Creamos t\u00e9rminos claros y v\u00e1lidos para tu plataforma, tienda en l\u00ednea o negocio digital.",
+    sticker: "/stickers/Recurso 95.png",
+    accent: "bg-[#3D4F3A]/10",
+  },
+  {
+    title: "Aviso de Privacidad",
+    description: "Te mantenemos en regla con avisos de privacidad conforme a la ley de protecci\u00f3n de datos.",
+    sticker: "/stickers/Recurso 73.png",
+    accent: "bg-foreground/[0.06]",
+  },
+  {
+    title: "Asesor\u00eda Legal",
+    description: "Orientaci\u00f3n personalizada en propiedad intelectual, contratos y cumplimiento normativo.",
+    sticker: "/stickers/Recurso 91.png",
+    accent: "bg-[#6B3A2A]/10",
   },
 ];
 
 export default function Services() {
   return (
-    <section id="services" className="px-4 py-16 md:py-20 md:px-6 lg:py-40 lg:px-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:-mx-4">
+    <section id="services" className="mx-auto max-w-7xl px-6 py-16 md:py-20 lg:py-40 lg:px-8">
+
+      {/* Section header */}
+      <div className="flex flex-col gap-3 mb-10 md:mb-14">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+          &iquest;En qu&eacute; podemos ayudarte?
+        </h2>
+        <p className="text-base md:text-lg opacity-60 leading-relaxed">
+          Desde registrar tu marca hasta redactar tus contratos, estamos para acompa&ntilde;arte en todo lo legal.
+        </p>
+      </div>
+
+      {/* Cards grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
         {services.map((service, i) => (
-          <ServiceCard
+          <div
             key={i}
-            title={service.title}
-            description={service.description}
-            icon={service.icon}
-            className={`${service.className} ${i === 1 ? "lg:z-20 lg:-mx-4" : "lg:z-10"}`}
-            tiltDeg={service.tiltDeg}
-            style={{ transitionDelay: `${i * 150}ms` }}
-          />
+            className={`rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 hover:border-foreground/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${service.accent}`}
+          >
+            {/* Sticker */}
+            <div className="flex justify-between items-start">
+              <Image
+                src={service.sticker}
+                alt=""
+                width={72}
+                height={72}
+                aria-hidden
+                className="w-14 h-14 md:w-16 md:h-16 object-contain -rotate-6 select-none pointer-events-none"
+              />
+            </div>
+
+            {/* Text */}
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg md:text-xl font-semibold leading-snug">{service.title}</h3>
+              <p className="text-base md:text-lg leading-relaxed opacity-60">{service.description}</p>
+            </div>
+          </div>
         ))}
       </div>
+
     </section>
   );
 }
