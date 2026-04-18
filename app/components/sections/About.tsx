@@ -5,27 +5,19 @@ export default function About() {
       className="relative mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
-
         {/* Left — brand narrative */}
         <div className="flex flex-col gap-5 lg:gap-6">
           <div>
-            <span className="inline-block bg-secondary/15 text-secondary text-xs font-semibold px-3 py-1 rounded-full mb-3">
-              Hola, somos Camino
-            </span>
             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-snug">
-              Conoce a{" "}
-              <span className="relative inline-block">
-                Camino...
-                <span className="absolute -bottom-1 left-0 w-full h-1 bg-secondary/40 rounded-full" />
-              </span>
+              Conoce a <span className="relative inline-block">Camino...</span>
             </h2>
           </div>
           <p className="text-xs md:text-sm lg:text-base leading-relaxed">
-            <span className="font-bold">CL Camino Legal&reg;</span> ofrece acceso
-            claro y cercano al derecho para personas artistas, creadoras y
-            negocios. Nuestro objetivo es brindar soluciones estrat&eacute;gicas
-            que permitan operar con seguridad y confianza, minimizando riesgos y
-            facilitando decisiones informadas.
+            <span className="font-bold">CL Camino Legal&reg;</span> ofrece
+            acceso claro y cercano al derecho para personas artistas, creadoras
+            y negocios. Nuestro objetivo es brindar soluciones
+            estrat&eacute;gicas que permitan operar con seguridad y confianza,
+            minimizando riesgos y facilitando decisiones informadas.
           </p>
           <p className="text-xs md:text-sm lg:text-base leading-relaxed">
             Adem&aacute;s, busca ser un espacio de inspiraci&oacute;n y
@@ -36,7 +28,6 @@ export default function About() {
 
         {/* Right — two cards */}
         <div className="flex flex-col gap-5">
-
           {/* Why NOT card */}
           <div className="rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 bg-foreground/[0.03]">
             <div className="flex flex-col gap-3">
@@ -51,7 +42,10 @@ export default function About() {
                   "Solo buscas que validen tus decisiones sin an\u00e1lisis.",
                   "No te importa asumir riesgos con tal de \u201cavanzar r\u00e1pido\u201d.",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed opacity-60">
+                  <li
+                    key={item}
+                    className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed opacity-60"
+                  >
                     <span className="w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0 mt-1.5" />
                     {item}
                   </li>
@@ -73,7 +67,10 @@ export default function About() {
                   "Evaluamos viabilidad y buscamos alternativas \u2014 no decimos \u201cs\u00ed\u201d a todo.",
                   "Acompa\u00f1amiento cercano, honesto y estrat\u00e9gico.",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-background/70">
+                  <li
+                    key={item}
+                    className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-background/70"
+                  >
                     <span className="w-1.5 h-1.5 rounded-full bg-background/50 shrink-0 mt-1.5" />
                     {item}
                   </li>
@@ -81,7 +78,6 @@ export default function About() {
               </ul>
             </div>
           </div>
-
         </div>
       </div>
     </section>
