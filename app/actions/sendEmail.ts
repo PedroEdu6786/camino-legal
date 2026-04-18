@@ -6,7 +6,7 @@ export type FormState = { success: boolean; message: string } | null;
 
 export async function sendEmail(
   _prevState: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   const name = (formData.get("name") as string)?.trim();
   const phone = (formData.get("phone") as string)?.trim();
@@ -27,24 +27,33 @@ export async function sendEmail(
     },
   });
 
-  await transporter.sendMail({
-    from: `"Camino Legal Web" <${process.env.SMTP_USER}>`,
-    to: "info@caminolegal.com.mx",
-    replyTo: email,
-    subject: `Nuevo contacto: ${name}`,
-    html: `
-      <h2>Nuevo mensaje desde el sitio web</h2>
-      <p><strong>Nombre:</strong> ${name}</p>
-      <p><strong>Tel&eacute;fono:</strong> +52 ${phone}</p>
-      <p><strong>Correo:</strong> ${email}</p>
-      <hr />
-      <p><strong>Mensaje:</strong></p>
-      <p>${message.replace(/\n/g, "<br/>")}</p>
-    `,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Camino Legal Web" <${process.env.SMTP_USER}>`,
+      to: "info@caminolegal.com.mx",
+      replyTo: email,
+      subject: `Nuevo contacto: ${name}`,
+      html: `
+        <h2>Nuevo mensaje desde el sitio web</h2>
+        <p><strong>Nombre:</strong> ${name}</p>
+        <p><strong>Tel&eacute;fono:</strong> +52 ${phone}</p>
+        <p><strong>Correo:</strong> ${email}</p>
+        <hr />
+        <p><strong>Mensaje:</strong></p>
+        <p>${message.replace(/\n/g, "<br/>")}</p>
+      `,
+    });
+  } catch (error) {
+    console.error("[sendEmail] SMTP error:", error);
+    return {
+      success: false,
+      message:
+        "Ocurri\u00f3 un error al enviar tu mensaje. Por favor int\u00e9ntalo de nuevo o cont\u00e1ctanos directamente.",
+    };
+  }
 
   return {
     success: true,
-    message: "\u00a1Mensaje enviado! En breve nos ponemos en contacto contigo.",
+    message: "\u00a1Mensaje enviado! Pronto nos ponemos en contacto contigo.",
   };
 }
