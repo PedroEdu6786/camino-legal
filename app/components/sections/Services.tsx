@@ -65,6 +65,7 @@ export default function Services() {
                 width={72}
                 height={72}
                 aria-hidden
+                priority
                 className="w-14 h-14 md:w-16 md:h-16 object-contain -rotate-6 select-none pointer-events-none"
               />
             </div>

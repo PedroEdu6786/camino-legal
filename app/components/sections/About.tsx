@@ -34,7 +34,7 @@ export default function About() {
             </h2>
           </div>
           <p className="text-xs md:text-sm lg:text-base leading-relaxed">
-            <span className="font-bold">CL Camino Legal&reg;</span> ofrece
+            <span className="font-bold">CL Camino Legal&reg; </span> ofrece
             acceso claro y cercano al derecho para personas artistas, creadoras
             y negocios. Nuestro objetivo es brindar soluciones
             estrat&eacute;gicas que permitan operar con seguridad y confianza,
