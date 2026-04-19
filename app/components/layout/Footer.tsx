@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-foreground text-background">
+      <footer className="bg-[#2F2A2B] text-[#F2ECEA]">
         <div className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:px-8 lg:py-20">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-[auto_1fr_1fr_1fr] lg:gap-12">
             {/* Logo */}

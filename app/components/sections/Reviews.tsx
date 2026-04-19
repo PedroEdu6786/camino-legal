@@ -102,7 +102,7 @@ export default function Reviews() {
             key={i}
             className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] rounded-2xl p-6 md:p-7 flex flex-col gap-4 border border-foreground/5 bg-foreground/[0.03]"
           >
-            <span className="text-4xl font-serif leading-none text-secondary/40 select-none">&ldquo;</span>
+            <span className="text-4xl font-serif leading-none text-secondary/70 select-none">&ldquo;</span>
             <p className="text-xs md:text-sm lg:text-base leading-relaxed flex-1">{text}</p>
             <span className="text-xs opacity-40 font-medium tracking-wide uppercase">Cliente verificado</span>
           </div>

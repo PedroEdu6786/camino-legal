@@ -43,7 +43,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm lg:text-base font-medium text-background/70 transition-colors hover:text-background"
+                className="text-sm lg:text-base font-medium text-white/70 transition-colors hover:text-white"
               >
                 {link.label}
               </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
         {/* Mobile menu button */}
         <button
           type="button"
-          className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-background"
+          className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-white"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-expanded={menuOpen}
           aria-label="Toggle navigation menu"
@@ -79,7 +79,7 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="block text-sm font-medium text-background/70 transition-colors hover:text-background"
+                  className="block text-sm font-medium text-white/70 transition-colors hover:text-white"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}

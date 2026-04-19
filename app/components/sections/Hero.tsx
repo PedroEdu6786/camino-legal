@@ -1,23 +1,51 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Hero() {
+  const [isDark, setIsDark] = useState(false);
+  const [flashing, setFlashing] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  const toggleDark = () => {
+    const next = !isDark;
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+    setIsDark(next);
+    setFlashing(true);
+    setTimeout(() => setFlashing(false), 400);
+  };
+
   return (
     <section className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0">
-      {/* Decorative stickers — desktop only */}
-      <Image
-        src="/stickers/Recurso 91.png"
-        alt=""
-        width={100}
-        height={100}
-        aria-hidden
-        className="hidden lg:block pointer-events-none select-none absolute top-14 right-10 w-20 rotate-12 opacity-60"
-      />
+      {/* Light bulb — toggles dark mode on click */}
+      <button
+        onClick={toggleDark}
+        aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
+        className={`absolute top-14 right-6 lg:right-10 w-16 lg:w-20 transition-all duration-300 ${flashing ? "scale-125" : "scale-100"} ${isDark ? "opacity-100 drop-shadow-[0_0_12px_rgba(255,220,100,0.6)]" : "opacity-60 hover:opacity-80"}`}
+      >
+        <Image
+          src="/stickers/Recurso 91.png"
+          alt={isDark ? "Modo oscuro activo" : "Activar modo oscuro"}
+          width={100}
+          height={100}
+          priority
+          className={`rotate-12 select-none transition-transform duration-300 ${flashing ? "-rotate-12" : "rotate-12"}`}
+        />
+      </button>
+
+      {/* Other decorative stickers */}
       <Image
         src="/stickers/Recurso 93.png"
         alt=""
         width={70}
         height={70}
         aria-hidden
+        priority
         className="hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50"
       />
       <Image
@@ -26,6 +54,7 @@ export default function Hero() {
         width={140}
         height={70}
         aria-hidden
+        priority
         className="hidden lg:block pointer-events-none select-none absolute bottom-20 right-8 w-28 -rotate-6 opacity-55"
       />
       <Image
@@ -34,6 +63,7 @@ export default function Hero() {
         width={80}
         height={80}
         aria-hidden
+        priority
         className="hidden lg:block pointer-events-none select-none absolute bottom-1/4 left-4 w-14 rotate-6 opacity-50"
       />
       <div className="flex flex-col items-center text-center gap-10 md:gap-12 w-full">

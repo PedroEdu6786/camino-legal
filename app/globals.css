@@ -9,6 +9,15 @@
   --button-text: #F2ECEA;
 }
 
+html.dark {
+  --background: #1C1719;
+  --foreground: #F2ECEA;
+  --primary: #9B4050;
+  --secondary: #E04A22;
+  --button-bg: #F2ECEA;
+  --button-text: #1C1719;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

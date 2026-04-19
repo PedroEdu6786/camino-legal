@@ -84,7 +84,7 @@ export default function About() {
             style={{ transitionDelay: visible ? "250ms" : "0ms" }}
           >
             <div className="flex flex-col gap-3">
-              <h3 className="text-base md:text-lg font-semibold leading-snug text-background">
+              <h3 className="text-base md:text-lg font-semibold leading-snug text-white">
                 &iquest;Por qu&eacute; elegirnos?
               </h3>
               <ul className="flex flex-col gap-2">
@@ -96,9 +96,9 @@ export default function About() {
                 ].map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-background/70"
+                    className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-white/70"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-background/50 shrink-0 mt-1.5" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/50 shrink-0 mt-1.5" />
                     {item}
                   </li>
                 ))}

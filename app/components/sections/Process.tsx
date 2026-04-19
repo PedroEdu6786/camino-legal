@@ -72,7 +72,7 @@ function StepCard({
       style={{ transitionDelay: `${index * 100}ms` }}
     >
       <div className="flex flex-col items-center">
-        <div className="flex h-10 w-10 lg:h-12 lg:w-12 shrink-0 items-center justify-center rounded-full bg-primary text-background text-xs lg:text-sm font-bold">
+        <div className="flex h-10 w-10 lg:h-12 lg:w-12 shrink-0 items-center justify-center rounded-full bg-primary text-white text-xs lg:text-sm font-bold">
           {step.number}
         </div>
         {index < steps.length - 1 && (
