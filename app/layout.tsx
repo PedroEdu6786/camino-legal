@@ -26,12 +26,9 @@ const bellaboo = localFont({
 
 export const metadata: Metadata = {
   icons: {
-    icon: [
-      { url: "/favicon-black.ico", media: "(prefers-color-scheme: light)" },
-      { url: "/favicon.ico", media: "(prefers-color-scheme: dark)" },
-    ],
+    icon: "/favicon-terracota.ico",
   },
-  title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
+  title: "Camino Legal\u00ae / Protecci\u00f3n de Marcas y Propiedad Intelectual en M\u00e9xico",
   description:
     "Camino Legal ofrece registro de marca ante el IMPI, contratos y convenios, derechos de autor, t\u00e9rminos y condiciones, avisos de privacidad y asesor\u00eda legal personalizada para emprendedores y negocios en M\u00e9xico.",
   keywords: [
@@ -51,7 +48,7 @@ export const metadata: Metadata = {
     "Camino Legal",
   ],
   openGraph: {
-    title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
+    title: "Camino Legal\u00ae / Protecci\u00f3n de Marcas y Propiedad Intelectual en M\u00e9xico",
     description:
       "Registro de marca, derechos de autor, contratos, t\u00e9rminos y condiciones, aviso de privacidad y asesor\u00eda legal. Protecci\u00f3n jur\u00eddica integral para tu negocio en M\u00e9xico.",
     type: "website",
@@ -60,7 +57,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Camino Legal | Abogados de Propiedad Intelectual en M\u00e9xico",
+    title: "Camino Legal\u00ae / Protecci\u00f3n de Marcas y Propiedad Intelectual en M\u00e9xico",
     description:
       "Registro de marca, derechos de autor, contratos, t\u00e9rminos y condiciones, aviso de privacidad y asesor\u00eda legal. Protecci\u00f3n jur\u00eddica integral para tu negocio en M\u00e9xico.",
   },
