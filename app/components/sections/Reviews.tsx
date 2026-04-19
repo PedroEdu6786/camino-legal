@@ -88,7 +88,7 @@ export default function Reviews() {
           width={60}
           height={60}
           aria-hidden
-          className="w-10 lg:w-14 -rotate-6 opacity-75 pointer-events-none select-none shrink-0"
+          className="w-10 lg:w-14 -rotate-6 scale-y-[-1] opacity-75 pointer-events-none select-none shrink-0"
         />
       </div>
 
