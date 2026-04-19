@@ -1,12 +1,33 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="about"
       className="relative mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
         {/* Left — brand narrative */}
-        <div className="flex flex-col gap-5 lg:gap-6">
+        <div
+          className={`flex flex-col gap-5 lg:gap-6 transition-all duration-500 ease-out ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}
+        >
           <div>
             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-snug">
               Conoce a <span className="relative inline-block">Camino...</span>
@@ -29,7 +50,10 @@ export default function About() {
         {/* Right — two cards */}
         <div className="flex flex-col gap-5">
           {/* Why NOT card */}
-          <div className="rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 bg-foreground/[0.03]">
+          <div
+            className={`rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 bg-foreground/[0.03] transition-all duration-500 ease-out ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"}`}
+            style={{ transitionDelay: visible ? "100ms" : "0ms" }}
+          >
             <div className="flex flex-col gap-3">
               <h3 className="text-base md:text-lg font-semibold leading-snug">
                 Quiz&aacute; no es para ti si&hellip;
@@ -55,7 +79,10 @@ export default function About() {
           </div>
 
           {/* Why YES card */}
-          <div className="rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 bg-primary">
+          <div
+            className={`rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-foreground/5 bg-primary transition-all duration-500 ease-out ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"}`}
+            style={{ transitionDelay: visible ? "250ms" : "0ms" }}
+          >
             <div className="flex flex-col gap-3">
               <h3 className="text-base md:text-lg font-semibold leading-snug text-background">
                 &iquest;Por qu&eacute; elegirnos?
