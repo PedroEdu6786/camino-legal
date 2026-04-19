@@ -20,7 +20,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-primary">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8 lg:py-6">
         {/* Logo / Brand */}
-        <Link href="/">
+        <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <Image
             src="/camino-legal-white.png"
             alt="Camino Legal"
