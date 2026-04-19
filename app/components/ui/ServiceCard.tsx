@@ -42,7 +42,7 @@ export default function ServiceCard({ title, description, icon, className = "", 
     >
       {icon && <div className="mb-1 opacity-80">{icon}</div>}
       <h3 className="text-base md:text-lg lg:text-xl font-semibold">{title}</h3>
-      <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-80">{description}</p>
+      <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-80 dark:opacity-100">{description}</p>
     </div>
   );
 }

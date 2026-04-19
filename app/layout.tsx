@@ -73,6 +73,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${poppins.variable} ${dmSans.variable} ${bellaboo.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col md:cursor-none">
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
