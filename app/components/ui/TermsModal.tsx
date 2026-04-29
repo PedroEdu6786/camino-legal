@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 
 type Tab = "privacidad" | "cookies" | "terminos";
 
+const HASH_TO_TAB: Record<string, Tab> = {
+  "#privacidad": "privacidad",
+  "#cookies": "cookies",
+  "#terminos": "terminos",
+};
+
 interface TermsModalProps {
   open: boolean;
+  onOpen?: () => void;
   onClose: () => void;
 }
 
@@ -510,8 +517,21 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "terminos", label: "T\u00e9rminos y Condiciones" },
 ];
 
-export default function TermsModal({ open, onClose }: TermsModalProps) {
+export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
   const [activeTab, setActiveTab] = useState<Tab>("privacidad");
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const tab = HASH_TO_TAB[window.location.hash];
+      if (tab) {
+        setActiveTab(tab);
+        onOpen?.();
+      }
+    };
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, [onOpen]);
 
   useEffect(() => {
     if (open) {
@@ -524,12 +544,28 @@ export default function TermsModal({ open, onClose }: TermsModalProps) {
     };
   }, [open]);
 
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    window.history.replaceState(null, "", `#${tab}`);
+  };
+
+  const handleClose = () => {
+    if (HASH_TO_TAB[window.location.hash]) {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search,
+      );
+    }
+    onClose();
+  };
+
   if (!open) return null;
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm p-4"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="relative flex flex-col w-full max-w-2xl max-h-[85vh] rounded-xl bg-background text-foreground shadow-2xl overflow-hidden"
@@ -541,7 +577,7 @@ export default function TermsModal({ open, onClose }: TermsModalProps) {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`px-3 py-2 text-xs font-semibold border-b-2 -mb-px transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? "border-primary text-primary"
@@ -556,7 +592,7 @@ export default function TermsModal({ open, onClose }: TermsModalProps) {
 
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute right-4 top-4 text-foreground/50 hover:text-foreground transition-colors"
           aria-label="Cerrar"
         >

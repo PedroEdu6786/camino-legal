@@ -93,7 +93,11 @@ export default function Footer() {
         </div>
       </footer>
 
-      <TermsModal open={termsOpen} onClose={() => setTermsOpen(false)} />
+      <TermsModal
+        open={termsOpen}
+        onOpen={() => setTermsOpen(true)}
+        onClose={() => setTermsOpen(false)}
+      />
     </>
   );
 }
