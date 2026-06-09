@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const reviews = [
+  "Camino Legal es una excelente empresa, la atención siempre oportuna, y en todos los paso claridad y acompañamiento. Recomiendo ampliamente sus servicios.",
+  "Me guiaron paso a paso con el proceso de registro de obra, estuvieron atentas en tiempos y formas. Excelente atención y servicio.",
   "Camila hizo todo el proceso m\u00e1s relajado, siempre manten\u00edndonos al tanto de en qu\u00e9 punto \u00edbamos y explicando todo. Nuestro registro de marca fue un \u00e9xito gracias a ella. \u00a1Recomendad\u00edsimo Camino Legal, gran servicio!",
   "La lic. Camila me dio seguimiento durante todos los meses del proceso. Fue muy clara al explicar cada uno de los pasos que deb\u00edamos seguir. Respondi\u00f3 a todas mis dudas. Ahora ya tengo la marca de mi negocio registrada y protegida gracias a Camino.",
   "Camila es muy paciente y explica incre\u00edble todo el proceso de registro de marca para quienes no saben nada del tema. Ha estado pendiente en todo momento. \u00a1Recomendada al 100%!",
