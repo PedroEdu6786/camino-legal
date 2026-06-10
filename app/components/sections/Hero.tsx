@@ -1,22 +1,30 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { scrollTo } from "../../lib/scrollTo";
 
-export default function Hero() {
-  const [isDark, setIsDark] = useState(false);
-  const [flashing, setFlashing] = useState(false);
+function subscribeToTheme(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
 
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+export default function Hero() {
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    () => document.documentElement.classList.contains("dark"),
+    () => false,
+  );
+  const [flashing, setFlashing] = useState(false);
 
   const toggleDark = () => {
     const next = !isDark;
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
-    setIsDark(next);
     setFlashing(true);
     setTimeout(() => setFlashing(false), 400);
   };

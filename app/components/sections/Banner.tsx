@@ -24,8 +24,7 @@ export default function Banner() {
     return () => observer.disconnect();
   }, []);
 
-  const w = (delay: number) =>
-    `inline-block transition-all duration-500 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`;
+  const w = `inline-block transition-all duration-500 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`;
 
   return (
     <section
@@ -36,10 +35,10 @@ export default function Banner() {
         {/* Text */}
         <div className="flex flex-col justify-center py-16 lg:py-28 flex-1 self-center">
           <h2 className="text-3xl md:text-4xl lg:text-6xl font-black tracking-tight [font-family:var(--font-poppins)] leading-[1.1] text-[#2F2A2B] flex flex-wrap gap-x-[0.28em]">
-            <span className={w(0)} style={{ transitionDelay: visible ? "0ms" : "0ms" }}>El</span>
-            <span className={`text-white ${w(100)}`} style={{ transitionDelay: visible ? "100ms" : "0ms" }}>camino</span>
-            <span className={w(200)} style={{ transitionDelay: visible ? "200ms" : "0ms" }}>se hace al decidir</span>
-            <span className={`text-white ${w(300)}`} style={{ transitionDelay: visible ? "300ms" : "0ms" }}>avanzar</span>
+            <span className={w} style={{ transitionDelay: visible ? "0ms" : "0ms" }}>El</span>
+            <span className={`text-white ${w}`} style={{ transitionDelay: visible ? "100ms" : "0ms" }}>camino</span>
+            <span className={w} style={{ transitionDelay: visible ? "200ms" : "0ms" }}>se hace al decidir</span>
+            <span className={`text-white ${w}`} style={{ transitionDelay: visible ? "300ms" : "0ms" }}>avanzar</span>
           </h2>
           <a
             href="#contact"
