@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { scrollTo } from "../../lib/scrollTo";
+import { trackEvent } from "../../lib/analytics";
 
 export default function MobileStickyBar() {
   const [visible, setVisible] = useState(false);
@@ -49,7 +50,7 @@ export default function MobileStickyBar() {
         <div className="w-px bg-foreground/10" />
 
         <button
-          onClick={() => scrollTo("contact")}
+          onClick={() => { trackEvent("cta_click", { source: "sticky_bar" }); scrollTo("contact"); }}
           className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-foreground hover:bg-foreground/5 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

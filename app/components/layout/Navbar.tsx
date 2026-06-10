@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { scrollTo } from "../../lib/scrollTo";
+import { trackEvent } from "../../lib/analytics";
 
 const navLinks = [
   { href: "#services", label: "Servicios" },
@@ -53,7 +54,7 @@ export default function Navbar() {
           </ul>
           <a
             href="#contact"
-            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "navbar" }); scrollTo("contact"); }}
             className="rounded-lg bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
           >
             Cont&aacute;ctanos
@@ -64,7 +65,7 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <a
             href="#contact"
-            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "navbar" }); scrollTo("contact"); }}
             className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors duration-200"
           >
             Cont&aacute;ctanos

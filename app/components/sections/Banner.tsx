@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { scrollTo } from "../../lib/scrollTo";
+import { trackEvent } from "../../lib/analytics";
 
 export default function Banner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -42,7 +43,7 @@ export default function Banner() {
           </h2>
           <a
             href="#contact"
-            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "banner" }); scrollTo("contact"); }}
             className="mt-6 self-start rounded-lg bg-[#2F2A2B] px-8 py-4 text-sm font-semibold text-[#F2ECEA] tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
           >
             Cu&eacute;ntanos tu caso
