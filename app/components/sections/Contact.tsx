@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { sendEmail, type FormState } from "../../actions/sendEmail";
+import { trackEvent, trackMeta } from "../../lib/analytics";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -84,6 +85,7 @@ export default function Contact() {
             href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => { trackEvent("whatsapp_click", { source: "contact_card" }); trackMeta("Contact"); }}
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0 group-hover:bg-[#25D366]/20 transition-colors">
@@ -100,6 +102,7 @@ export default function Contact() {
           {/* Email card */}
           <a
             href="mailto:info@caminolegal.com.mx"
+            onClick={() => { trackEvent("email_click", { source: "contact_card" }); trackMeta("Contact"); }}
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">

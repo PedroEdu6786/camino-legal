@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import TermsModal from "../ui/TermsModal";
+import { trackEvent, trackMeta } from "../../lib/analytics";
 
 export default function Footer() {
   const [termsOpen, setTermsOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function Footer() {
               <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">Contacto</h3>
               <a
                 href="mailto:info@caminolegal.com.mx"
+                onClick={() => { trackEvent("email_click", { source: "footer" }); trackMeta("Contact"); }}
                 className="text-xs lg:text-sm opacity-70 transition-opacity hover:opacity-100"
               >
                 info@caminolegal.com.mx
@@ -50,6 +52,7 @@ export default function Footer() {
                   href="https://www.instagram.com/caminolegalmx/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent("social_click", { network: "instagram" })}
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Instagram"
                 >
@@ -61,6 +64,7 @@ export default function Footer() {
                   href="https://www.facebook.com/people/Camino-Legal/61575735953072/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent("social_click", { network: "facebook" })}
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Facebook"
                 >
@@ -72,6 +76,7 @@ export default function Footer() {
                   href="https://linktr.ee/caminolegalmx"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent("social_click", { network: "linktree" })}
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Linktree"
                 >
