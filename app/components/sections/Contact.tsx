@@ -1,10 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
 import { sendEmail, type FormState } from "../../actions/sendEmail";
-import { trackEvent, trackMeta } from "../../lib/analytics";
+import {
+  getConsent,
+  subscribeToConsent,
+  trackEvent,
+  trackMeta,
+} from "../../lib/analytics";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -25,6 +30,30 @@ const inputClass =
 export default function Contact() {
   const [state, action] = useActionState<FormState, FormData>(sendEmail, null);
   const [phone, setPhone] = useState("");
+  // Stable per page view; exposed to the form only when consent is granted
+  const [eventId] = useState(() => crypto.randomUUID());
+  const consented = useSyncExternalStore(
+    subscribeToConsent,
+    () => getConsent() === "granted",
+    () => false,
+  );
+  const formStartedRef = useRef(false);
+  const submitTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (state?.success && !submitTrackedRef.current) {
+      submitTrackedRef.current = true;
+      trackEvent("contact_form_submit");
+      trackMeta("Lead", { eventID: eventId });
+    }
+  }, [state, eventId]);
+
+  const handleFormFocus = () => {
+    if (!formStartedRef.current) {
+      formStartedRef.current = true;
+      trackEvent("form_start");
+    }
+  };
 
   const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
@@ -150,7 +179,10 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form action={action} className="flex flex-col gap-4">
+              <form action={action} onFocus={handleFormFocus} className="flex flex-col gap-4">
+                {consented && (
+                  <input type="hidden" name="metaEventId" value={eventId} />
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label
