@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import CustomCursor from "./components/ui/CustomCursor";
 import AnalyticsScripts from "./components/ui/AnalyticsScripts";
+import ConsentBanner from "./components/ui/ConsentBanner";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -80,6 +81,7 @@ export default function RootLayout({
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
         <CustomCursor />
         <AnalyticsScripts />
+        <ConsentBanner />
         {children}
       </body>
     </html>
