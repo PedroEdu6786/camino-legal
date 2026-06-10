@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { scrollTo } from "../../lib/scrollTo";
 
 const b = (text: string) => (
   <span className="font-bold text-foreground">{text}</span>
@@ -99,7 +102,7 @@ export default function Services() {
       </div>
 
       {/* Cards grid */}
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-4" id="services-grid">
         {services.map((service, i) => (
           <div
             key={i}
@@ -129,6 +132,35 @@ export default function Services() {
             </div>
           </div>
         ))}
+
+        {/* CTA card */}
+        <div className="rounded-2xl p-6 md:p-7 flex flex-col gap-5 border border-primary/20 bg-primary/5 hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]">
+          <div className="flex justify-between items-start">
+            <Image
+              src="/stickers/Recurso 88.png"
+              alt=""
+              width={72}
+              height={72}
+              aria-hidden
+              className="w-14 h-14 md:w-16 md:h-16 object-contain rotate-6 select-none pointer-events-none"
+            />
+          </div>
+          <div className="flex flex-col gap-2 flex-1">
+            <h3 className="text-base md:text-lg font-semibold leading-snug">
+              &iquest;No sabes cu&aacute;l necesitas?
+            </h3>
+            <p className="text-sm md:text-base leading-relaxed opacity-60">
+              Cu&eacute;ntanos tu caso y te orientamos sobre el mejor camino para proteger tu trabajo.
+            </p>
+          </div>
+          <a
+            href="#contact"
+            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            className="rounded-lg bg-button-bg px-6 py-3 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95 text-center"
+          >
+            Cu&eacute;ntanos tu caso
+          </a>
+        </div>
       </div>
     </section>
   );

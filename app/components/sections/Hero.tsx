@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { scrollTo } from "../../lib/scrollTo";
 
 export default function Hero() {
   const [isDark, setIsDark] = useState(false);
@@ -21,7 +22,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0">
+    <section id="hero-section" className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0">
       {/* Light bulb — toggles dark mode on click */}
       <button
         onClick={toggleDark}
@@ -115,15 +116,21 @@ export default function Hero() {
           Acompañamiento legal para artistas, personas creadoras y negocios.
         </p>
 
-        {/* CTA */}
-        <div className="flex animate-fade-up animation-delay-400">
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 animate-fade-up animation-delay-400">
           <a
-            href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
+            href="#services"
+            onClick={e => { e.preventDefault(); scrollTo("services"); }}
+            className="w-full sm:w-auto text-center rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
           >
-            Escr&iacute;benos
+            Ver servicios
+          </a>
+          <a
+            href="#contact"
+            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            className="w-full sm:w-auto text-center rounded-lg border border-foreground/20 px-8 py-4 text-sm font-semibold tracking-widest uppercase transition-all duration-200 ease-out hover:border-foreground/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+          >
+            Cu&eacute;ntanos tu caso
           </a>
         </div>
       </div>

@@ -9,6 +9,7 @@ import Reviews from "./components/sections/Reviews";
 import FAQ from "./components/sections/FAQ";
 import Contact from "./components/sections/Contact";
 import BackgroundCurves from "./components/ui/BackgroundCurves";
+import MobileStickyBar from "./components/ui/MobileStickyBar";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <MobileStickyBar />
     </div>
   );
 }
