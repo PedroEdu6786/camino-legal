@@ -3,6 +3,7 @@ import { Poppins, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import CustomCursor from "./components/ui/CustomCursor";
+import AnalyticsScripts from "./components/ui/AnalyticsScripts";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -78,6 +79,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col md:cursor-none">
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
         <CustomCursor />
+        <AnalyticsScripts />
         {children}
       </body>
     </html>

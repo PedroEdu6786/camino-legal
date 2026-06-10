@@ -24,6 +24,12 @@ export function setConsent(status: "granted" | "denied") {
   }
 }
 
+// Subscribe form expected by useSyncExternalStore — notifies on mid-session grants
+export function subscribeToConsent(callback: () => void) {
+  window.addEventListener(CONSENT_GRANTED_EVENT, callback);
+  return () => window.removeEventListener(CONSENT_GRANTED_EVENT, callback);
+}
+
 type AnalyticsEvent =
   | "cta_click"
   | "whatsapp_click"
