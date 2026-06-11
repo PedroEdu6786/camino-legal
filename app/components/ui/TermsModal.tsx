@@ -114,6 +114,11 @@ function PrivacidadContent() {
         <li>
           Plataformas de pago, &uacute;nicamente cuando sea necesario para procesar transacciones.
         </li>
+        <li>
+          Proveedores de anal&iacute;tica web: Google LLC (Google Analytics) y Meta Platforms,
+          Inc. (Meta Pixel), que procesan datos de uso del sitio y, en el caso de Meta, datos de
+          contacto cifrados, conforme a sus propios avisos de privacidad.
+        </li>
       </ul>
       <p>
         CL CAMINO LEGAL&reg; presta servicios dentro de M&eacute;xico y no vende ni comercializa datos
@@ -174,8 +179,10 @@ function PrivacidadContent() {
 
       <SectionHeading>VIII. Uso de Cookies</SectionHeading>
       <p>
-        El sitio web puede utilizar cookies y tecnolog&iacute;as similares para mejorar la experiencia
-        del usuario. Puede configurar su navegador para rechazarlas; sin embargo, algunas
+        El sitio web utiliza cookies y tecnolog&iacute;as similares de Google Analytics y Meta
+        Pixel para mejorar la experiencia del usuario y medir el uso del sitio, &uacute;nicamente
+        cuando usted lo acepta mediante nuestro aviso de cookies. Puede rechazarlas desde el
+        propio aviso o configurar su navegador para bloquearlas; sin embargo, algunas
         funcionalidades podr&iacute;an no operar correctamente.
       </p>
 
@@ -215,6 +222,13 @@ function CookiesContent() {
         visitadas y su frecuencia. Esta informaci&oacute;n es empleada &uacute;nicamente para
         an&aacute;lisis estad&iacute;stico y despu&eacute;s la informaci&oacute;n se elimina de
         forma permanente.
+      </p>
+
+      <p>
+        Las cookies de anal&iacute;tica de este sitio son provistas por Google Analytics
+        (Google LLC) y Meta Pixel (Meta Platforms, Inc.) y se activan &uacute;nicamente si
+        usted las acepta en el aviso de cookies que aparece al visitar el sitio. Puede cambiar
+        su decisi&oacute;n borrando los datos del sitio en su navegador.
       </p>
 
       <p>
