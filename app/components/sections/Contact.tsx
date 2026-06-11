@@ -1,9 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
 import { sendEmail, type FormState } from "../../actions/sendEmail";
+import {
+  getConsent,
+  subscribeToConsent,
+  trackEvent,
+  trackMeta,
+} from "../../lib/analytics";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -24,6 +30,30 @@ const inputClass =
 export default function Contact() {
   const [state, action] = useActionState<FormState, FormData>(sendEmail, null);
   const [phone, setPhone] = useState("");
+  // Stable per page view; exposed to the form only when consent is granted
+  const [eventId] = useState(() => crypto.randomUUID());
+  const consented = useSyncExternalStore(
+    subscribeToConsent,
+    () => getConsent() === "granted",
+    () => false,
+  );
+  const formStartedRef = useRef(false);
+  const submitTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (state?.success && !submitTrackedRef.current) {
+      submitTrackedRef.current = true;
+      trackEvent("contact_form_submit");
+      trackMeta("Lead", { eventID: eventId });
+    }
+  }, [state, eventId]);
+
+  const handleFormFocus = () => {
+    if (!formStartedRef.current) {
+      formStartedRef.current = true;
+      trackEvent("form_start");
+    }
+  };
 
   const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
@@ -84,6 +114,7 @@ export default function Contact() {
             href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => { trackEvent("whatsapp_click", { source: "contact_card" }); trackMeta("Contact"); }}
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0 group-hover:bg-[#25D366]/20 transition-colors">
@@ -100,6 +131,7 @@ export default function Contact() {
           {/* Email card */}
           <a
             href="mailto:info@caminolegal.com.mx"
+            onClick={() => { trackEvent("email_click", { source: "contact_card" }); trackMeta("Contact"); }}
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
@@ -147,7 +179,10 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form action={action} className="flex flex-col gap-4">
+              <form action={action} onFocus={handleFormFocus} className="flex flex-col gap-4">
+                {consented && (
+                  <input type="hidden" name="metaEventId" value={eventId} />
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label

@@ -10,6 +10,7 @@ import FAQ from "./components/sections/FAQ";
 import Contact from "./components/sections/Contact";
 import BackgroundCurves from "./components/ui/BackgroundCurves";
 import MobileStickyBar from "./components/ui/MobileStickyBar";
+import SectionViewTracker from "./components/ui/SectionViewTracker";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
       </main>
       <Footer />
       <MobileStickyBar />
+      <SectionViewTracker />
     </div>
   );
 }

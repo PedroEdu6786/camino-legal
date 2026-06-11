@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { scrollTo } from "../../lib/scrollTo";
+import { trackEvent } from "../../lib/analytics";
 
 const b = (text: string) => (
   <span className="font-bold text-foreground">{text}</span>
@@ -155,7 +156,7 @@ export default function Services() {
           </div>
           <a
             href="#contact"
-            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "services" }); scrollTo("contact"); }}
             className="rounded-lg bg-button-bg px-6 py-3 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95 text-center"
           >
             Cu&eacute;ntanos tu caso

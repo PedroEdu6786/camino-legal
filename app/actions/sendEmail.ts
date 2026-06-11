@@ -1,6 +1,7 @@
 "use server";
 
 import nodemailer from "nodemailer";
+import { sendMetaLead } from "../lib/metaCapi";
 
 export type FormState = { success: boolean; message: string } | null;
 
@@ -12,6 +13,8 @@ export async function sendEmail(
   const phone = (formData.get("phone") as string)?.trim();
   const email = (formData.get("email") as string)?.trim();
   const message = (formData.get("message") as string)?.trim();
+  // Present only when the visitor granted analytics consent (see Contact.tsx)
+  const metaEventId = (formData.get("metaEventId") as string)?.trim();
 
   if (!name || !phone || !email || !message) {
     return { success: false, message: "Por favor, completa todos los campos." };
@@ -50,6 +53,10 @@ export async function sendEmail(
       message:
         "Ocurri\u00f3 un error al enviar tu mensaje. Por favor int\u00e9ntalo de nuevo o cont\u00e1ctanos directamente.",
     };
+  }
+
+  if (metaEventId) {
+    await sendMetaLead({ email, phone, eventId: metaEventId });
   }
 
   return {

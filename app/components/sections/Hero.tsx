@@ -1,22 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { scrollTo } from "../../lib/scrollTo";
+import { trackEvent } from "../../lib/analytics";
+
+function subscribeToTheme(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
 
 export default function Hero() {
-  const [isDark, setIsDark] = useState(false);
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    () => document.documentElement.classList.contains("dark"),
+    () => false,
+  );
   const [flashing, setFlashing] = useState(false);
-
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
 
   const toggleDark = () => {
     const next = !isDark;
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
-    setIsDark(next);
     setFlashing(true);
     setTimeout(() => setFlashing(false), 400);
   };
@@ -127,7 +136,7 @@ export default function Hero() {
           </a>
           <a
             href="#contact"
-            onClick={e => { e.preventDefault(); scrollTo("contact"); }}
+            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "hero" }); scrollTo("contact"); }}
             className="w-full sm:w-auto text-center rounded-lg border border-foreground/20 px-8 py-4 text-sm font-semibold tracking-widest uppercase transition-all duration-200 ease-out hover:border-foreground/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
           >
             Cu&eacute;ntanos tu caso
