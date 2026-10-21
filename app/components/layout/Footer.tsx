@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import TermsModal from "../ui/TermsModal";
 import { trackEvent, trackMeta } from "../../lib/analytics";
@@ -35,6 +36,7 @@ export default function Footer() {
             {/* Contact info */}
             <div className="flex flex-col gap-3 lg:gap-4">
               <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">Contacto</h3>
+              <Link href="/contacto" className="text-xs lg:text-sm opacity-70 hover:opacity-100 underline underline-offset-4">Cuéntanos tu caso →</Link>
               <a
                 href="mailto:info@caminolegal.com.mx"
                 onClick={() => { trackEvent("email_click", { source: "footer" }); trackMeta("Contact"); }}

@@ -62,7 +62,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
+      className="contact-page mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         {/* Left — fun copy */}
@@ -98,11 +98,11 @@ export default function Contact() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
               Hablemos de
               <br />
               <span className="text-secondary">tu caso</span>
-            </h2>
+            </h1>
             <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-60">
               Comp&aacute;rtenos tu caso y con gusto te orientamos sobre el
               proceso, tiempos y costos.
@@ -225,7 +225,7 @@ export default function Contact() {
                         placeholder="5512345678"
                         value={phone}
                         onChange={handlePhone}
-                        className="flex-1 bg-transparent px-3 py-3 text-sm placeholder:text-foreground/30 focus:outline-none"
+                        className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm placeholder:text-foreground/30 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -258,7 +258,7 @@ export default function Contact() {
                     name="message"
                     required
                     rows={4}
-                    placeholder="Cu&eacute;ntanos en qu&eacute; podemos ayudarte\u2026"
+                    placeholder="Cu&eacute;ntanos en qu&eacute; podemos ayudarte&hellip;"
                     className={`${inputClass} resize-none`}
                   />
                 </div>

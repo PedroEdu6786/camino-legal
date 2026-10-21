@@ -44,12 +44,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins), sans-serif;
 }
 
-@media (min-width: 768px) {
-  *, *::before, *::after {
-    cursor: none !important;
-  }
-}
-
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -85,6 +79,30 @@ h1, h2, h3, h4, h5, h6 {
   animation: wiggle 0.5s ease-in-out;
 }
 
+.about-principle-arrow { transition: transform .25s ease-out; }
+.about-principle:hover .about-principle-arrow { transform: translate(3px, -3px); }
+.about-story-link span { transition: transform .25s ease-out; }
+.about-story-link:hover span { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce) {
+  .about-principle:hover .about-principle-arrow, .about-story-link:hover span { transform: none; }
+}
+
+.process-route-number { background: color-mix(in srgb, var(--primary) 10%, var(--background)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent); transition: transform .25s, background .25s, color .25s; }
+.process-route-stop[aria-selected="true"] .process-route-number { background: var(--primary); color: #fff; transform: rotate(-8deg) scale(1.1); box-shadow: none; }
+.process-route-label { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+.process-route-stop:hover .process-route-number { transform: translateY(-3px); background: var(--primary); color: #fff; }
+.process-route-stop:hover .process-route-label { text-decoration-thickness: 2px; text-decoration-color: var(--primary); }
+.process-route-stop:active .process-route-number { transform: scale(.94); }
+.process-route-stop[aria-selected="true"] .process-route-label { text-decoration: none; }
+.process-route-stop[aria-selected="true"] { color: var(--primary); }
+.process-journey-panel[aria-hidden="false"] .process-illustration { animation: process-arrive .45s cubic-bezier(.16,1,.3,1) both; }
+.process-journey-panel[aria-hidden="false"] .process-journey-copy { animation: camino-answer .3s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .process-route-stop .process-route-number { transform: none !important; } }
+@keyframes process-arrive {
+  from { opacity: .4; transform: translateY(10px) rotate(-7deg) scale(.94); }
+  to { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -92,4 +110,61 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* A light interaction layer on the existing Camino design. */
+.service-choice {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  border: 1px solid transparent;
+  min-height: 44px;
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .2s;
+}
+.service-choice:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--primary) 12%, transparent); }
+.service-choice[aria-pressed="true"] { color: var(--background); background: var(--primary); }
+.service-choice:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.service-recommendation { min-height: 64px; padding-top: 16px; }
+.service-recommendation p { animation: camino-answer .3s ease-out both; }
+.camino-service-card { position: relative; transition: transform .3s, border-color .3s, box-shadow .3s; }
+.camino-service-card[data-selected="true"] { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.camino-service-card img { transition: transform .4s cubic-bezier(.16,1,.3,1); }
+.camino-service-card:hover img, .camino-service-card:focus-within img, .camino-service-card[data-selected="true"] img { transform: translateY(-5px) rotate(4deg) scale(1.08); }
+.service-link-arrow { display: inline-block; transition: transform .25s; }
+.camino-service-card:hover .service-link-arrow, .camino-service-card:focus-within .service-link-arrow { transform: translateX(5px); }
+.hero-doodle { animation: camino-drift 4s ease-in-out both; }
+.hero-doodle:nth-of-type(2) { animation-delay: .25s; }
+.hero-doodle:nth-of-type(3) { animation-delay: .5s; }
+@keyframes camino-drift { 0%,100% { translate: 0 0; } 50% { translate: 0 -12px; } }
+@keyframes camino-answer { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .camino-service-card:hover img, .camino-service-card:focus-within img, .camino-service-card[data-selected="true"] img { transform: none; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hero-doodle { animation-fill-mode: none; translate: var(--doodle-x, 0px) var(--doodle-y, 0px); transition: translate .55s ease-out; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-main .process-columns > li:hover { transform: none; }
+  .site-main .service-hero-art:hover { translate: none; }
+}
+
+.home-faq-item summary { list-style: none; }
+.home-faq-item summary::-webkit-details-marker { display: none; }
+.home-faq-toggle { transition: transform .2s; }
+.home-faq-item[open] .home-faq-toggle { transform: rotate(45deg); }
+.home-faq-item summary:hover { color: var(--primary); }
+.home-faq-item[open] > div { animation: camino-answer .25s ease-out; }
+
+/* Equal-height panels keep the scroll scene stable as its content changes. */
+.process-panels { display: grid; }
+.process-panels > .process-journey-panel { grid-area: 1 / 1; min-width: 0; display: grid; align-items: center; }
+.process-panels > .process-journey-panel[aria-hidden="true"] { visibility: hidden; pointer-events: none; }
+.process-stage { isolation: isolate; }
+.process-stage[data-scroll-driven="true"] { background: var(--background); }
+@media (max-width: 767px) {
+  .process-stage .process-journey-copy > p { margin-top: 12px; line-height: 1.5; }
+  .process-stage .process-journey-copy > a { margin-top: 12px; }
+  .process-stage .process-illustration p { font-size: 22px; }
 }

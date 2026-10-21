@@ -50,9 +50,9 @@ app/
   components/
     layout/        → Navbar, Footer (structural, persist across pages)
     sections/      → Hero, Services, Process, About, FAQ (page content blocks)
-    ui/            → Button, ServiceCard, TermsModal, CustomCursor, BackgroundCurves (reusable)
-  globals.css      → CSS variables, animations, custom cursor styles
-  layout.tsx       → Root layout with Poppins font and CustomCursor
+    ui/            → Button, ServiceCard, TermsModal, BackgroundCurves (reusable)
+  globals.css      → CSS variables and animations
+  layout.tsx       → Root layout with Poppins font
   page.tsx         → Landing page composing all sections
 public/
   camino-legal-white.png           → Navbar logo (white, horizontal)
@@ -74,7 +74,8 @@ public/
 3. **Scroll-driven tilt** (ServiceCard): `tiltDeg` prop controls initial rotation (e.g., -5/0/5 degrees). Uses `requestAnimationFrame`-free scroll listener. Desktop only (`window.innerWidth >= 1024`).
 4. **Slide-in from left** (Process steps): `IntersectionObserver` + staggered `transitionDelay`.
 5. **Wiggle on hover** (Navbar logo): CSS `@keyframes wiggle` with `.hover-wiggle` class.
-6. **Custom cursor** (desktop only): `requestAnimationFrame` loop with lerp factor 0.15. Hidden on mobile. Click shrinks + fades.
+
+Use the normal browser cursor; do not hide it or replace it with a custom cursor.
 
 ### Section IDs (for nav smooth scroll)
 

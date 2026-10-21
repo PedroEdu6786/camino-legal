@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Poppins, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import CustomCursor from "./components/ui/CustomCursor";
 import AnalyticsScripts from "./components/ui/AnalyticsScripts";
 import ConsentBanner from "./components/ui/ConsentBanner";
+import MotionEnhancer from "./components/ui/MotionEnhancer";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -73,16 +73,16 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es-MX"
       className={`${poppins.variable} ${dmSans.variable} ${bellaboo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col md:cursor-none">
+      <body className="min-h-full flex flex-col">
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
-        <CustomCursor />
         <AnalyticsScripts />
         <ConsentBanner />
         {children}
+        <MotionEnhancer />
       </body>
     </html>
   );
