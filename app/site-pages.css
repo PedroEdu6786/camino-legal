@@ -247,3 +247,49 @@
 @media (max-width: 767px) {
   .site-main .process-stage .process-journey-copy > p { margin-top: 12px; }
 }
+
+/* A quieter quotation workspace: configure on the left, total first on the right. */
+.site-main .quote-workspace { gap: 48px; }
+.site-main .quote-controls { gap: 36px; }
+.site-main .quote-field-group { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.site-main .quote-field-group > label:not(.checkbox-label), .site-main .quote-field-group legend { font-size: 14px; font-weight: 600; margin-bottom: 0; }
+.site-main .quote-field-group legend { margin-bottom: 16px; }
+.site-main .quote-field-group p { margin: 0; }
+.site-main .quote-service-link { font-size: 13px; text-decoration: underline; text-underline-offset: 4px; color: var(--primary); }
+.site-main .quote-field-group .checkbox-label { margin: 12px 0 0; }
+.site-main .quote-evaluation { padding-top: 24px; border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent); }
+.site-main .quote-evaluation p { margin: 0 0 12px; }
+.site-main .quote-evaluation .text-link { margin-top: 4px; font-size: 14px; }
+.site-main .quote-sheet { background: var(--background); border: 0; box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 14%, transparent); padding: 28px; }
+.site-main .quote-sheet > h2 { font-size: 22px; }
+.site-main .quote-sheet > p { font-size: 14px; }
+.site-main .quote-total { background: var(--primary); color: #fff; padding: 24px; margin: 28px 0 24px; border-radius: 12px; }
+.site-main .quote-total strong { font-size: clamp(32px, 3.2vw, 46px); }
+.site-main .quote-disclosure { border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent); }
+.site-main .quote-disclosure summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; list-style: none; cursor: pointer; font-size: 14px; font-weight: 500; }
+.site-main .quote-disclosure summary::-webkit-details-marker { display: none; }
+.site-main .quote-disclosure summary::after { content: '+'; font-size: 22px; color: var(--primary); }
+.site-main .quote-disclosure[open] summary::after { content: '−'; }
+.site-main .quote-disclosure summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.site-main .quote-disclosure .quote-lines, .site-main .quote-disclosure .payment-schedule { margin-block: 8px 24px; }
+.site-main .quote-sheet > .fine-print { font-size: 12px; }
+@media (min-width: 768px) {
+  .site-main .quote-workspace { grid-template-columns: 1fr 1fr; gap: 64px; }
+  .site-main .quote-sheet { padding: 36px; }
+}
+@media (min-width: 1024px) {
+  .site-main .quote-workspace { gap: 96px; }
+  .site-main .quote-sheet { padding: 40px; }
+}
+
+.site-main .quote-intro { padding-block: 72px 48px; }
+.site-main .quote-intro p { margin-top: 28px; }
+@media (min-width: 768px) {
+  .site-main .quote-intro { padding-block: 104px 64px; }
+  .site-main .quote-intro p { margin-top: 32px; }
+  .site-main .quote-doodle { top: 104px; }
+}
+@media (min-width: 1024px) {
+  .site-main .quote-intro { padding-block: 120px 88px; }
+  .site-main .quote-doodle { top: 120px; }
+}
