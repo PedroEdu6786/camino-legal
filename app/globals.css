@@ -79,6 +79,8 @@ h1, h2, h3, h4, h5, h6 {
   animation: wiggle 0.5s ease-in-out;
 }
 
+.process-mobile-step summary::-webkit-details-marker { display: none; }
+
 .about-principle-arrow { transition: transform .25s ease-out; }
 .about-principle:hover .about-principle-arrow { transform: translate(3px, -3px); }
 .about-story-link span { transition: transform .25s ease-out; }

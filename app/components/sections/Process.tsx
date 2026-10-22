@@ -64,6 +64,23 @@ export default function Process() {
 
   return (
     <section id="process" aria-labelledby="process-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+      <div className="md:hidden">
+        <h2 className="text-2xl font-bold tracking-tight">¿Cómo funciona Camino?</h2>
+        <p className="mt-3 text-sm leading-relaxed opacity-70">Tú das el primer paso. El resto, lo recorremos contigo.</p>
+        <div className="mt-6 space-y-2">
+          {steps.map(step => (
+            <details key={step.number} name="process-mobile" className="process-mobile-step group rounded-xl bg-primary/5 open:bg-primary/10">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-4 py-4 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">
+                <h3 className="text-sm font-semibold">{step.title}</h3>
+                <span aria-hidden="true" className="shrink-0 text-xl leading-none text-primary group-open:rotate-45">+</span>
+              </summary>
+              <p className="px-4 pb-5 text-sm leading-relaxed opacity-80">{step.description}</p>
+            </details>
+          ))}
+        </div>
+        <Link href="/contacto" className="mt-6 inline-flex min-h-11 items-center rounded-lg bg-button-bg px-5 py-3 text-sm font-semibold text-button-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">Cuéntanos tu caso <span aria-hidden="true" className="ml-2">↗</span></Link>
+      </div>
+      <div className="hidden md:block">
       <div ref={track} className="process-scroll-track" style={geometry ? { height: geometry.height + geometry.travel } : undefined}>
       <div ref={stage} className="process-stage" data-scroll-driven={!!geometry} style={geometry ? { position: "sticky", top: geometry.top } : undefined}>
       <div className="mb-5 md:mb-6">
@@ -126,6 +143,7 @@ export default function Process() {
       </div>
       </div>
       <div id="process-end" className="scroll-mt-28" />
+      </div>
     </section>
   );
 }

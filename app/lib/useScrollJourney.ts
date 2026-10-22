@@ -23,7 +23,7 @@ export function useScrollJourney(track: RefObject<HTMLDivElement | null>, stage:
       const height = Math.ceil(stage.current.getBoundingClientRect().height);
       const bottomSpace = innerWidth < 1024 ? 76 : 16;
       const top = headerBottom + Math.max(0, (innerHeight - headerBottom - bottomSpace - height) / 2);
-      const next = !preference.matches && height + headerBottom + bottomSpace <= innerHeight
+      const next = height > 0 && !preference.matches && height + headerBottom + bottomSpace <= innerHeight
         ? { top, height, travel: Math.max(420, innerHeight * .6) * (count - 1) }
         : null;
       current.current = next;
