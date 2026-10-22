@@ -1,31 +1,58 @@
 import Image from "next/image";
 import Link from "next/link";
+import { services } from "../../lib/services";
+
+const accents = [
+  "bg-primary/10",
+  "bg-[#2A3D4F]/10",
+  "bg-secondary/10",
+  "bg-[#6B3A2A]/10",
+  "bg-[#3D4F3A]/10",
+];
 
 export default function ServicesPreview() {
   return (
-    <section id="services" aria-labelledby="services-preview-title" className="mx-auto max-w-7xl px-6 py-10 md:py-14 lg:px-8">
-      <div data-reveal className="group rounded-2xl bg-primary/10 p-6 md:p-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
-        <Image
-          src="/stickers/Recurso 81.png"
-          alt=""
-          width={112}
-          height={112}
-          aria-hidden
-          className="w-16 h-16 md:w-24 md:h-24 shrink-0 object-contain -rotate-6 transition-transform duration-300 group-hover:rotate-0 motion-reduce:transition-none"
-        />
-        <div className="flex-1">
+    <section id="services" aria-labelledby="services-preview-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+      <div data-reveal className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
+        <div>
           <h2 id="services-preview-title" className="text-2xl lg:text-3xl font-bold tracking-tight">Protege lo que est&aacute;s creando.</h2>
           <p className="mt-3 max-w-xl text-sm md:text-base leading-relaxed opacity-70">
             Tu marca, tus obras, tus acuerdos y tu sitio web. Encuentra el servicio legal que necesita tu proyecto.
           </p>
         </div>
-        <div className="flex flex-col items-start md:items-center gap-4 shrink-0">
-          <Link href="/servicios" className="w-full md:w-auto rounded-lg bg-button-bg px-6 py-3 text-center text-sm font-semibold text-button-text transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 motion-reduce:transform-none">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 shrink-0">
+          <Link href="/servicios" className="text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">
             Explorar servicios <span aria-hidden="true">&rarr;</span>
           </Link>
           <Link href="/cotizaciones" className="text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">Ver cotizaciones</Link>
         </div>
       </div>
+      <nav aria-label="Elige un servicio" className="flex flex-wrap justify-center gap-4">
+        {services.map((service, index) => (
+          <Link
+            key={service.slug}
+            href={`/servicios/${service.slug}`}
+            aria-labelledby={`preview-${service.slug}`}
+            data-reveal="card"
+            className={`group flex w-full flex-col gap-5 rounded-2xl border border-foreground/5 p-6 md:p-7 sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)] transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:transform-none motion-reduce:transition-none ${accents[index]}`}
+          >
+            <Image
+              src={service.image}
+              alt=""
+              width={72}
+              height={72}
+              className="h-14 w-14 object-contain -rotate-6 md:h-16 md:w-16 transition-transform duration-200 group-hover:rotate-0 motion-reduce:transform-none motion-reduce:transition-none"
+            />
+            <div>
+              <h3 id={`preview-${service.slug}`} className="text-base md:text-lg font-semibold leading-snug">{service.title}</h3>
+              <p className="mt-2 text-sm md:text-base leading-relaxed opacity-70">{service.description}</p>
+            </div>
+            <span className="mt-auto pt-2 text-sm font-semibold text-primary underline-offset-4 group-hover:underline">
+              Ver servicio <span aria-hidden="true">&rarr;</span>
+            </span>
+          </Link>
+        ))}
+      </nav>
     </section>
   );
 }
