@@ -154,7 +154,8 @@
 .site-main .service-investment .display-price { color: #fff; font-size: clamp(30px, 3.5vw, 48px); }
 .site-main .service-investment .fine-print { opacity: .85; }
 .site-main .preparation-sheet { background: color-mix(in srgb, var(--primary) 8%, var(--background)); border-radius: 24px; padding: 28px; }
-.site-main .preparation-art { display: none; }
+.site-main .preparation-sheet.preparation-layout { align-items: center; }
+.site-main .preparation-sheet p { margin-bottom: 0; }
 .site-main .explorer-section { padding-block: 64px 80px; }
 .site-main .explorer-heading { max-width: 800px; }
 .site-main .explorer-heading p { max-width: 580px; opacity: .75; margin-top: 24px; }
@@ -186,8 +187,8 @@
   .site-main .service-stage { padding: 32px; }
   .site-main .service-stage > img { width: 200px; height: 200px; }
   .site-main .service-scope, .site-main .preparation-layout { grid-template-columns: .85fr 1.15fr; gap: 64px; }
+  .site-main .preparation-sheet { padding: 40px; }
   .site-main .deliverable-sheet { grid-template-columns: 1fr 1fr; padding: 40px; gap: 48px; }
-  .site-main .preparation-art { display: block; margin-top: 32px; width: 140px; height: 140px; object-fit: contain; transform: rotate(-8deg); }
   .site-main .explorer-layout { grid-template-columns: .85fr 1.15fr; gap: 40px; }
   .site-main .explorer-preview { display: flex; align-items: center; padding: 40px; }
   .site-main .explorer-art img { width: 140px; height: 140px; }
