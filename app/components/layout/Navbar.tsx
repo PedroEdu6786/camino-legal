@@ -2,17 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { trackEvent } from "../../lib/analytics";
+import NavPill from "./NavPill";
 
 const navLinks = [
   { href: "/servicios", label: "Servicios" },
   { href: "/cotizaciones", label: "Cotizaciones" },
   { href: "/nosotros", label: "Nosotros" },
-  { href: "/#faq", label: "Preguntas" },
+  { href: "/preguntas", label: "Preguntas" },
 ];
 
+function NavLabel({ label }: { label: string; active: boolean }) {
+  return <span>{label}</span>;
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,36 +45,39 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop links + CTA */}
-        <div className="hidden lg:flex items-center gap-8 lg:gap-12">
+        <NavPill>
           <ul className="flex items-center gap-8 lg:gap-12">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-sm lg:text-base font-medium text-white/70 transition-colors hover:text-white"
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className="camino-nav-item text-sm lg:text-base font-medium text-white/70 transition-colors hover:text-white"
                 >
-                  {link.label}
+                  <NavLabel label={link.label} active={isActive(link.href)} />
                 </Link>
               </li>
             ))}
           </ul>
           <Link
             href="/contacto"
+            aria-current={isActive("/contacto") ? "page" : undefined}
             onClick={() => { trackEvent("cta_click", { source: "navbar" }); setMenuOpen(false); }}
-            className="rounded-lg bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
+            className="camino-nav-contact rounded-lg bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
           >
-            Cont&aacute;ctanos
+            <NavLabel label="Contáctanos" active={isActive("/contacto")} />
           </Link>
-        </div>
+        </NavPill>
 
         {/* Mobile right: CTA pill + hamburger */}
         <div className="lg:hidden flex items-center gap-2">
           <Link
             href="/contacto"
+            aria-current={isActive("/contacto") ? "page" : undefined}
             onClick={() => { trackEvent("cta_click", { source: "navbar" }); setMenuOpen(false); }}
-            className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors duration-200"
+            className="camino-nav-contact rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors duration-200"
           >
-            Cont&aacute;ctanos
+            <NavLabel label="Contáctanos" active={isActive("/contacto")} />
           </Link>
           <button
             type="button"
@@ -96,20 +107,22 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="block text-sm font-medium text-white/70 transition-colors hover:text-white"
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className="camino-nav-item text-sm font-medium text-white/70 transition-colors hover:text-white"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {link.label}
+                  <NavLabel label={link.label} active={isActive(link.href)} />
                 </Link>
               </li>
             ))}
             <li>
               <Link
                 href="/contacto"
-                className="block text-sm font-medium text-white/70 transition-colors hover:text-white"
+                aria-current={isActive("/contacto") ? "page" : undefined}
+                className="camino-nav-item text-sm font-medium text-white/70 transition-colors hover:text-white"
                 onClick={() => setMenuOpen(false)}
               >
-                Contacto
+                <NavLabel label="Contacto" active={isActive("/contacto")} />
               </Link>
             </li>
           </ul>

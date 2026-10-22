@@ -47,7 +47,7 @@ export default function FAQ() {
             <Image src="/stickers/Recurso 79.png" alt="" width={80} height={80} aria-hidden className="w-14 h-14 lg:w-20 lg:h-20 object-contain -rotate-6" />
             <p className="text-2xl lg:text-3xl text-primary [font-family:var(--font-bellaboo)]">Todo empieza con una pregunta.</p>
           </div>
-          <h2 id="faq-title" className="text-2xl lg:text-3xl font-bold tracking-tight">Resolvamos tus dudas.</h2>
+          <h1 id="faq-title" className="text-2xl lg:text-3xl font-bold tracking-tight">Resolvamos tus dudas.</h1>
           <p className="mt-4 text-sm md:text-base leading-relaxed opacity-70 max-w-sm">Lo que conviene saber antes de dar el primer paso con Camino.</p>
         </div>
         <div className="home-faq-list flex flex-col gap-3">

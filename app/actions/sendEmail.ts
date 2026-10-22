@@ -5,18 +5,23 @@ import { sendMetaLead } from "../lib/metaCapi";
 
 export type FormState = { success: boolean; message: string } | null;
 
+function escapeHtml(value: string) {
+  const entities: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return value.replace(/[&<>"']/g, character => entities[character]);
+}
+
 export async function sendEmail(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
   const name = (formData.get("name") as string)?.trim();
-  const phone = (formData.get("phone") as string)?.trim();
+  const phone = (formData.get("phone") as string)?.trim() || "";
   const email = (formData.get("email") as string)?.trim();
   const message = (formData.get("message") as string)?.trim();
   // Present only when the visitor granted analytics consent (see Contact.tsx)
   const metaEventId = (formData.get("metaEventId") as string)?.trim();
 
-  if (!name || !phone || !email || !message) {
+  if (!name || !email || !message) {
     return { success: false, message: "Por favor, completa todos los campos." };
   }
 
@@ -38,12 +43,12 @@ export async function sendEmail(
       subject: `Nuevo contacto: ${name}`,
       html: `
         <h2>Nuevo mensaje desde el sitio web</h2>
-        <p><strong>Nombre:</strong> ${name}</p>
-        <p><strong>Tel&eacute;fono:</strong> +52 ${phone}</p>
-        <p><strong>Correo:</strong> ${email}</p>
+        <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
+        ${phone ? `<p><strong>Tel&eacute;fono:</strong> +52 ${escapeHtml(phone)}</p>` : ""}
+        <p><strong>Correo:</strong> ${escapeHtml(email)}</p>
         <hr />
         <p><strong>Mensaje:</strong></p>
-        <p>${message.replace(/\n/g, "<br/>")}</p>
+        <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
       `,
     });
   } catch (error) {
@@ -55,7 +60,7 @@ export async function sendEmail(
     };
   }
 
-  if (metaEventId) {
+  if (metaEventId && phone) {
     await sendMetaLead({ email, phone, eventId: metaEventId });
   }
 

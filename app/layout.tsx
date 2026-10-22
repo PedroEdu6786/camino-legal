@@ -5,6 +5,7 @@ import Script from "next/script";
 import AnalyticsScripts from "./components/ui/AnalyticsScripts";
 import ConsentBanner from "./components/ui/ConsentBanner";
 import MotionEnhancer from "./components/ui/MotionEnhancer";
+import Navbar from "./components/layout/Navbar";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -81,6 +82,7 @@ export default function RootLayout({
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
         <AnalyticsScripts />
         <ConsentBanner />
+        <Navbar />
         {children}
         <MotionEnhancer />
       </body>

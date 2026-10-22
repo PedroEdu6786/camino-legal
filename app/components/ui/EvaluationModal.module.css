@@ -1,0 +1,38 @@
+.modal {
+  width: min(540px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 24px 80px #0003;
+  overflow-y: auto;
+}
+.modal::backdrop { background: #2f2a2b99; backdrop-filter: blur(5px); }
+.content { position: relative; padding: 32px 24px; }
+.content h2 { padding-right: 24px; font-size: 26px; }
+.content .note { margin-top: 0; padding-right: 28px; color: var(--primary); font: 28px var(--font-bellaboo); }
+.close { position: absolute; right: 16px; top: 16px; width: 40px; height: 40px; border-radius: 50%; font-size: 28px; cursor: pointer; }
+.close:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.form { display: flex; flex-direction: column; gap: 16px; }
+.form fieldset { min-width: 0; border: 0; padding: 0; }
+.form label { display: block; margin: 16px 0 8px; font-size: 13px; font-weight: 600; }
+.form label span { font-weight: 400; opacity: .65; }
+.form input, .form textarea { width: 100%; min-width: 0; border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent); border-radius: 12px; background: var(--background); padding: 12px 14px; font: inherit; font-size: 14px; }
+.form textarea { resize: vertical; }
+.form input:focus, .form textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.content .whatsapp { display: flex; width: 100%; margin-top: 24px; }
+.content .divider { margin: 24px 0 0; font-size: 13px; text-align: center; opacity: .7; }
+.submit { padding: 13px 20px; border: 1px solid var(--foreground); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.submit:hover { background: color-mix(in srgb, var(--foreground) 5%, transparent); }
+.content .hint { margin: 0; font-size: 12px; opacity: .7; }
+.content .error { margin: 0; color: var(--secondary); }
+.success { padding-block: 20px; }
+.content button:disabled { opacity: .6; cursor: wait; }
+@media (min-width: 640px) { .content { padding: 40px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .modal[open] { animation: evaluation-enter .22s ease-out; }
+  @keyframes evaluation-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+}

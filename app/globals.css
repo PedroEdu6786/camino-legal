@@ -168,3 +168,24 @@ h1, h2, h3, h4, h5, h6 {
   .process-stage .process-journey-copy > a { margin-top: 12px; }
   .process-stage .process-illustration p { font-size: 22px; }
 }
+
+/* Mobile links retain their active background; desktop shares one moving pill. */
+.camino-nav-item {
+  display: inline-flex; padding: 8px 14px; margin-inline: -14px;
+  border-radius: 999px; transition: color .2s, background-color .2s;
+}
+header a[aria-current="page"] { color: #fff; text-decoration: none; }
+.camino-nav-item[aria-current="page"] { background-color: #8a525a; }
+.camino-nav-contact[aria-current="page"] { background-color: #8a525a; border-radius: 999px; }
+.camino-nav-track { position: relative; isolation: isolate; }
+.camino-nav-track > ul, .camino-nav-track > a { position: relative; z-index: 1; }
+.camino-nav-pill {
+  position: absolute; top: 0; left: 0; pointer-events: none;
+  border-radius: 999px; background: #8a525a; opacity: 0;
+}
+.camino-nav-track:has(.camino-nav-pill[data-ready]) a[aria-current="page"] { background-color: transparent; }
+@media (prefers-reduced-motion: no-preference) {
+  .camino-nav-pill[data-ready] {
+    transition: transform .38s cubic-bezier(.22, 1, .36, 1), width .38s cubic-bezier(.22, 1, .36, 1), height .38s cubic-bezier(.22, 1, .36, 1), opacity .18s ease;
+  }
+}

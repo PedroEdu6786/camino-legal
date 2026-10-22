@@ -2,12 +2,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { services, money, quoteEmail, trademarkQuote } from "../../lib/services";
+import EvaluationModal from "../ui/EvaluationModal";
 
 export default function Quotation({ initialService }: { initialService: string }) {
   const [slug, setSlug] = useState(initialService);
   const [classes, setClasses] = useState(1);
   const [rules, setRules] = useState(false);
   const [payments, setPayments] = useState(3);
+  const [evaluationOpen, setEvaluationOpen] = useState(false);
   const service = services.find(s => s.slug === slug) ?? services[0];
   const quote = trademarkQuote(classes, rules);
   const trademark = service.slug === "registro-de-marca";
@@ -31,7 +33,7 @@ export default function Quotation({ initialService }: { initialService: string }
         <label className="checkbox-label"><input type="checkbox" checked={rules} onChange={e => setRules(e.target.checked)} /><span>La marca tendrá más de un titular<span className="field-hint">Incluir Reglas de Uso · $616.00 MXN</span></span></label></div>
         <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{[1,2,3].map(n => <label key={n}><input type="radio" name="payments" value={n} checked={payments === n} onChange={() => setPayments(n)} /><span>{n === 1 ? "Pago único" : `${n} pagos`}</span></label>)}</div></fieldset>
         <div className="quote-evaluation"><p>¿Prefieres empezar poco a poco?</p><p className="fine-print">Evalúa tu marca por <strong>$799 MXN</strong>, incluidos en el total. Después decides si continúas.</p>
-        <a className="text-link" href={quoteEmail("Evaluación de viabilidad", "Quiero comenzar únicamente con la evaluación de $799 MXN, IVA incluido.")}>Empezar con la evaluación →</a></div>
+        <button type="button" className="text-link" aria-haspopup="dialog" onClick={() => setEvaluationOpen(true)}>Empezar con la evaluación →</button></div>
       </> : <><h2>¿Cómo se cotiza?</h2><p>{service.factors}</p><h3>Cuéntanos sobre tu proyecto</h3><ul className="content-list">{service.needs.map(n => <li key={n}>{n}</li>)}</ul></>}
     </div>
     <div className="quote-sheet" aria-live="polite" aria-atomic="true">
@@ -46,5 +48,6 @@ export default function Quotation({ initialService }: { initialService: string }
       </> : <><p className="custom-quote-title">Hecha para tu caso.</p><p>Este servicio se cotiza después de conocer tu proyecto. Recibirás el alcance del trabajo, honorarios, gastos aplicables y forma de pago antes de comenzar.</p><p>No se realiza ningún cobro desde esta página.</p></>}
       <a className="site-button" href={quoteEmail(service.title, emailDetail)}>Solicitar por correo <span aria-hidden="true">↗</span></a><p className="fine-print">Abriremos tu correo con la solicitud preparada.</p>
     </div>
+    {evaluationOpen && <EvaluationModal onClose={() => setEvaluationOpen(false)} />}
   </div>;
 }

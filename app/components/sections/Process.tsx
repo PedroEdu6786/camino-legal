@@ -73,7 +73,7 @@ export default function Process() {
       <p id="process-instruction" className="mb-5 text-sm font-medium text-primary">{geometry ? "Desliza para avanzar o selecciona un paso" : "Selecciona un paso para conocerlo"} <span aria-hidden="true">↓</span></p>
       <div className="process-route relative mb-5 md:mb-6">
         <svg className="absolute top-2 left-0 w-full h-12 text-primary/25 pointer-events-none" viewBox="0 0 1000 64" preserveAspectRatio="none" fill="none" aria-hidden="true">
-          <path d="M100 24 C170 65 230 -17 300 24 S430 65 500 24 S630 -17 700 24 S830 65 900 24" stroke="currentColor" strokeWidth="2" strokeDasharray="6 7" />
+          <path d="M100 24 C170 48 230 0 300 24 S430 48 500 24 S630 0 700 24 S830 48 900 24" stroke="currentColor" strokeWidth="2" strokeDasharray="6 7" />
         </svg>
         <div role="tablist" aria-label="Pasos de tu proceso" aria-describedby="process-instruction" className="relative grid grid-cols-5 gap-1 md:gap-4">
           {steps.map((step, index) => (
