@@ -125,7 +125,7 @@
 @keyframes camino-sticker-in { from { opacity: .3; transform: translateY(16px) rotate(-14deg) scale(.9); } to { opacity: 1; transform: translateY(0) rotate(-6deg) scale(1); } }
 @keyframes camino-total { from { opacity: .65; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
 @media (min-width: 1024px) {
-  .site-main .service-hero-art img { width: 110px; height: 110px; }
+  .site-main .service-hero-art img { width: 96px; height: 96px; }
   .site-main .quote-doodle { display: flex; flex-direction: column; align-items: center; position: absolute; right: 40px; top: 68px; rotate: 7deg; }
   .site-main .quote-doodle img { object-fit: contain; width: 80px; height: 80px; animation: camino-drift 4s ease-in-out; }
   .site-main .quote-doodle span { font-family: var(--font-bellaboo), cursive; font-size: 28px; color: var(--secondary); margin-top: 8px; }
@@ -282,3 +282,71 @@
   .site-main .quote-intro { padding-block: 120px 88px; }
   .site-main .quote-doodle { top: 120px; }
 }
+
+
+/* The trademark journey follows the looping route in Camino's client guide. */
+.site-main .trademark-journey { scroll-margin-top: 112px; }
+.site-main .trademark-journey-heading { max-width: 720px; }
+.site-main .trademark-journey-heading .hand-note { margin-top: 0; color: var(--secondary); transform: rotate(-3deg); transform-origin: left; }
+.site-main .trademark-journey-heading h2 { font-size: clamp(30px, 4vw, 48px); }
+.site-main .trademark-timeline { display: grid; gap: 0; list-style: none; margin: 0; padding-inline: 0; }
+.site-main .trademark-timeline > li { --route-ink: var(--primary); --route-paper: #e6d8da; position: relative; display: grid; align-items: center; gap: 20px; margin: 0; padding: 48px 28px; }
+.site-main .trademark-timeline > li:nth-child(even) { padding: 48px 28px; }
+.site-main .trademark-timeline > li:nth-child(2) { --route-ink: #365269; --route-paper: #d8e2eb; }
+.site-main .trademark-timeline > li:nth-child(3) { --route-ink: #964025; --route-paper: #eddbd2; }
+.site-main .trademark-timeline > li:nth-child(4) { --route-ink: #514b42; --route-paper: #e2ded5; }
+.site-main .trademark-timeline > li:nth-child(5) { --route-ink: #3d5940; --route-paper: #dce3d8; }
+.site-main .trademark-step { position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%) rotate(-3deg); padding: 7px 14px; border-radius: 5px; background: var(--route-ink); color: var(--background); font-size: 12px; font-weight: 600; }
+.site-main .trademark-timeline > li:nth-child(even) .trademark-step { transform: translate(-50%, -50%) rotate(3deg); }
+.site-main .trademark-timeline h3 { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; max-width: 450px; }
+.site-main .trademark-timeline .trademark-stage-copy > p { margin: 16px 0 0; }
+.site-main .trademark-timeline .trademark-timing { color: var(--route-ink); font-size: 12px; font-weight: 500; margin: 0 0 12px; }
+.site-main .trademark-stage-art { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; justify-self: center; grid-row: 1; width: min(180px, 100%); min-height: 150px; }
+.site-main .trademark-stage-art::before { content: ''; position: absolute; inset: 8px 0 24px; background: var(--route-paper); border-radius: 48% 52% 58% 42%; transform: rotate(-8deg); }
+.site-main .trademark-stage-art img { position: relative; width: 96px; height: 96px; object-fit: contain; transform: rotate(-8deg); }
+.site-main .trademark-stage-art .hand-note { position: relative; color: var(--route-ink); font-size: 26px; margin: 14px 0 0; transform: rotate(-5deg); }
+.site-main .trademark-aftercare { padding: 28px; border-radius: 24px; background: var(--primary); color: var(--background); }
+.site-main .trademark-aftercare-heading { display: flex; flex-direction: column; align-items: start; gap: 20px; }
+.site-main .trademark-registered { font-size: 72px; line-height: 1; font-weight: 500; transform: rotate(-12deg); }
+.site-main .trademark-aftercare .hand-note { margin: 0 0 12px; color: var(--background); font-size: 28px; }
+.site-main .trademark-aftercare h3 { font-size: clamp(24px, 3vw, 36px); line-height: 1.2; }
+.site-main .trademark-milestones { display: grid; gap: 24px; margin-top: 32px; }
+.site-main .trademark-milestones dt { font-size: 30px; font-weight: 600; margin-bottom: 8px; }
+.site-main .trademark-milestones dd { font-size: 14px; line-height: 1.65; }
+.site-main .trademark-aftercare .fine-print { margin: 28px 0 0; opacity: .8; }
+.site-main .trademark-owner-note { margin-top: 40px; }
+.site-main .trademark-owner-note > .hand-note { margin: 0 0 12px; color: var(--secondary); }
+.site-main .trademark-owner-tips { display: grid; gap: 20px; margin-top: 24px; list-style: none; counter-reset: owner-tip; }
+.site-main .trademark-owner-tips li { position: relative; padding-left: 36px; font-size: 14px; line-height: 1.7; counter-increment: owner-tip; }
+.site-main .trademark-owner-tips li::before { content: counter(owner-tip) '.'; position: absolute; left: 0; top: -4px; font-family: var(--font-bellaboo), cursive; font-size: 30px; color: var(--primary); }
+.site-main .trademark-owner-tips strong { display: block; margin-bottom: 8px; }
+.site-main .trademark-legal-note { max-width: 900px; margin-top: 28px; margin-bottom: 0; }
+.site-main .trademark-legal-note a { text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 900px) {
+  .site-main .trademark-route-track { margin: 64px 24px 56px; }
+  .site-main .trademark-timeline > li { grid-template-columns: minmax(0, 1.3fr) minmax(180px, .7fr); gap: 36px; padding: 52px 80px; min-height: 340px; }
+  .site-main .trademark-timeline > li:nth-child(even) { grid-template-columns: minmax(180px, .7fr) minmax(0, 1.3fr); padding: 52px 80px; }
+  .site-main .trademark-timeline > li:nth-child(even) .trademark-stage-copy { grid-column: 2; }
+  .site-main .trademark-timeline > li:nth-child(even) .trademark-stage-art { grid-column: 1; grid-row: 1; }
+  .site-main .trademark-stage-art { grid-row: auto; width: 200px; min-height: 220px; }
+  .site-main .trademark-stage-art img { width: 145px; height: 145px; }
+  .site-main .trademark-stage-art .hand-note { font-size: 30px; }
+  .site-main .trademark-aftercare { padding: 40px; }
+  .site-main .trademark-registered { font-size: 140px; }
+  .site-main .trademark-aftercare-heading { flex-direction: row; align-items: center; gap: 32px; }
+  .site-main .trademark-milestones, .site-main .trademark-owner-tips { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .site-main .trademark-milestones dd, .site-main .trademark-owner-tips li { font-size: 16px; }
+}
+
+.site-main .trademark-scroll-note { color: var(--primary); font-weight: 600; }
+.site-main .trademark-scroll-note span { display: inline-block; margin-left: 8px; }
+.site-main .trademark-route-track { position: relative; margin-block: 56px 48px; }
+.site-main .trademark-route-drawing { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.site-main .trademark-route-base { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .2; }
+
+.site-main .trademark-route-ink { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.site-main .trademark-route-marker { opacity: 0; fill: var(--secondary); stroke: var(--background); stroke-width: 2; stroke-linejoin: round; }
+.site-main .trademark-timeline > li[data-reached="false"] .trademark-step { background: var(--background); color: var(--route-ink); box-shadow: inset 0 0 0 1px currentColor; }
+.site-main .trademark-step, .site-main .trademark-stage-copy h3 { transition: color .25s ease, background-color .25s ease, box-shadow .25s ease; }
+.site-main .trademark-timeline > li[data-reached="true"] .trademark-step { background: var(--route-ink); color: var(--background); box-shadow: none; }
+.site-main .trademark-timeline > li[data-reached="true"] .trademark-stage-copy h3 { color: var(--route-ink); }

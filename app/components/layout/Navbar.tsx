@@ -8,6 +8,7 @@ import { trackEvent } from "../../lib/analytics";
 import NavPill from "./NavPill";
 
 const navLinks = [
+  { href: "/", label: "Inicio" },
   { href: "/servicios", label: "Servicios" },
   { href: "/cotizaciones", label: "Cotizaciones" },
   { href: "/nosotros", label: "Nosotros" },
