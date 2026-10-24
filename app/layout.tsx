@@ -2,14 +2,10 @@ import { editableColors } from "./color-lab/themes";
 import ThemePreviewControls from "./components/ui/ThemePreviewControls";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import SectionViewTracker from "./components/ui/SectionViewTracker";
+import PublicSiteChrome from "./components/layout/PublicSiteChrome";
 import { Poppins, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import AnalyticsScripts from "./components/ui/AnalyticsScripts";
-import ConsentBanner from "./components/ui/ConsentBanner";
-import MotionEnhancer from "./components/ui/MotionEnhancer";
-import Navbar from "./components/layout/Navbar";
 import StickerInk from "./components/ui/StickerInk";
 import "./globals.css";
 
@@ -112,12 +108,9 @@ export default function RootLayout({
           }
         } catch {}`}</Script>
         <StickerInk />
-        <Suspense fallback={null}><AnalyticsScripts /><SectionViewTracker /></Suspense>
-        <ConsentBanner />
-        <Navbar />
+        <Suspense fallback={null}><PublicSiteChrome /></Suspense>
         {children}
         <ThemePreviewControls />
-        <MotionEnhancer />
       </body>
     </html>
   );

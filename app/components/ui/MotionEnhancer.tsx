@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 const targets = [
@@ -15,42 +15,51 @@ const targets = [
 /** Animate visible content once; nothing depends on JavaScript to be readable. */
 export default function MotionEnhancer() {
   const pathname = usePathname();
+  const seen = useRef(new WeakSet<Element>());
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const seen = new WeakSet<Element>();
+    const registered = new WeakSet<Element>();
     const animations = new Set<Animation>();
     const observer = new IntersectionObserver((entries) => {
       let stagger = 0;
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         observer.unobserve(entry.target);
+        seen.current.add(entry.target);
         if (preference.matches) continue;
         const element = entry.target as HTMLElement;
         const isCard = element.matches("[data-reveal='card'], .process-columns > li");
+        const opacity = getComputedStyle(element).opacity;
         const animation = element.animate([
-          { opacity: 0.45, transform: isCard ? "translateY(22px) scale(.98)" : "translateY(14px)" },
-          { opacity: 1, transform: "translateY(0) scale(1)" },
+          { opacity: 0, translate: isCard ? "0 22px" : "0 14px" },
+          { opacity, translate: "0 0" },
         ], {
           duration: isCard ? 600 : 480,
           delay: Math.min(stagger++ * 65, 195),
           easing: "cubic-bezier(.16,1,.3,1)",
-          fill: "none",
+          fill: "backwards",
         });
         animations.add(animation);
         animation.onfinish = () => animations.delete(animation);
       }
-    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px 48px 0px" });
 
     const register = (root: ParentNode) => {
       const elements = [...root.querySelectorAll(targets)];
       if (root instanceof Element && root.matches(targets)) elements.push(root);
       for (const element of elements) {
-        if (seen.has(element) || element.closest(".quote-sheet")) continue;
-        if (!element.hasAttribute("data-reveal") && element.parentElement?.closest("[data-reveal]")) continue;
+        if (seen.current.has(element) || registered.has(element) || element.closest(".quote-sheet")) continue;
+        if (element.parentElement?.closest("[data-reveal]")) continue;
         // The investment panel enters together; do not animate its heading twice.
         if (element.closest(".cost-band") && !element.matches(".cost-band")) continue;
-        seen.add(element);
+        registered.add(element);
+        // Hydration and route changes may register content after it has painted.
+        // Never hide already-visible content to replay an entrance animation.
+        if (element.getBoundingClientRect().top < window.innerHeight) {
+          seen.current.add(element);
+          continue;
+        }
         observer.observe(element);
       }
     };

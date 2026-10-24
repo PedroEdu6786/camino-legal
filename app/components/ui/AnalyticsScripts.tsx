@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { publicAnalyticsPath } from "../../lib/measurement/contracts";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { configureProviders, getConsent, markProviderReady, metaBrowserContextSafe, safePageContext, subscribeToConsent } from "../../lib/analytics";
@@ -25,14 +26,14 @@ export default function AnalyticsScripts() {
   const metaInitialized = useRef(false);
   const gaLoaded = useRef(false);
   const metaLoaded = useRef(false);
-  const validGA = !!GA4_ID && /^G-[A-Z0-9]+$/.test(GA4_ID) && REVIEWED;
-  const validMeta = !!PIXEL_ID && /^\d+$/.test(PIXEL_ID) && REVIEWED;
+  const validGA = !!GA4_ID && /^G-[A-Z0-9]+$/.test(GA4_ID) && REVIEWED && publicAnalyticsPath(path);
+  const validMeta = !!PIXEL_ID && /^\d+$/.test(PIXEL_ID) && REVIEWED && publicAnalyticsPath(path);
   const metaContextSafe = typeof window !== "undefined" && metaBrowserContextSafe();
   const metaSafe = granted && metaContextSafe;
 
   const initializeGA = () => {
     gaLoaded.current = true;
-    if (getConsent() !== "granted" || !validGA) return;
+    if (getConsent() !== "granted" || !validGA || !publicAnalyticsPath(window.location.pathname)) return;
     try {
       window.dataLayer ||= [];
       // Google tag consumes its documented arguments-object queue format.

@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { attributionContext, beginPage, getConsentSnapshot, getPageViewId, setServerConsentSync, subscribeToConsent, trackEvent } from "../../lib/analytics";
 import { updateAnalyticsConsent } from "../../actions/analyticsConsent";
 import { representativeTarget } from "../../lib/measurement/visibility";
-import { EVENT_NAMES, registeredId, serviceFromDestination, serviceId, type AnalyticsEvent, type AnalyticsParams } from "../../lib/measurement/contracts";
+import { publicAnalyticsPath, EVENT_NAMES, registeredId, serviceFromDestination, serviceId, type AnalyticsEvent, type AnalyticsParams } from "../../lib/measurement/contracts";
 
 export default function SectionViewTracker() {
   const pathname = usePathname();
@@ -18,6 +18,7 @@ export default function SectionViewTracker() {
     // Query-only quotation changes update rendered context, not page counts.
   }, [pathname, search]);
   useEffect(() => {
+    if (!publicAnalyticsPath(pathname)) return;
     let epoch = "";
     let previousProgress = progress();
     const seen = new Set<string>();
@@ -39,7 +40,7 @@ export default function SectionViewTracker() {
       const current = getConsentSnapshot();
       const next = `${getPageViewId()}:${current.version}`;
       if (epoch !== next) { epoch = next; seen.clear(); thresholds.clear(); previousProgress = progress(); resetTimers(); }
-      return current.status === "granted" && document.visibilityState !== "hidden";
+      return publicAnalyticsPath(window.location.pathname) && current.status === "granted" && document.visibilityState !== "hidden";
     }
     function arm(target: Element) {
       const item = targets.get(target);

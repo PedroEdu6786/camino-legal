@@ -1,4 +1,4 @@
-import { acquisitionCategories, EVENT_NAMES, PendingMeasurements, opaqueId, pageIdentity, sanitizeParams, serviceId, type AnalyticsEvent, type AnalyticsParams, type Destination, type MeasurementRecord } from "./measurement/contracts.ts";
+import { acquisitionCategories, EVENT_NAMES, providerEventName, publicAnalyticsPath, PendingMeasurements, opaqueId, pageIdentity, sanitizeParams, serviceId, type AnalyticsEvent, type AnalyticsParams, type Destination, type MeasurementRecord } from "./measurement/contracts.ts";
 export type { AnalyticsEvent, AnalyticsParams } from "./measurement/contracts.ts";
 export type ConsentStatus = "granted" | "denied" | null;
 export type ConsentSnapshot = { status: ConsentStatus; version: string; serverAcknowledged: boolean };
@@ -34,7 +34,7 @@ const id = () => globalThis.crypto.randomUUID();
 function updateGACollectionSwitch() {
   if (typeof window === "undefined" || !GA4_ID || !/^G-[A-Z0-9]+$/.test(GA4_ID)) return;
   // Consent-mode denial alone can still produce cookieless pings.
-  (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = !(snapshot.status === "granted" && PROVIDERS_REVIEWED && configured.ga4);
+  (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = !(snapshot.status === "granted" && PROVIDERS_REVIEWED && configured.ga4 && publicAnalyticsPath(window.location.pathname));
 }
 declare global {
   interface Window {
@@ -93,7 +93,7 @@ function transition(status: ConsentStatus, persist: boolean) {
     ready.meta = false;
     try { window.fbq?.("consent", "revoke"); } catch { /* Never affect navigation. */ }
     if (window.gtag) try { window.gtag("consent", "update", { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" }); } catch { /* No business dependency. */ }
-  } else {
+  } else if (publicAnalyticsPath(window.location.pathname)) {
     try { window.fbq?.("consent", "grant"); } catch { /* Provider optional. */ }
     if (window.gtag) try { window.gtag("consent", "update", { analytics_storage: "granted", ad_storage: "granted", ad_user_data: "granted", ad_personalization: "granted" }); } catch { /* Provider optional. */ }
     window.dispatchEvent(new Event(CONSENT_GRANTED_EVENT));
@@ -122,7 +122,7 @@ export function metaBrowserContextSafe() {
 }
 export function configureProviders(providers: typeof configured) { configured = providers; updateGACollectionSwitch(); for (const destination of ["ga4", "meta"] as const) if (!providers[destination]) pending.take(destination, Date.now()); }
 export function markProviderReady(destination: Destination) {
-  if (getConsent() !== "granted") return;
+  if (getConsent() !== "granted" || !publicAnalyticsPath(window.location.pathname)) return;
   ready = { ...ready, [destination]: true };
   for (const record of pending.take(destination, Date.now())) dispatch(record, destination);
 }
@@ -134,7 +134,7 @@ function projection(record: MeasurementRecord): AnalyticsParams {
   return output;
 }
 function dispatch(record: MeasurementRecord, destination: Destination) {
-  if (getConsent() !== "granted" || !configured[destination]) return;
+  if (getConsent() !== "granted" || !configured[destination] || !publicAnalyticsPath(window.location.pathname)) return;
   if (destination === "meta" && (!metaBrowserContextSafe() || record.page.page_path !== window.location.pathname)) return;
   const deliveryId = `${record.id}:${destination}`;
   if (dispatched.has(deliveryId)) return;
@@ -144,13 +144,14 @@ function dispatch(record: MeasurementRecord, destination: Destination) {
   if (dispatched.size > 2000) dispatched.delete(dispatched.values().next().value!);
   try {
     if (destination === "ga4") window.gtag?.("event", record.name, { ...projection(record), ...safePageContext(), page_location: `${window.location.origin}${record.page.page_path}`, page_title: `Camino Legal | ${record.page.page_type}` });
-    else if (record.name === "page_view") window.fbq?.("track", "PageView", {}, { eventID: record.id });
-    else if (record.name === "lead_submitted") window.fbq?.("track", "Lead", {}, { eventID: record.id });
-    else window.fbq?.("track", "Contact", { channel: record.params.channel || (record.name === "whatsapp_click" ? "whatsapp" : "email") }, { eventID: record.id });
+    else {
+      const name = providerEventName(record.name, "meta");
+      if (name) window.fbq?.("track", name, name === "Contact" ? { channel: record.params.channel || (record.name === "whatsapp_click" ? "whatsapp" : "email") } : {}, { eventID: record.id });
+    }
   } catch { /* Analytics never changes the successful business action. */ }
 }
 export function trackEvent(name: AnalyticsEvent, params: AnalyticsParams = {}, options?: { eventId?: string }) {
-  if (typeof window === "undefined" || getConsent() !== "granted" || !EVENT_NAMES.includes(name as AnalyticsEvent)) return;
+  if (typeof window === "undefined" || !publicAnalyticsPath(window.location.pathname) || getConsent() !== "granted" || !EVENT_NAMES.includes(name as AnalyticsEvent)) return;
   if (!pageViewId) beginPage(window.location.pathname);
   const safe = sanitizeParams({ ...attributionContext(), ...params });
   if (["service_select", "quote_change"].includes(name) && safe.service_context === "explicit" && serviceId(safe.service_id) !== "unspecified") {
@@ -164,9 +165,22 @@ export function trackEvent(name: AnalyticsEvent, params: AnalyticsParams = {}, o
   }
   const record: MeasurementRecord = { name: name as AnalyticsEvent, id: eventId, time: Date.now(), page, pageViewId, params: { ...safe, ...acquisition } };
   dispatch(record, "ga4");
-  if (["page_view", "lead_submitted", "whatsapp_click", "email_click", "quote_request_intent"].includes(name)) dispatch(record, "meta");
+  if (providerEventName(name, "meta")) dispatch(record, "meta");
+}
+export function suspendMarketingCollection() {
+  pending.clear();
+  if (expiryTimer) clearTimeout(expiryTimer);
+  ready = { ga4: false, meta: false };
+  configured = { ga4: false, meta: false };
+  updateGACollectionSwitch();
+  try { window.fbq?.("consent", "revoke"); } catch { /* Optional provider. */ }
 }
 export function beginPage(path: string, force = false) {
+  if (!publicAnalyticsPath(path)) {
+    page = pageIdentity(path); pageViewId = ""; pageEpoch = ""; activeService = "unspecified"; referralService = "unspecified";
+    suspendMarketingCollection();
+    return "";
+  }
   const next = pageIdentity(path);
   if (next.page_type === "quotation" && typeof window !== "undefined") next.service_id = serviceId(new URLSearchParams(window.location.search).get("servicio"));
   if (force || page.page_path !== next.page_path || !pageViewId) {

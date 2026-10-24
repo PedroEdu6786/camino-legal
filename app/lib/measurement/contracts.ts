@@ -2,6 +2,14 @@ export const SERVICE_IDS = ["registro-de-marca", "contratos-y-convenios", "derec
 export type ServiceId = (typeof SERVICE_IDS)[number];
 export const EVENT_NAMES = ["page_view", "navigation_click", "cta_click", "service_select", "quote_view", "quote_change", "quote_request_intent", "evaluation_open", "evaluation_close", "form_view", "form_start", "form_submit_attempt", "form_validation_failed", "form_submit_failed", "lead_submitted", "whatsapp_click", "email_click", "social_click", "outbound_reference_click", "section_view", "trademark_step_view", "faq_toggle", "process_step_select", "review_interaction", "quote_disclosure_toggle", "scroll_depth", "utility_interaction"] as const;
 export type AnalyticsEvent = (typeof EVENT_NAMES)[number];
+export const META_EVENT_NAMES = { page_view: "PageView", lead_submitted: "Lead", whatsapp_click: "Contact", email_click: "Contact", quote_request_intent: "Contact" } as const;
+export function providerEventName(name: AnalyticsEvent, provider: "meta"): "PageView" | "Lead" | "Contact" | null;
+export function providerEventName(name: AnalyticsEvent, provider: "ga4"): AnalyticsEvent;
+export function providerEventName(name: AnalyticsEvent, provider: "ga4" | "meta") {
+  return provider === "ga4" ? name : Object.hasOwn(META_EVENT_NAMES, name) ? META_EVENT_NAMES[name as keyof typeof META_EVENT_NAMES] : null;
+}
+export function publicAnalyticsPath(path: string) { return pageIdentity(path).page_type !== "unknown"; }
+
 export type AnalyticsValue = string | number | boolean | null;
 export type AnalyticsParams = Record<string, AnalyticsValue>;
 const PAGE_TYPES: Record<string, string> = { "/": "home", "/servicios": "service_directory", "/cotizaciones": "quotation", "/nosotros": "about", "/preguntas": "faq", "/contacto": "contact" };

@@ -50,7 +50,9 @@ export function useScrollJourney(track: RefObject<HTMLDivElement | null>, stage:
     const layout = current.current;
     if (layout && track.current) {
       const start = track.current.getBoundingClientRect().top + scrollY - layout.top;
-      window.scrollTo({ top: start + (index + .15) / count * layout.travel, behavior: "instant" });
+      window.scrollTo({ top: start + (index + .15) / count * layout.travel, behavior: "smooth" });
+      // Select steps as the scroll reaches them, avoiding a destination-first flash.
+      return;
     }
     onStep(index);
   };

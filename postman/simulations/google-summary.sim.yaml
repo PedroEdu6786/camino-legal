@@ -1,0 +1,5 @@
+simulation: camino-google-summary
+routing: path
+mocks:
+  - routeKey: google
+    path: ../mocks/google-summary/config.yaml

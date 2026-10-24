@@ -134,4 +134,20 @@ test('consent, readiness, conversion ownership, and revocation remain observatio
   trackEvent('quote_change', { service_id: 'consultoria-legal', service_context: 'explicit', control_id: 'service' });
   setConsent('denied'); setConsent('granted');
   assert.equal(attributionContext().service_id, 'unspecified', 'revocation clears local-selection attribution even on the same quotation page');
+  const beforeAdmin = calls.filter(args => args[0] === 'event').length;
+  const beforeMeta = pixel.filter(args => args[0] === 'track').length;
+  window.gtag = undefined;
+  trackEvent('cta_click', { action_id: 'quote.evaluation' });
+  window.location = new URL('https://caminolegal.com.mx/admin/analitica');
+  assert.equal(beginPage(window.location.pathname), '');
+  window.gtag = send;
+  markProviderReady('ga4'); markProviderReady('meta');
+  trackEvent('page_view'); trackEvent('whatsapp_click');
+  assert.equal(calls.filter(args => args[0] === 'event').length, beforeAdmin, 'dashboard creation and queued public events are suppressed');
+  assert.equal(pixel.filter(args => args[0] === 'track').length, beforeMeta);
+  window.location = new URL('https://caminolegal.com.mx/contacto');
+  configureProviders({ ga4: true, meta: true });
+  beginPage(window.location.pathname); markProviderReady('ga4');
+  assert.equal(calls.filter(args => args[0] === 'event').length, beforeAdmin + 1, 'return to public starts a fresh page without replay');
+
 });

@@ -50,7 +50,7 @@ export default function Hero() {
       <button
         onClick={toggleDark}
         aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
-        className={`hero-theme-toggle hidden lg:block absolute top-14 right-10 w-20 transition-all duration-300 ${flashing ? "scale-125" : "scale-100"} ${isDark ? "opacity-100 drop-shadow-[0_0_12px_rgba(255,220,100,0.6)]" : "opacity-60 hover:opacity-80"}`}
+        className={`hero-theme-toggle hidden lg:block absolute top-14 right-10 w-20 cursor-pointer transition-all duration-300 ${flashing ? "scale-125" : "scale-100"} ${isDark ? "opacity-100 drop-shadow-[0_0_12px_rgba(255,220,100,0.6)]" : "opacity-60 hover:opacity-80"}`}
       >
         <Image
           src="/stickers/Recurso 91.png"

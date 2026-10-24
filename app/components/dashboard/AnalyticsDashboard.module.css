@@ -1,0 +1,88 @@
+/* Framed sheet: 228px navigation + remaining sheet; 24px internal gutter, no shadows.
+   Camino's warm ground and wordmark preserve its face. Signature: four independent tracking claims. */
+.app { --sheet: #fffdfc; --line: #e6dedd; --muted: #66575c; --active: #e9e1df; color: var(--foreground); background: var(--background); min-height: 100vh; font-family: var(--font-dm-sans), sans-serif; font-size: 14px; line-height: 1.5; }
+:global(html.dark) .app { --sheet: #252023; --line: #44383d; --muted: #c4b7bc; --active: #3b3035; }
+.topbar { min-height: 64px; display: flex; align-items: center; gap: 28px; padding: 12px 24px; }
+.brand { font-family: var(--font-poppins), sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -.7px; color: var(--primary); }
+.brand span { font-size: 12px; vertical-align: super; }
+.returnLink { margin-left: auto; text-decoration: underline; text-underline-offset: 4px; }
+.frame { display: grid; grid-template-columns: 228px minmax(0, 1fr); gap: 0; padding: 0 8px 8px 0; }
+.navigation { padding: 16px 12px; display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.navigation button { display: flex; align-items: center; justify-content: space-between; text-align: left; padding: 10px 12px; border-radius: 6px; min-height: 44px; cursor: pointer; }
+.navigation button[aria-selected=true] { background: var(--active); font-weight: 600; }
+.count { font-variant-numeric: tabular-nums; padding-left: 8px; }
+.navNote { margin-top: 32px; padding: 12px; color: var(--muted); font-size: 12px; }
+.navNote strong { font-weight: 500; color: var(--foreground); }
+.navNote p { margin-top: 6px; }
+.sheet { background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 24px; min-width: 0; }
+.heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+.heading h1 { font-size: 24px; font-weight: 600; letter-spacing: -.5px; margin: 0 0 8px; }
+.heading p { color: var(--muted); max-width: 660px; }
+.preview { font-size: 12px; color: var(--muted); flex: 0 0 160px; }
+.summary { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-block: 1px solid var(--line); padding-block: 20px; margin-bottom: 24px; }
+.summary > div { padding-inline: 20px; border-left: 1px solid var(--line); }
+.summary > div:first-child { padding-left: 0; border: 0; }
+.summary span { font-weight: 500; }
+.summary small { font-size: 12px; color: var(--muted); }
+.missing { color: var(--muted); margin: 10px 0; }
+.metricValue { font-size: 36px; line-height: 1.2; font-weight: 500; font-variant-numeric: tabular-nums; margin: 10px 0; }
+.reportControls { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.reportControls label { display: grid; gap: 6px; font-size: 12px; }
+.reportControls select,.reportControls input { color: var(--foreground); background: var(--sheet); border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; min-height: 44px; max-width: 100%; font: inherit; font-size: 14px; }
+.reportControls button { border: 1px solid var(--line); border-radius: 6px; padding: 9px 14px; min-height: 44px; }
+.reportControls button[type=submit] { background: var(--active); }
+.reportControls button:disabled { cursor: wait; opacity: .6; }
+.reportState { color: var(--muted); margin-bottom: 16px; }
+.supportingMetrics { display: flex; gap: 16px 32px; flex-wrap: wrap; color: var(--muted); }
+.supportingMetrics strong { font-weight: 500; color: var(--foreground); }
+.metricDefinitions { margin-top: 16px; }
+.metricDefinitions summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; }
+.metricDefinitions p { margin: 8px 0; color: var(--muted); max-width: 85ch; }
+@media(max-width:640px) { .reportControls label { width: 100%; } .metricValue { font-size: 28px; margin: 0; } }
+.sectionTitle { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 24px 0 16px; }
+.sheet h2 { font-size: 16px; font-weight: 600; }
+.sheet h3 { font-size: 16px; font-weight: 500; margin-bottom: 12px; }
+.sheet button { cursor: pointer; }
+.sectionTitle button,.tableWrap button { text-decoration: underline; text-underline-offset: 4px; min-height: 44px; text-align: left; }
+.coverage { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.coverage article { padding: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.coverage dl { margin-bottom: 16px; }
+.coverage dl > div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; }
+.coverage dt { color: var(--muted); }
+.coverage dd { text-align: right; }
+.coverage p,.notice { color: var(--muted); }
+.policy { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-top: 24px; font-size: 12px; color: var(--muted); }
+.filters { display: flex; align-items: end; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+.filters label { display: grid; gap: 6px; font-size: 12px; }
+.filters input,.filters select { background: var(--sheet); border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; min-height: 44px; font: inherit; font-size: 14px; color: var(--foreground); max-width: 100%; }
+.filters input { width: 300px; }
+.filters input::placeholder { color: var(--muted); }
+.caption { color: var(--muted); font-size: 12px; margin: 12px 0 16px; }
+.empty { padding: 24px; border: 1px solid var(--line); border-radius: 8px; margin: 16px 0; }
+.empty p { color: var(--muted); margin-top: 8px; }
+.tableWrap { overflow-x: auto; }
+.tableWrap table { border-collapse: collapse; width: 100%; text-align: left; }
+.tableWrap th { color: var(--muted); font-size: 12px; font-weight: 400; padding: 12px 16px 12px 0; }
+.tableWrap td { padding: 16px 16px 16px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.tableWrap td:first-child { width: 35%; }
+.tableWrap td > span,.tableWrap td > code { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; }
+.tableWrap strong { display: block; font-weight: 500; }
+.tableWrap code { overflow-wrap: anywhere; }
+.tableWrap a { display: block; margin-top: 8px; text-decoration: underline; text-underline-offset: 4px; }
+.evidence { font-size: 12px; }
+.details { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 16px; }
+.details summary { cursor: pointer; font-weight: 500; min-height: 44px; }
+.details p { margin: 12px 0; color: var(--muted); }
+.eventDetail { margin-top: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.eventDetail .sectionTitle { margin-top: 0; }
+.evidenceGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin: 20px 0; }
+.evidenceGrid strong { font-weight: 500; display: block; margin-bottom: 6px; }
+.gap { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.gap h2 { margin-bottom: 10px; }
+.gap p { margin: 8px 0; }
+.gapMeta { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 12px; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.app :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.app [hidden] { display: none !important; }
+@media(max-width:1100px) { .frame { grid-template-columns: 1fr; padding: 0 8px 8px; } .navigation { flex-direction: row; overflow-x: auto; padding: 0 8px 12px; } .navigation button { white-space: nowrap; } .navNote { display: none; } .heading { flex-wrap: wrap; gap: 12px; } .preview { flex-basis: auto; } }
+@media(max-width:640px) { .topbar { padding: 12px 16px; gap: 12px; flex-wrap: wrap; } .topbar > span { display: none; } .sheet { padding: 20px 16px; border-radius: 8px; } .coverage { grid-template-columns: 1fr; } .summary { grid-template-columns: 1fr; gap: 12px; } .summary > div { padding: 0; border: 0; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; } .summary small { grid-column: 1/-1; } .missing { margin: 0; } .heading h1 { font-size: 22px; } .tableWrap table { min-width: 650px; } .evidenceGrid { grid-template-columns: 1fr; } .sectionTitle { align-items: start; } .filters label { width: 100%; } .filters input { width: 100%; } }
