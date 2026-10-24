@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import formStyles from "../ui/ContactForm.module.css";
 import PhoneField from "../ui/PhoneField";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
@@ -18,9 +19,6 @@ function SubmitButton() {
     </button>
   );
 }
-
-const inputClass =
-  "w-full rounded-xl border-2 border-foreground/10 bg-background px-4 py-3 text-sm placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 transition-colors duration-200";
 
 export default function Contact() {
   const { state, action, instanceId, start, invalid, submit } = useTrackedForm("contact");
@@ -88,7 +86,7 @@ export default function Contact() {
             target="_blank"
             rel="noopener noreferrer"
             data-analytics-event="whatsapp_click" data-analytics-action="contact.whatsapp" data-analytics-source="contact"
-            className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
+            className={`${formStyles.panel} flex items-center gap-4 rounded-3xl border border-foreground/10 p-6 hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 transition-colors duration-200 group`}
           >
             <span className="w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0 group-hover:bg-[#25D366]/20 transition-colors">
               <svg className="w-5 h-5 text-[#25D366]" fill="currentColor" viewBox="0 0 24 24">
@@ -105,7 +103,7 @@ export default function Contact() {
           <a
             href="mailto:info@caminolegal.com.mx"
             data-analytics-event="email_click" data-analytics-action="contact.email" data-analytics-source="contact"
-            className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
+            className={`${formStyles.panel} flex items-center gap-4 rounded-3xl border border-foreground/10 p-6 hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 transition-colors duration-200 group`}
           >
             <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
               <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -133,7 +131,7 @@ export default function Contact() {
             />
           )}
 
-          <div className="rounded-3xl border-2 border-foreground/8 bg-foreground/[0.08] p-6 md:p-8">
+          <div className={`${formStyles.panel} rounded-3xl border border-foreground/10 p-6 sm:p-10`}>
             {state?.success ? (
               <div className="flex flex-col items-center gap-5 text-center py-6">
                 <Image
@@ -152,69 +150,23 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form action={action} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} data-analytics-form={instanceId ? "contact" : undefined} data-analytics-instance={instanceId || undefined} className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label
-                      htmlFor="name"
-                      className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                    >
-                      Nombre completo
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      {...field("name")}
-                      type="text"
-                      required
-                      placeholder="Tu nombre completo"
-                      className={inputClass}
-                    />
+              <form action={action} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} data-analytics-form={instanceId ? "contact" : undefined} data-analytics-instance={instanceId || undefined} className={formStyles.form}>
+                <fieldset>
+                  <div className={formStyles.contactRow}>
+                    <div>
+                      <label htmlFor="name">Tu nombre</label>
+                      <input id="name" name="name" {...field("name")} type="text" autoComplete="name" required placeholder="¿Cómo te llamas?" />
+                    </div>
+                    <div>
+                      <label htmlFor="phone">Teléfono</label>
+                      <PhoneField id="phone" />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label
-                      htmlFor="phone"
-                      className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                    >
-                      Tel&eacute;fono
-                    </label>
-                    <PhoneField id="phone" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="email"
-                    className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                  >
-                    Correo electr&oacute;nico
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    {...field("email")}
-                    type="email"
-                    required
-                    placeholder="tu@correo.com"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="message"
-                    className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                  >
-                    &iquest;En qu&eacute; podemos ayudarte?
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    {...field("message")}
-                    required
-                    rows={4}
-                    placeholder="Cu&eacute;ntanos en qu&eacute; podemos ayudarte&hellip;"
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
+                  <label htmlFor="email">Correo electrónico</label>
+                  <input id="email" name="email" {...field("email")} type="email" autoComplete="email" required placeholder="tu@correo.com" />
+                  <label htmlFor="message">¿En qué podemos ayudarte?</label>
+                  <textarea id="message" name="message" {...field("message")} required rows={6} placeholder="Cuéntanos en qué podemos ayudarte…" />
+                </fieldset>
                 {state?.success === false && (
                   <p className="text-xs text-primary">{state.message}</p>
                 )}

@@ -24,7 +24,8 @@ try {
     assert.match(initial.message,/registro de marca/i);assert.match(initial.message,/2 clases/);assert.match(initial.message,/incluí las Reglas de Uso/);assert.match(initial.message,/cotización de.*MXN/);assert.match(initial.message,/3 partes/);assert.equal(initial.valid,false);assert.equal(initial.required,true);assert.equal(initial.overflow,false);
     await change('#consultation-name','Synthetic visitor');await change('#consultation-email','visitor@example.test');await change('#consultation-phone','999123456');
     assert.equal(await page.eval(()=>document.querySelector('dialog form').checkValidity()),false);
-    await change('#consultation-phone','9991234567');await change('#consultation-message',initial.message+'\nDetalle adicional del proyecto.');
+    await change('#consultation-phone','abc999-123-4567');
+    assert.equal(await page.eval(()=>document.querySelector('#consultation-phone').value),'9991234567');await change('#consultation-message',initial.message+'\nDetalle adicional del proyecto.');
     assert.equal(await page.eval(()=>document.querySelector('dialog form').checkValidity()),true);
     const submitted=await page.eval(()=>Object.fromEntries(new FormData(document.querySelector('dialog form'))));
     assert.equal(submitted.phone,'9991234567');assert.match(submitted.message,/Detalle adicional/);
@@ -32,7 +33,7 @@ try {
     assert.equal(await page.eval(()=>document.querySelector('dialog form').checkValidity()),true,'Spanish nine-digit number must be accepted');
     await change('#consultation-phone','+44 20 7946 0958');
     assert.equal(await page.eval(()=>document.querySelector('#consultation-phone-country').value),'GB','explicit international prefix selects its country');
-    assert.equal(await page.eval(()=>document.querySelector('#consultation-phone').value),'+44 20 7946 0958','pasted international numbers are not truncated');
+    assert.equal(await page.eval(()=>document.querySelector('#consultation-phone').value),'02079460958','pasted international numbers become national digits');
     assert.equal(await page.eval(()=>document.querySelector('dialog form').checkValidity()),true);
     assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('dialog button[type="submit"]')).cursor),'pointer');
     await pause(350);
@@ -56,6 +57,25 @@ try {
       assert.ok(custom.message.includes(custom.title.toLocaleLowerCase("es-MX")));assert.match(custom.message,/costos y los tiempos/);assert.doesNotMatch(custom.message,/Estimado:|2 clases|Reglas de Uso/);await close();
     }
     await page.goto(base+'/contacto');
+    const contactLayout = await page.eval(() => {
+      const form = document.querySelector('#contact form');
+      const name = form.querySelector('#name'), email = form.querySelector('#email'), phone = form.querySelector('#phone');
+      return { nameWidth: name.getBoundingClientRect().width, emailWidth: email.getBoundingClientRect().width,
+        phoneBesideName: Math.abs(phone.getBoundingClientRect().top - name.getBoundingClientRect().top) < 1,
+        phoneBeforeEmail: phone.getBoundingClientRect().top < email.getBoundingClientRect().top,
+        labelCase: getComputedStyle(form.querySelector('label')).textTransform,
+        translucentPanel: getComputedStyle(form.parentElement).backgroundColor.includes('0.55'),
+        overflow: document.documentElement.scrollWidth > innerWidth };
+    });
+    assert.equal(contactLayout.nameWidth < contactLayout.emailWidth, width >= 640);
+    assert.equal(contactLayout.phoneBesideName, width >= 640);
+    assert.equal(contactLayout.phoneBeforeEmail, true);
+    assert.equal(contactLayout.labelCase, 'none');
+    assert.equal(contactLayout.translucentPanel, true);
+    assert.equal(contactLayout.overflow, false);
+    await page.eval(() => document.querySelector('#contact form').scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await pause(700);
+    await page.screenshot({path:`/private/tmp/camino-contact-style-${width}.png`,format:'png'});
     assert.equal(await page.eval(()=>document.querySelector('#phone-country').value),'MX');
     await change('#name','Synthetic visitor');await change('#email','visitor@example.test');await change('#message','Me gustaría conocer sus servicios.');
     await change('#phone-country','ES');await change('#phone','612 345 678');

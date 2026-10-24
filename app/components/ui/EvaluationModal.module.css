@@ -16,13 +16,6 @@
 .content .note { margin-top: 0; padding-right: 28px; color: var(--primary); font: 28px var(--font-bellaboo); }
 .close { position: absolute; right: 16px; top: 16px; width: 40px; height: 40px; border-radius: 50%; font-size: 28px; cursor: pointer; }
 .close:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
-.form { display: flex; flex-direction: column; gap: 16px; }
-.form fieldset { min-width: 0; border: 0; padding: 0; }
-.form label { display: block; margin: 16px 0 8px; font-size: 13px; font-weight: 600; }
-.form label span { font-weight: 400; opacity: .65; }
-.form input, .form textarea { width: 100%; min-width: 0; border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent); border-radius: 12px; background: var(--surface); padding: 12px 14px; font: inherit; font-size: 14px; }
-.form textarea { resize: vertical; }
-.form input:focus, .form textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
 .content .whatsapp { display: flex; width: 100%; margin-top: 24px; }
 .content .divider { margin: 24px 0 0; font-size: 13px; text-align: center; opacity: .7; }
 .submit { padding: 13px 20px; border: 1px solid var(--foreground); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -36,5 +29,3 @@
   .modal[open] { animation: evaluation-enter .22s ease-out; }
   @keyframes evaluation-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 }
-
-.form fieldset .hint { margin-top: 8px; }

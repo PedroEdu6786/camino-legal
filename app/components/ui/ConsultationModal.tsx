@@ -1,5 +1,7 @@
 "use client";
 
+import formStyles from "./ContactForm.module.css";
+
 import { useEffect, useRef, useState } from "react";
 import { useTrackedForm } from "./useTrackedForm";
 import { trackEvent } from "../../lib/analytics";
@@ -70,7 +72,7 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
             data-analytics-event="whatsapp_click" data-analytics-action="evaluation.whatsapp" data-analytics-source="evaluation_modal" data-analytics-service="registro-de-marca"
           >Hablar por WhatsApp ↗</a>
           <p className={styles.divider}>O déjanos tus datos y te contactamos.</p></>}
-          <form data-analytics-form={instanceId ? formId : undefined} data-analytics-instance={instanceId || undefined} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} action={action} aria-busy={pending} className={styles.form}>
+          <form data-analytics-form={instanceId ? formId : undefined} data-analytics-instance={instanceId || undefined} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} action={action} aria-busy={pending} className={formStyles.form}>
             <fieldset disabled={pending}>
               <label htmlFor={`${prefix}-name`}>Tu nombre</label>
               <input id={`${prefix}-name`} name="name" {...field("name")} autoComplete="name" required maxLength={150} placeholder="¿Cómo te llamas?" />

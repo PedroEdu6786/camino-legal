@@ -1,6 +1,6 @@
 .field { min-width: 0; }
 .controls { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 8px; }
-.countryControl, .number { width: 100%; min-width: 0; border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent); border-radius: 12px; background: var(--surface); color: var(--foreground); padding: 12px 10px; font: inherit; font-size: 14px; }
+.countryControl, .number { width: 100%; min-width: 0; border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent); border-radius: 12px; background: var(--contact-field-background, var(--surface)); color: var(--foreground); padding: 12px 10px; font: inherit; font-size: 14px; }
 .countryControl { position: relative; display: flex; align-items: center; }
 .countryDisplay { display: flex; align-items: center; gap: 5px; white-space: nowrap; width: 100%; }
 .countryDisplay svg { margin-left: auto; flex-shrink: 0; }
