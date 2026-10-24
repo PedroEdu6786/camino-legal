@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import SiteFrame from "../../components/layout/SiteFrame";
+import ServiceScrollHint from "../../components/ui/ServiceScrollHint";
 import TrademarkJourney from "../../components/sections/TrademarkJourney";
 import { services, money, trademarkQuote } from "../../lib/services";
 
@@ -19,6 +20,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   if (!service) notFound();
   const trademark = slug === "registro-de-marca";
   return <SiteFrame>
+    <ServiceScrollHint key={slug} />
     <div className="site-container breadcrumb"><Link data-analytics-event="navigation_click" data-analytics-action="service.breadcrumb" data-analytics-source="service_detail"  href="/servicios">Servicios</Link><span aria-hidden="true"> / </span><span>{service.title}</span></div>
     <section data-analytics-section="service_hero" className="site-container route-hero service-route-hero">
       <div data-reveal><h1>{service.title}</h1><p>{service.description}</p><div className="route-actions"><Link className="site-button" data-analytics-event="cta_click" data-analytics-action={`service.quote.${slug}`} data-analytics-source="service_detail" data-analytics-service={slug} href={`/cotizaciones?servicio=${slug}`}>Solicitar cotización →</Link></div></div>
