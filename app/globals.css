@@ -53,6 +53,7 @@ html.dark {
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -178,7 +179,28 @@ h1, h2, h3, h4, h5, h6 {
 .home-faq-toggle { transition: transform .2s; }
 .home-faq-item[open] .home-faq-toggle { transform: rotate(45deg); }
 .home-faq-item summary:hover { color: var(--primary); }
-.home-faq-item[open] > div { animation: camino-answer .25s ease-out; }
+
+/* Shared disclosure motion, including dashboard and mobile accordions. */
+details {
+  display: flow-root;
+  box-sizing: border-box;
+}
+details::details-content {
+  /* Contain the content's trailing margin inside the native disclosure slot.
+     Otherwise it moves outside the animated box when height returns to auto. */
+  display: flow-root;
+}
+
+@keyframes disclosure-open {
+  from { opacity: 0; translate: 0 -6px; }
+  to { translate: 0 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .disclosure-enter {
+    animation: disclosure-open .28s ease-out;
+  }
+}
 
 /* Equal-height panels keep the scroll scene stable as its content changes. */
 .process-panels { display: grid; }

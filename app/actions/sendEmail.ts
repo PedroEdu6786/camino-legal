@@ -1,4 +1,5 @@
 "use server";
+import { contactRequest, validContactRequest } from "../lib/contactRequest";
 import nodemailer from "nodemailer";
 import { cookies, headers } from "next/headers";
 import { deliverEmail, type EmailOutcome } from "../lib/server/emailDelivery";
@@ -20,16 +21,12 @@ function escapeHtml(input: string) {
   return input.replace(/[&<>"']/g, character => entities[character]);
 }
 export async function sendEmail(_prevState: FormState, formData: FormData): Promise<FormState> {
-  const name = value(formData, "name");
-  const phone = value(formData, "phone");
-  const email = value(formData, "email");
-  const message = value(formData, "message");
-  const formId = value(formData, "formKind") === "evaluation" || value(formData, "formId") === "trademark_evaluation" ? "trademark_evaluation" : "contact";
+  const request = contactRequest(formData);
+  const { name, phone, email, message, formId } = request;
   const submittedAttempt = value(formData, "attemptId");
   const attemptId = /^[a-zA-Z0-9_-]{1,100}$/.test(submittedAttempt) ? submittedAttempt : undefined;
-  if (!name || name.length > 150 || !email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !message || message.length > 5000 ||
-    (formId === "contact" && !/^\d{10}$/.test(phone)) || (phone && !/^\d{10}$/.test(phone))) {
-    return { success: false, outcome: "validation_failed", failureCategory: "invalid_fields", attemptId, message: "Por favor, revisa los campos e incluye un correo válido." };
+  if (!validContactRequest(request)) {
+    return { success: false, outcome: "validation_failed", failureCategory: "invalid_fields", attemptId, message: "Por favor, revisa los campos e incluye un teléfono válido para el país seleccionado, un correo válido y tu mensaje." };
   }
   // Request-time evidence is used only for collection eligibility, never to dispatch CAPI after SMTP.
   let consent = null;
@@ -48,7 +45,7 @@ export async function sendEmail(_prevState: FormState, formData: FormData): Prom
     send: () => transporter.sendMail({
       from: `"Camino Legal Web" <${process.env.SMTP_USER}>`, to: recipient, replyTo: email,
       subject: `Nuevo contacto: ${name.replace(/[\r\n]/g, " ")}`,
-      html: `<h2>Nuevo mensaje desde el sitio web</h2><p><strong>Nombre:</strong> ${escapeHtml(name)}</p>${phone ? `<p><strong>Tel&eacute;fono:</strong> +52 ${escapeHtml(phone)}</p>` : ""}<p><strong>Correo:</strong> ${escapeHtml(email)}</p><hr /><p><strong>Mensaje:</strong></p><p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
+      html: `<h2>Nuevo mensaje desde el sitio web</h2><p><strong>Nombre:</strong> ${escapeHtml(name)}</p>${phone ? `<p><strong>Tel&eacute;fono:</strong> ${escapeHtml(phone)}</p>` : ""}<p><strong>Correo:</strong> ${escapeHtml(email)}</p><hr /><p><strong>Mensaje:</strong></p><p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
     }),
   });
   transporter.close();

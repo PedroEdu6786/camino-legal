@@ -1,5 +1,6 @@
 import { editableColors } from "./color-lab/themes";
 import ThemePreviewControls from "./components/ui/ThemePreviewControls";
+import DisclosureMotion from "./components/ui/DisclosureMotion";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import PublicSiteChrome from "./components/layout/PublicSiteChrome";
@@ -108,6 +109,7 @@ export default function RootLayout({
           }
         } catch {}`}</Script>
         <StickerInk />
+        <DisclosureMotion />
         <Suspense fallback={null}><PublicSiteChrome /></Suspense>
         {children}
         <ThemePreviewControls />

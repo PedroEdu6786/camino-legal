@@ -1,7 +1,35 @@
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
+
 export default function BackgroundCurves() {
+  const frame = useRef<HTMLDivElement>(null);
+  const artwork = useRef<SVGSVGElement>(null);
+
+  useLayoutEffect(() => {
+    const container = frame.current;
+    const svg = artwork.current;
+    if (!container || !svg) return;
+
+    let width = -1;
+    const sizeArtwork = () => {
+      // Capture this page's composition on mount and responsive width changes.
+      // Height-only changes (disclosures, tabs, etc.) must not rescale the paths.
+      if (container.clientWidth === width) return;
+      width = container.clientWidth;
+      svg.style.height = `${container.clientHeight}px`;
+    };
+    sizeArtwork();
+    const observer = new ResizeObserver(sizeArtwork);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   return (
+    <div ref={frame} className="absolute inset-0 overflow-hidden pointer-events-none -z-10" aria-hidden="true">
     <svg
-      className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10"
+      ref={artwork}
+      className="absolute top-0 left-0 w-full h-full"
       viewBox="0 0 1200 800"
       fill="none"
       preserveAspectRatio="xMidYMid slice"
@@ -37,5 +65,6 @@ export default function BackgroundCurves() {
         opacity="0.12"
       />
     </svg>
+    </div>
   );
 }

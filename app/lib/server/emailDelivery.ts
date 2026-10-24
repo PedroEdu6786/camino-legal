@@ -1,7 +1,8 @@
 // Content-free operational telemetry. This module has no provider or browser dependency.
 import { randomUUID } from "node:crypto";
 export type EmailOutcome = "accepted" | "recipient_rejected" | "transport_failure" | "unknown";
-export type FormId = "contact" | "trademark_evaluation";
+import type { FormId } from "../contactRequest.ts";
+export type { FormId } from "../contactRequest.ts";
 export type EmailRecord = {
   schema_version: 1;
   event_name: "email_attempted" | "email_result";

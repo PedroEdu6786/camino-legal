@@ -1,6 +1,8 @@
 // Server-only: Node crypto; never import this module into client components.
 import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
+import { FORM_IDS, type FormId } from "../contactRequest.ts";
+
 export const CONSENT_COOKIE = "camino-analytics-consent";
 export type ConsentEvidence = { status: "granted" | "denied"; version: string };
 export type AcceptedReceipt = {
@@ -8,7 +10,7 @@ export type AcceptedReceipt = {
   occurredAt: number;
   expiresAt: number;
   consentVersion: string;
-  formId: "contact" | "trademark_evaluation";
+  formId: FormId;
   emailHash: string;
   phoneHash?: string;
   eventSourceUrl?: string;
@@ -45,12 +47,12 @@ export function readConsent(value: string | undefined, secret?: string): Consent
 export function matchingHashes(email: string, phone: string) {
   const hash = (value: string) => createHash("sha256").update(value).digest("hex");
   const digits = phone.replace(/\D/g, "");
-  return { emailHash: hash(email.trim().toLowerCase()), ...(digits ? { phoneHash: hash(digits.length === 10 ? `52${digits}` : digits) } : {}) };
+  return { emailHash: hash(email.trim().toLowerCase()), ...(digits ? { phoneHash: hash(digits) } : {}) };
 }
 /** Never trust a request Host header or a user-supplied absolute URL. */
 export function websiteSourceUrl(formId: AcceptedReceipt["formId"], submittedPath: string, configuredOrigin = process.env.META_WEBSITE_ORIGIN): string | null {
-  if (!configuredOrigin || (formId === "trademark_evaluation" ? submittedPath !== "" && submittedPath !== "/cotizaciones" : !["", "/", "/contacto"].includes(submittedPath))) return null;
-  const path = formId === "trademark_evaluation" ? "/cotizaciones" : submittedPath === "/" ? "/" : "/contacto";
+  if (!configuredOrigin || (formId !== "contact" ? submittedPath !== "" && submittedPath !== "/cotizaciones" : !["", "/", "/contacto"].includes(submittedPath))) return null;
+  const path = formId !== "contact" ? "/cotizaciones" : submittedPath === "/" ? "/" : "/contacto";
   try {
     const origin = new URL(configuredOrigin);
     if (origin.protocol !== "https:" || origin.username || origin.password || origin.search || origin.hash || origin.pathname !== "/") return null;
@@ -80,7 +82,7 @@ export function openReceipt(value: string, consent: ConsentEvidence | null, now 
     decipher.setAuthTag(Buffer.from(tag, "base64url"));
     const parsed = JSON.parse(Buffer.concat([decipher.update(Buffer.from(encrypted, "base64url")), decipher.final()]).toString());
     if (!/^[a-f0-9-]{36}$/.test(parsed.outcomeEventId) || parsed.consentVersion !== consent.version ||
-      !["contact", "trademark_evaluation"].includes(parsed.formId) || !/^[a-f0-9]{64}$/.test(parsed.emailHash) ||
+      !FORM_IDS.includes(parsed.formId) || !/^[a-f0-9]{64}$/.test(parsed.emailHash) ||
       (parsed.phoneHash !== undefined && !/^[a-f0-9]{64}$/.test(parsed.phoneHash)) ||
       (parsed.eventSourceUrl !== undefined && (typeof parsed.eventSourceUrl !== "string" || parsed.eventSourceUrl !== websiteSourceUrl(parsed.formId, new URL(parsed.eventSourceUrl).pathname))) ||
       (parsed.clientUserAgent !== undefined && safeUserAgent(parsed.clientUserAgent) !== parsed.clientUserAgent) ||

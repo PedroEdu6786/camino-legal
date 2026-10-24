@@ -36,3 +36,5 @@
   .modal[open] { animation: evaluation-enter .22s ease-out; }
   @keyframes evaluation-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 }
+
+.form fieldset .hint { margin-top: 8px; }

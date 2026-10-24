@@ -14,7 +14,7 @@ export function emailReport(lines, submissionId) {
     try { record = JSON.parse(line); } catch { ignoredLines++; continue; }
     if (!['email_attempted', 'email_result'].includes(record.event_name) ||
         !UUID.test(record.event_id ?? '') || !UUID.test(record.submission_id ?? '') ||
-        !UUID.test(record.attempt_id ?? '') || !['contact', 'trademark_evaluation'].includes(record.form_id) ||
+        !UUID.test(record.attempt_id ?? '') || !['contact', 'trademark_evaluation', 'quotation_consultation'].includes(record.form_id) ||
         ![1, 2].includes(record.attempt_number) ||
         (record.event_name === 'email_result' && !outcomes.includes(record.outcome))) {
       ignoredLines++; continue;

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import PhoneField from "../ui/PhoneField";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useTrackedForm } from "../ui/useTrackedForm";
@@ -11,7 +12,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-button-bg px-5 py-3.5 text-sm font-bold text-button-text transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-95 active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+      className="w-full cursor-pointer rounded-xl bg-button-bg px-5 py-3.5 text-sm font-bold text-button-text transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-95 active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
     >
       {pending ? "Enviando\u2026" : "Enviar mensaje"}
     </button>
@@ -23,16 +24,13 @@ const inputClass =
 
 export default function Contact() {
   const { state, action, instanceId, start, invalid, submit } = useTrackedForm("contact");
-  const [phone, setPhone] = useState("");
   const [fields, setFields] = useState({ name: "", email: "", message: "" });
   const field = (key: keyof typeof fields) => ({
     value: fields[key],
     onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFields(previous => ({ ...previous, [key]: event.target.value })),
   });
 
-  const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
-  };
+
 
   return (
     <section data-analytics-section="contact"
@@ -180,27 +178,7 @@ export default function Contact() {
                     >
                       Tel&eacute;fono
                     </label>
-                    <div className="flex items-center rounded-xl border-2 border-foreground/10 bg-background focus-within:border-primary/40 transition-colors duration-200">
-                      <span className="pl-4 pr-2 text-sm text-foreground/40 select-none shrink-0">
-                        +52
-                      </span>
-                      <span className="text-foreground/15 text-sm shrink-0">
-                        |
-                      </span>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        inputMode="numeric"
-                        required
-                        minLength={10}
-                        maxLength={10}
-                        placeholder="5512345678"
-                        value={phone}
-                        onChange={handlePhone}
-                        className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm placeholder:text-foreground/30 focus:outline-none"
-                      />
-                    </div>
+                    <PhoneField id="phone" />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1.5">

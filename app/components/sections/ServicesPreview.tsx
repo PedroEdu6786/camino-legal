@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ServiceLink from "../ui/ServiceLink";
 import { services } from "../../lib/services";
 
 const accents = [
@@ -29,7 +30,7 @@ export default function ServicesPreview() {
       </div>
       <nav aria-label="Elige un servicio" className="flex flex-wrap justify-center gap-4">
         {services.map((service, index) => (
-          <Link
+          <ServiceLink
             key={service.slug}
             data-analytics-event="cta_click" data-analytics-action={`home.service.${service.slug}`} data-analytics-source="home_services" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}
             aria-labelledby={`preview-${service.slug}`}
@@ -50,7 +51,7 @@ export default function ServicesPreview() {
             <span className="mt-auto pt-2 text-sm font-semibold text-primary underline-offset-4 group-hover:underline">
               Ver servicio <span aria-hidden="true">&rarr;</span>
             </span>
-          </Link>
+          </ServiceLink>
         ))}
       </nav>
     </section>

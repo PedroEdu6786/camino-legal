@@ -4,6 +4,7 @@ import { trackEvent } from "../../lib/analytics";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ServiceLink from "../ui/ServiceLink";
 import { services, money, trademarkQuote } from "../../lib/services";
 
 const goals = ["Mi marca", "Mis acuerdos", "Mi obra", "Una decisión", "Mi sitio web"];
@@ -21,7 +22,7 @@ export default function ServiceExplorer() {
       <div id="service-preview" className="explorer-preview" aria-live="polite" aria-atomic="true">
         <div key={service.slug} className="explorer-preview-inner">
           <div className="explorer-art"><Image src={service.image} width={220} height={220} alt="" /><span className="hand-note">{service.short}</span></div>
-          <div><h2>{service.title}</h2><p>{service.description}</p><p className="explorer-price">{active === 0 ? `${money(trademarkQuote(1).total)} MXN · una clase, IVA incluido` : "Cotización según el alcance de tu proyecto"}</p><Link className="site-button" data-analytics-event="cta_click" data-analytics-action={`directory.preview.${service.slug}`} data-analytics-source="service_directory" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Conocer el servicio <span aria-hidden="true">→</span></Link></div>
+          <div><h2>{service.title}</h2><p>{service.description}</p><p className="explorer-price">{active === 0 ? `${money(trademarkQuote(1).total)} MXN · una clase, IVA incluido` : "Cotización según el alcance de tu proyecto"}</p><ServiceLink className="site-button" data-analytics-event="cta_click" data-analytics-action={`directory.preview.${service.slug}`} data-analytics-source="service_directory" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Conocer el servicio <span aria-hidden="true">→</span></ServiceLink></div>
         </div>
       </div>
     </div>

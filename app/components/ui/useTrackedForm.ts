@@ -5,10 +5,12 @@ import { sendEmail, type FormState } from "../../actions/sendEmail";
 import { handoffMetaLead } from "../../actions/metaLead";
 import { getConsentSnapshot, trackEvent } from "../../lib/analytics";
 
+import type { FormId } from "../../lib/contactRequest";
+
 type Context = Record<string, string | number | boolean | null>;
 
 /** One lifecycle per mounted form; deliberate retries get new attempts, SMTP retries stay server-side. */
-export function useTrackedForm(formId: "contact" | "trademark_evaluation", context: Context = {}, prepare?: (data: FormData) => void) {
+export function useTrackedForm(formId: FormId, context: Context = {}, prepare?: (data: FormData) => void) {
   const instanceRef = useRef("");
   const [instanceId, setInstanceId] = useState("");
   useEffect(() => {
@@ -24,7 +26,7 @@ export function useTrackedForm(formId: "contact" | "trademark_evaluation", conte
   };
   const ordinal = useRef(0);
   const invalidAttempt = useRef<string | null>(null);
-  const base = { ...context, form_id: formId, form_instance_id: instanceId, source_surface: formId === "contact" ? "contact" : "evaluation_modal" };
+  const base = { ...context, form_id: formId, form_instance_id: instanceId, source_surface: formId === "contact" ? "contact" : formId === "trademark_evaluation" ? "evaluation_modal" : "quotation" };
   const start = () => {
     if (started.current || getConsentSnapshot().status !== "granted") return;
     started.current = true;
@@ -39,7 +41,8 @@ export function useTrackedForm(formId: "contact" | "trademark_evaluation", conte
     const eventContext = { ...base, attempt_id: attemptId, attempt_number: attemptNumber };
     trackEvent("form_submit_attempt", eventContext);
     data.set("sourcePath", window.location.pathname);
-    data.set("formKind", formId === "contact" ? "contact" : "evaluation");
+    data.set("formId", formId);
+    data.set("formKind", formId === "trademark_evaluation" ? "evaluation" : "contact");
     data.set("attemptId", attemptId);
     data.set("attemptNumber", String(attemptNumber));
     if (typeof context.service_id === "string") data.set("serviceId", context.service_id);

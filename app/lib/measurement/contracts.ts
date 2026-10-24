@@ -42,7 +42,7 @@ const ENUMS: Record<string, readonly string[]> = {
   session_campaign: ["none", "brand", "services", "trademark", "other"],
   service_context: ["explicit", "referral", "displayed_default", "unspecified"],
   destination_kind: ["internal", "whatsapp", "email", "social", "official_reference", "dialog"],
-  form_id: ["contact", "trademark_evaluation"],
+  form_id: ["contact", "trademark_evaluation", "quotation_consultation"],
   control_id: ["service", "classes", "ownership_rules", "payment_count", "previous", "next", "dot", "swipe", "tab", "skip", "cost_breakdown", "payment_schedule"],
   close_reason: ["dismiss", "escape", "backdrop", "success_done"],
   field_id: ["name", "email", "phone", "message", "details", "form"],

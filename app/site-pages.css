@@ -6,10 +6,10 @@
 .site-main h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
 .site-main p { font-size: 14px; line-height: 1.65; margin-block: 16px; }
 .site-main .fine-print, .site-main .field-hint { font-size: 12px; line-height: 1.6; opacity: .65; }
-.site-main .site-button { display: inline-flex; justify-content: center; align-items: center; gap: 16px; padding: 14px 24px; border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 14px; font-weight: 600; text-align: center; transition: transform .2s, box-shadow .2s; }
+.site-main .site-button { cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 16px; padding: 14px 24px; border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 14px; font-weight: 600; text-align: center; transition: transform .2s, box-shadow .2s; }
 .site-main .site-button:hover { transform: translateY(-2px); box-shadow: 0 8px 16px #00000012; }
 .site-main .site-button:active { transform: translateY(0); }
-.site-main .text-link { display: inline-block; color: var(--primary); font-size: 14px; font-weight: 600; padding-block: 10px; text-underline-offset: 4px; }
+.site-main .text-link { cursor: pointer; display: inline-block; color: var(--primary); font-size: 14px; font-weight: 600; padding-block: 10px; text-underline-offset: 4px; }
 .site-main .text-link:hover { text-decoration: underline; }
 .site-main :is(button,a,input,select,summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 .skip-link { position: fixed; top: -100px; left: 24px; z-index: 100; padding: 12px; background: var(--background); }
@@ -126,7 +126,6 @@
 .site-main .payment-schedule li:nth-child(2) { animation-delay: 60ms; }
 .site-main .payment-schedule li:nth-child(3) { animation-delay: 120ms; }
 .site-main .faq-section details[open] { background: color-mix(in srgb, var(--primary) 4%, transparent); padding-inline: 16px; border-radius: 12px; }
-.site-main .faq-section details[open] p { animation: camino-answer .25s ease-out; }
 .site-main .faq-section summary:hover { color: var(--primary); }
 @keyframes camino-sticker-in { from { opacity: .3; transform: translateY(16px) rotate(-14deg) scale(.9); } to { opacity: 1; transform: translateY(0) rotate(-6deg) scale(1); } }
 @keyframes camino-total { from { opacity: .65; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }

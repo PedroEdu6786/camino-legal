@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import ServiceLink from "../ui/ServiceLink";
 import { useState, type ReactNode } from "react";
 import { trackEvent } from "../../lib/analytics";
 
@@ -130,7 +131,7 @@ export default function Services() {
           {selected === null ? <p className="text-sm opacity-60">Encuentra un punto de partida para tu proyecto.</p> : (
             <p key={selected} className="text-sm">
               Podemos ayudarte con <strong>{services[selected].title.toLowerCase()}</strong>.{" "}
-              <Link className="font-semibold text-primary underline underline-offset-4" href={`/servicios/${services[selected].slug}`}>Conocer este servicio &rarr;</Link>
+              <ServiceLink className="font-semibold text-primary underline underline-offset-4" href={`/servicios/${services[selected].slug}`}>Conocer este servicio &rarr;</ServiceLink>
             </p>
           )}
         </div>
@@ -167,12 +168,12 @@ export default function Services() {
                 {service.description}
               </p>
             </div>
-            <Link
+            <ServiceLink
               href={`/servicios/${service.slug}`}
               className="mt-auto pt-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
             >
               Ver servicio y cotización <span className="service-link-arrow" aria-hidden="true">&rarr;</span>
-            </Link>
+            </ServiceLink>
           </div>
         ))}
 

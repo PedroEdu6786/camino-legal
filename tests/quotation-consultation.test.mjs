@@ -19,7 +19,7 @@ test('consultation links encode selected service and quote details for both chan
   }
 });
 
-test('each consultation channel emits one GA intent and one Meta Contact, gated by consent', () => {
+test('WhatsApp emits contact intent while opening the email form is only a CTA, gated by consent', () => {
   const ga = [], meta = [], stored = new Map();
   globalThis.window = Object.assign(new EventTarget(), {
     location: new URL('https://caminolegal.com.mx/cotizaciones'),
@@ -30,7 +30,7 @@ test('each consultation channel emits one GA intent and one Meta Contact, gated 
   configureProviders({ ga4: true, meta: true });
   beginPage('/cotizaciones');
   const snapshot = quoteSnapshot(crypto.randomUUID(), 'registro-de-marca', 2, true, 2);
-  const send = channel => trackEvent('quote_request_intent', { ...snapshot, source_surface: 'quotation', service_context: 'explicit', action_id: `quote.request_${channel}`, channel, destination_kind: channel, destination_id: `business_${channel}` });
+  const send = channel => trackEvent(channel === 'email' ? 'cta_click' : 'quote_request_intent', { ...snapshot, source_surface: 'quotation', service_context: 'explicit', action_id: `quote.request_${channel}`, channel, destination_kind: channel, destination_id: `business_${channel}` });
   setConsent('denied');
   send('email'); send('whatsapp');
   assert.equal(ga.filter(c => c[0] === 'event').length, 0);
@@ -38,13 +38,13 @@ test('each consultation channel emits one GA intent and one Meta Contact, gated 
   setConsent('granted'); markProviderReady('ga4'); markProviderReady('meta');
   for (const channel of ['email', 'whatsapp']) {
     send(channel);
-    const intents = ga.filter(c => c[1] === 'quote_request_intent' && c[2].channel === channel);
+    const intents = ga.filter(c => c[1] === (channel === 'email' ? 'cta_click' : 'quote_request_intent') && c[2].channel === channel);
     const contacts = meta.filter(c => c[1] === 'Contact' && c[2].channel === channel);
-    assert.equal(intents.length, 1); assert.equal(contacts.length, 1);
+    assert.equal(intents.length, 1); assert.equal(contacts.length, channel === 'email' ? 0 : 1);
     assert.equal(intents[0][2].action_id, `quote.request_${channel}`);
     assert.equal(intents[0][2].estimated_total_minor, snapshot.estimated_total_minor);
     assert.equal(intents[0][2].service_id, snapshot.service_id);
-    assert.equal(intents[0][2].event_id, contacts[0][3].eventID);
+    if (channel === 'whatsapp') assert.equal(intents[0][2].event_id, contacts[0][3].eventID);
   }
   assert.equal(ga.filter(c => c[1] === 'lead_submitted').length, 0);
   assert.equal(meta.filter(c => c[1] === 'Lead').length, 0);

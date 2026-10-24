@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { services, money, quoteEmail, quoteWhatsApp, trademarkQuote } from "../../lib/services";
+import ServiceLink from "../ui/ServiceLink";
+import { services, money, quoteWhatsApp, trademarkQuote } from "../../lib/services";
 import { trackEvent } from "../../lib/analytics";
 import { quoteSnapshot } from "../../lib/quoteAnalytics";
+import ConsultationModal from "../ui/ConsultationModal";
+import { consultationMessage } from "../../lib/contactRequest";
 import EvaluationModal from "../ui/EvaluationModal";
 
 export default function Quotation({ initialService, explicitService = false }: { initialService: string; explicitService?: boolean }) {
@@ -24,6 +26,7 @@ export default function Quotation({ initialService, explicitService = false }: {
   const [classes, setClasses] = useState(1);
   const [rules, setRules] = useState(false);
   const [payments, setPayments] = useState(3);
+  const [consultationOpen, setConsultationOpen] = useState(false);
   const [evaluationOpen, setEvaluationOpen] = useState(false);
   const service = services.find(s => s.slug === slug) ?? services[0];
   const quote = trademarkQuote(classes, rules);
@@ -40,13 +43,13 @@ export default function Quotation({ initialService, explicitService = false }: {
     trackEvent("quote_change", { ...next, service_context: "explicit", source_surface: "quotation", control_id: control, previous_value: control === "service" ? slug : control === "classes" ? classes : control === "ownership_rules" ? rules : payments });
   };
   const consultationDetail = trademark
-    ? `Me interesa una marca en ${classes} clases.\nReglas de Uso: ${rules ? "sí" : "no"}.\nEstimado: ${money(quote.total)} MXN, IVA incluido.\nModalidad: ${payments} pago(s).${rules && payments !== 1 ? " El momento de pago de Reglas de Uso queda por confirmar." : ""}\nQuisiera confirmar el alcance y los próximos pasos.`
-    : "Quisiera una propuesta con alcance, honorarios, tiempos y entregables.";
+    ? `Quiero registrar una marca en ${classes} ${classes === 1 ? "clase" : "clases"}${rules ? " y compartir su titularidad, por lo que incluí las Reglas de Uso" : ""}. Vi una cotización de ${money(quote.total)} MXN, con IVA incluido, y me gustaría ${payments === 1 ? "hacer un solo pago" : `pagar en ${payments} partes`}.${rules && payments !== 1 ? " También quisiera saber en qué momento se pagan las Reglas de Uso." : ""}`
+    : "Quisiera platicarles de mi proyecto para conocer las opciones, los costos y los tiempos de trabajo.";
   return <div className="quote-workspace">
     <div className="quote-controls">
       <div className="quote-field-group"><label htmlFor="quote-service">¿Qué necesitas?</label>
       <select id="quote-service" value={service.slug} onChange={e => { change("service", e.target.value); setSelectionExplicit(true); setSlug(e.target.value); }}>{services.map(s => <option key={s.slug} value={s.slug}>{s.title}</option>)}</select>
-      <Link className="quote-service-link" data-analytics-event="navigation_click" data-analytics-action="quote.includes" data-analytics-source="quotation" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Ver qué incluye este servicio ↗</Link></div>
+      <ServiceLink className="quote-service-link" data-analytics-event="navigation_click" data-analytics-action="quote.includes" data-analytics-source="quotation" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Ver qué incluye este servicio ↗</ServiceLink></div>
       {trademark ? <>
         <div className="quote-field-group"><label htmlFor="quote-classes">¿Cuántas clases necesitas?</label>
         <select id="quote-classes" value={classes} onChange={e => { change("classes", Number(e.target.value)); setClasses(Number(e.target.value)); }}>{Array.from({length: 10}, (_,i) => <option key={i+1} value={i+1}>{i+1} {i === 0 ? "clase" : "clases"}</option>)}</select>
@@ -68,11 +71,12 @@ export default function Quotation({ initialService, explicitService = false }: {
         <p className="fine-print">IVA incluido. Confirmaremos clases y alcance antes de iniciar. Importes de la cotización 2026.</p>
       </> : <><p className="custom-quote-title">Hecha para tu caso.</p><p>Este servicio se cotiza después de conocer tu proyecto. Recibirás el alcance del trabajo, honorarios, gastos aplicables y forma de pago antes de comenzar.</p><p>No se realiza ningún cobro desde esta página.</p></>}
       <div className="quote-contact-actions">
-      <a onClick={() => trackEvent("quote_request_intent", { ...analyticsContext, action_id: "quote.request_email", channel: "email", destination_kind: "email", destination_id: "business_email" })} className="site-button" href={quoteEmail(service.title, consultationDetail)}>Consultar por correo <span aria-hidden="true">↗</span></a>
+      <button type="button" aria-haspopup="dialog" onClick={() => { trackEvent("cta_click", { ...analyticsContext, action_id: "quote.request_email", form_id: "quotation_consultation" }); setConsultationOpen(true); }} className="site-button">Consultar por correo <span aria-hidden="true">→</span></button>
       <a onClick={() => trackEvent("quote_request_intent", { ...analyticsContext, action_id: "quote.request_whatsapp", channel: "whatsapp", destination_kind: "whatsapp", destination_id: "business_whatsapp" })} className="site-button quote-whatsapp-button" href={quoteWhatsApp(service.title, consultationDetail)} target="_blank" rel="noopener noreferrer">Consultar por WhatsApp <span aria-hidden="true">↗</span><span className="sr-only"> (abre en otra pestaña)</span></a>
       </div>
       <p className="fine-print">Elige cómo consultarnos. Prepararemos el mensaje con los detalles de tu cotización.</p>
     </div>
+    {consultationOpen && <ConsultationModal kind="quotation" initialMessage={consultationMessage(service.title, consultationDetail)} quoteContext={analyticsContext} onClose={() => setConsultationOpen(false)} />}
     {evaluationOpen && <EvaluationModal quoteContext={analyticsContext} onClose={() => setEvaluationOpen(false)} />}
   </div>;
 }

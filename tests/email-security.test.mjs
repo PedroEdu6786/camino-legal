@@ -29,7 +29,8 @@ test('email-only evaluation does not invent a phone matching hash', () => {
   const hashes = matchingHashes('TEST@example.test', '');
   assert.equal(hashes.emailHash, matchingHashes('test@example.test', '').emailHash);
   assert.equal(hashes.phoneHash, undefined);
-  assert.equal(matchingHashes('test@example.test', '9991234567').phoneHash, matchingHashes('test@example.test', '529991234567').phoneHash);
+  assert.equal(matchingHashes('test@example.test', '+52 999 123 4567').phoneHash, matchingHashes('test@example.test', '+529991234567').phoneHash);
+  assert.notEqual(matchingHashes('test@example.test', '+1 202 555 0123').phoneHash, matchingHashes('test@example.test', '+52 202 555 0123').phoneHash);
 });
 
 test('website source uses trusted origin and registered form paths only', () => {
