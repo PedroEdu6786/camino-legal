@@ -13,7 +13,7 @@ export default function ThemePreviewControls() {
   const saved = useSyncExternalStore(subscribe, snapshot, () => "");
   let colors = null;
   try { if (saved) colors = readOverrides(JSON.parse(saved)); } catch { /* Ignore malformed previews. */ }
-  if (!colors) return <a className="theme-explorer-link" href="/color-lab">Explorar temas ↗</a>;
+  if (!colors) return null;
   const params = new URLSearchParams({ theme: "linen-custom", compare: "linen", ...colors });
   return <nav className="theme-preview-controls" aria-label="Vista previa del tema">
     <span>Tu versión · vista previa</span>
