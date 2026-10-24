@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-const MAX_ARROW_SPEED_PX_PER_SECOND = 450;
 const FOLLOW_EASING_MS = 320;
 
-/** Normal scrolling controls the route; the arrow follows with a capped speed. */
+/** Follow scroll position smoothly, catching up in the same time even after large jumps. */
 export default function TrademarkRoute({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
@@ -38,13 +37,15 @@ export default function TrademarkRoute({ children }: { children: ReactNode }) {
       const box = root.getBoundingClientRect();
       const progress = Math.min(1, Math.max(0, (window.innerHeight * .55 - box.top) / box.height));
       const target = preference.matches ? length : progress * length;
-      const elapsed = lastTime ? Math.min(40, time - lastTime) : 16;
+      // Use actual elapsed time so dropped frames do not prolong the catch-up.
+      const elapsed = lastTime ? Math.max(0, time - lastTime) : 16;
       lastTime = time;
       const onScreen = box.top < window.innerHeight && box.bottom > 0;
       const difference = target - position;
       const eased = difference * (1 - Math.exp(-elapsed / FOLLOW_EASING_MS));
-      const limit = MAX_ARROW_SPEED_PX_PER_SECOND * elapsed / 1000;
-      position = preference.matches || !onScreen ? target : position + Math.max(-limit, Math.min(limit, eased));
+      // A fixed pixel-speed cap can leave the marker several screens behind.
+      // Distance-based easing closes large gaps without queuing the skipped route.
+      position = preference.matches || !onScreen ? target : position + eased;
       if (Math.abs(target - position) < .3) position = target;
       ink.style.strokeDashoffset = String(1 - position / length);
       const point = track.getPointAtLength(position);

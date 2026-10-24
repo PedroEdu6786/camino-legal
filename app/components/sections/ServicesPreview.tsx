@@ -3,11 +3,11 @@ import Link from "next/link";
 import { services } from "../../lib/services";
 
 const accents = [
-  "bg-primary/10",
-  "bg-[#2A3D4F]/10",
-  "bg-secondary/10",
-  "bg-[#6B3A2A]/10",
-  "bg-[#3D4F3A]/10",
+  "bg-[#9CC8DF]/25",
+  "bg-[#DAC9B5]/25",
+  "bg-[#CB886C]/20",
+  "bg-[#CB886C]/20",
+  "bg-[#9CC8DF]/25",
 ];
 
 export default function ServicesPreview() {

@@ -61,3 +61,7 @@ export function trademarkQuote(classes: number, rules = false) {
 export function quoteEmail(service: string, detail = "") {
   return `mailto:info@caminolegal.com.mx?subject=${encodeURIComponent(`Cotización · ${service}`)}&body=${encodeURIComponent(`Hola, Camino Legal. Me interesa ${service}.\n\n${detail}\n\nMi proyecto:\nMi nombre:\n`)}`;
 }
+
+export function quoteWhatsApp(service: string, detail = "") {
+  return `https://wa.me/529992505160?text=${encodeURIComponent(`Hola, Camino Legal. Me interesa ${service}.\n\n${detail}`)}`;
+}

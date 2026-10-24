@@ -25,7 +25,6 @@ export default function ServiceExplorer() {
         </div>
       </div>
     </div>
-    <nav className="service-index" aria-label="Todas las páginas de servicios">{services.map(item => <Link key={item.slug} data-analytics-event="cta_click" data-analytics-action={`directory.index.${item.slug}`} data-analytics-source="service_directory" data-analytics-service={item.slug} href={`/servicios/${item.slug}`}>{item.title} <span aria-hidden="true">↗</span></Link>)}</nav>
     <div className="route-invitation"><div><h2>También puedes empezar con una pregunta.</h2><p>Cuéntanos qué estás creando o qué necesitas resolver. Te ayudamos a encontrar un punto de partida.</p></div><Link className="site-button" data-analytics-event="cta_click" data-analytics-action="directory.contact" data-analytics-source="service_directory"  href="/contacto">Cuéntanos tu caso →</Link></div>
   </section>;
 }

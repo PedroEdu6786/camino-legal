@@ -1,25 +1,46 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
+  --brand-burgundy: #622831;
   --background: #F2ECEA;
+  --surface: #FFF8F3;
+  --brand-blue: #D1E7F4;
+  --brand-orange: #CB5432;
+  --nav-active: #D1E7F4;
+  --curve: #BB4D2E;
   --foreground: #2F2A2B;
   --primary: #622831;
-  --secondary: #AC2E18;
-  --button-bg: #2F2A2B;
-  --button-text: #F2ECEA;
+  --secondary: #BB4D2E;
+  --panel-emphasis-bg: #BB4D2E;
+  --panel-emphasis-text: #FFF8F3;
+  --button-bg: #7D0402;
+  --button-text: #FFF8F3;
 }
 
 html.dark {
-  --background: #1C1719;
+  color-scheme: dark;
+  --background: #172A36;
+  --surface: #213B4B;
+  --brand-blue: #2B4B60;
+  --brand-orange: #E9825C;
+  --nav-active: #355568;
+  --curve: #537E99;
   --foreground: #F2ECEA;
-  --primary: #9B4050;
-  --secondary: #E04A22;
-  --button-bg: #F2ECEA;
-  --button-text: #1C1719;
+  --primary: #E5A9B3;
+  --secondary: #F29370;
+  --panel-emphasis-bg: #F29370;
+  --panel-emphasis-text: #2F2A2B;
+  --button-bg: #F29370;
+  --button-text: #2F2A2B;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-burgundy: var(--brand-burgundy);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
@@ -90,9 +111,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .process-route-number { background: color-mix(in srgb, var(--primary) 10%, var(--background)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent); transition: transform .25s, background .25s, color .25s; }
-.process-route-stop[aria-selected="true"] .process-route-number { background: var(--primary); color: #fff; transform: rotate(-8deg) scale(1.1); box-shadow: none; }
+.process-route-stop[aria-selected="true"] .process-route-number { background: var(--primary); color: var(--background); transform: rotate(-8deg) scale(1.1); box-shadow: none; }
 .process-route-label { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--primary) 50%, transparent); }
-.process-route-stop:hover .process-route-number { transform: translateY(-3px); background: var(--primary); color: #fff; }
+.process-route-stop:hover .process-route-number { transform: translateY(-3px); background: var(--primary); color: var(--background); }
 .process-route-stop:hover .process-route-label { text-decoration-thickness: 2px; text-decoration-color: var(--primary); }
 .process-route-stop:active .process-route-number { transform: scale(.94); }
 .process-route-stop[aria-selected="true"] .process-route-label { text-decoration: none; }
@@ -164,7 +185,9 @@ h1, h2, h3, h4, h5, h6 {
 .process-panels > .process-journey-panel { grid-area: 1 / 1; min-width: 0; display: grid; align-items: center; }
 .process-panels > .process-journey-panel[aria-hidden="true"] { visibility: hidden; pointer-events: none; }
 .process-stage { isolation: isolate; }
-.process-stage[data-scroll-driven="true"] { background: var(--background); }
+.process-step-original { display: none; }
+html.dark .process-step-ink { display: none; }
+html.dark .process-step-original { display: block; }
 @media (max-width: 767px) {
   .process-stage .process-journey-copy > p { margin-top: 12px; line-height: 1.5; }
   .process-stage .process-journey-copy > a { margin-top: 12px; }
@@ -176,14 +199,14 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex; padding: 8px 14px; margin-inline: -14px;
   border-radius: 999px; transition: color .2s, background-color .2s;
 }
-header a[aria-current="page"] { color: #fff; text-decoration: none; }
-.camino-nav-item[aria-current="page"] { background-color: #8a525a; }
-.camino-nav-contact[aria-current="page"] { background-color: #8a525a; border-radius: 999px; }
+header a[aria-current="page"] { color: var(--primary); text-decoration: none; }
+.camino-nav-item[aria-current="page"] { background-color: var(--nav-active); }
+.camino-nav-contact[aria-current="page"] { background-color: var(--nav-active); border-radius: 999px; }
 .camino-nav-track { position: relative; isolation: isolate; }
 .camino-nav-track > ul, .camino-nav-track > a { position: relative; z-index: 1; }
 .camino-nav-pill {
   position: absolute; top: 0; left: 0; pointer-events: none;
-  border-radius: 999px; background: #8a525a; opacity: 0;
+  border-radius: 999px; background: var(--nav-active); opacity: 0;
 }
 .camino-nav-track:has(.camino-nav-pill[data-ready]) a[aria-current="page"] { background-color: transparent; }
 @media (prefers-reduced-motion: no-preference) {
@@ -191,3 +214,63 @@ header a[aria-current="page"] { color: #fff; text-decoration: none; }
     transition: transform .38s cubic-bezier(.22, 1, .36, 1), width .38s cubic-bezier(.22, 1, .36, 1), height .38s cubic-bezier(.22, 1, .36, 1), opacity .18s ease;
   }
 }
+
+/* The social palette: blue ground, paper surfaces, orange identity, burgundy detail. */
+.brand-logo {
+  display: inline-block;
+  flex-shrink: 0;
+  background: currentColor;
+  mask: var(--logo-image) center / contain no-repeat;
+  -webkit-mask: var(--logo-image) center / contain no-repeat;
+}
+.brand-logo-symbol { --logo-image: url('/camino-legal-white.png'); aspect-ratio: 78 / 95; }
+.brand-logo-complete { --logo-image: url('/camino-legal-complete-white.png'); aspect-ratio: 276 / 216; }
+::selection { background: var(--primary); color: var(--surface); }
+
+/* Light-mode cards use a nearby blue tone; sticker ink stays crisp. */
+html:not(.dark) :is(.bg-surface, .site-main .quote-sheet) p {
+  opacity: 1;
+}
+html:not(.dark) :is(.hero-doodle, .hero-theme-toggle) {
+  opacity: 1;
+}
+html:not(.dark) .hero-theme-toggle:hover {
+  transform: rotate(-6deg) scale(1.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.dark) .hero-theme-toggle:hover { transform: none; }
+}
+
+/* Keep the original drawings; only their dark ink is visible in light mode. */
+html:not(.dark) img[src*="stickers"] {
+  filter: url("#camino-sticker-ink");
+}
+
+.theme-explorer-link { position: fixed; bottom: 20px; right: 20px; z-index: 55; padding: 12px 18px; border-radius: 8px; background: var(--panel-emphasis-bg); color: var(--panel-emphasis-text); font-size: 14px; box-shadow: 0 3px 18px #16365026; }
+body:has([data-color-lab]) .theme-explorer-link { display: none; }
+.theme-explorer-link:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
+
+/* Lab preview overrides are tab-local and never change the source theme. */
+html:not(.dark)[data-site-preview] {
+  --background: var(--lab-background, #F2ECEA);
+  --surface: var(--lab-surface, #FFF8F3);
+  --foreground: var(--lab-ink, #2F2A2B);
+  --primary: var(--lab-accent, #622831);
+  --secondary: var(--lab-highlight, #BB4D2E);
+  --button-bg: var(--lab-action, #7D0402);
+  --button-text: var(--lab-buttonText, #FFF8F3);
+  --brand-burgundy: var(--lab-footer, #622831);
+}
+html:not(.dark)[data-site-preview] #hero-section { background: var(--lab-hero, var(--background)); }
+html:not(.dark)[data-lab-heading] :is(main, #hero-section, #services, #process, #about, #faq, #contact) :is(h1,h2,h3,h4,h5,h6) { color: var(--lab-heading); }
+html:not(.dark)[data-lab-surface] #services nav > a { background: var(--surface); }
+html:not(.dark)[data-lab-field] :is(#contact > div, .route-invitation) { background: var(--lab-field); }
+html:not(.dark)[data-lab-footertext] footer.bg-brand-burgundy { color: var(--lab-footerText); }
+html:not(.dark)[data-lab-logo] .brand-logo { color: var(--lab-logo); }
+.theme-preview-controls { position: fixed; bottom: 16px; right: 16px; z-index: 55; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; max-width: calc(100vw - 32px); padding: 12px 16px; border-radius: 8px; background: #2F2A2B; color: #FFF8F3; box-shadow: 0 3px 18px #0002; font-size: 13px; }
+.theme-preview-controls span { width: 100%; }
+.theme-preview-controls a { display: inline-flex; align-items: center; min-height: 36px; text-decoration: underline; text-underline-offset: 4px; }
+.theme-preview-controls a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+body:has([data-color-lab]) .theme-preview-controls { display: none; }
+
+html:not(.dark)[data-lab-heroicons] #hero-section :is(img.hero-doodle, .hero-theme-toggle img) { filter: url("#camino-hero-ink"); }

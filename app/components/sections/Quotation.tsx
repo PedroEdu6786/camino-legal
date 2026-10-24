@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { services, money, quoteEmail, trademarkQuote } from "../../lib/services";
+import { services, money, quoteEmail, quoteWhatsApp, trademarkQuote } from "../../lib/services";
 import { trackEvent } from "../../lib/analytics";
 import { quoteSnapshot } from "../../lib/quoteAnalytics";
 import EvaluationModal from "../ui/EvaluationModal";
@@ -39,7 +39,7 @@ export default function Quotation({ initialService, explicitService = false }: {
     const next = quoteSnapshot(quoteId, control === "service" ? String(value) : slug, control === "classes" ? Number(value) : classes, control === "ownership_rules" ? Boolean(value) : rules, control === "payment_count" ? Number(value) : payments);
     trackEvent("quote_change", { ...next, service_context: "explicit", source_surface: "quotation", control_id: control, previous_value: control === "service" ? slug : control === "classes" ? classes : control === "ownership_rules" ? rules : payments });
   };
-  const emailDetail = trademark
+  const consultationDetail = trademark
     ? `Me interesa una marca en ${classes} clases.\nReglas de Uso: ${rules ? "sí" : "no"}.\nEstimado: ${money(quote.total)} MXN, IVA incluido.\nModalidad: ${payments} pago(s).${rules && payments !== 1 ? " El momento de pago de Reglas de Uso queda por confirmar." : ""}\nQuisiera confirmar el alcance y los próximos pasos.`
     : "Quisiera una propuesta con alcance, honorarios, tiempos y entregables.";
   return <div className="quote-workspace">
@@ -67,7 +67,11 @@ export default function Quotation({ initialService, explicitService = false }: {
         {rules && payments !== 1 && <p className="fine-print">Más $616.00 MXN por Reglas de Uso. Confirmaremos contigo cuándo se pagan; están incluidos en el total.</p>}</details>
         <p className="fine-print">IVA incluido. Confirmaremos clases y alcance antes de iniciar. Importes de la cotización 2026.</p>
       </> : <><p className="custom-quote-title">Hecha para tu caso.</p><p>Este servicio se cotiza después de conocer tu proyecto. Recibirás el alcance del trabajo, honorarios, gastos aplicables y forma de pago antes de comenzar.</p><p>No se realiza ningún cobro desde esta página.</p></>}
-      <a onClick={() => trackEvent("quote_request_intent", { ...analyticsContext, action_id: "quote.request_email", channel: "email", destination_kind: "email", destination_id: "business_email" })} className="site-button" href={quoteEmail(service.title, emailDetail)}>Solicitar por correo <span aria-hidden="true">↗</span></a><p className="fine-print">Abriremos tu correo con la solicitud preparada.</p>
+      <div className="quote-contact-actions">
+      <a onClick={() => trackEvent("quote_request_intent", { ...analyticsContext, action_id: "quote.request_email", channel: "email", destination_kind: "email", destination_id: "business_email" })} className="site-button" href={quoteEmail(service.title, consultationDetail)}>Consultar por correo <span aria-hidden="true">↗</span></a>
+      <a onClick={() => trackEvent("quote_request_intent", { ...analyticsContext, action_id: "quote.request_whatsapp", channel: "whatsapp", destination_kind: "whatsapp", destination_id: "business_whatsapp" })} className="site-button quote-whatsapp-button" href={quoteWhatsApp(service.title, consultationDetail)} target="_blank" rel="noopener noreferrer">Consultar por WhatsApp <span aria-hidden="true">↗</span><span className="sr-only"> (abre en otra pestaña)</span></a>
+      </div>
+      <p className="fine-print">Elige cómo consultarnos. Prepararemos el mensaje con los detalles de tu cotización.</p>
     </div>
     {evaluationOpen && <EvaluationModal quoteContext={analyticsContext} onClose={() => setEvaluationOpen(false)} />}
   </div>;

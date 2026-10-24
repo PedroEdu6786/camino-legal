@@ -135,7 +135,7 @@ export default function Contact() {
             />
           )}
 
-          <div className="rounded-3xl border-2 border-foreground/8 bg-foreground/[0.02] p-6 md:p-8">
+          <div className="rounded-3xl border-2 border-foreground/8 bg-foreground/[0.08] p-6 md:p-8">
             {state?.success ? (
               <div className="flex flex-col items-center gap-5 text-center py-6">
                 <Image
@@ -238,7 +238,7 @@ export default function Contact() {
                   />
                 </div>
                 {state?.success === false && (
-                  <p className="text-xs text-secondary">{state.message}</p>
+                  <p className="text-xs text-primary">{state.message}</p>
                 )}
                 <SubmitButton />
               </form>

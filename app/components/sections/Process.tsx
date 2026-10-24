@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ProcessSticker from "../ui/ProcessSticker";
 import Link from "next/link";
 import { trackEvent } from "../../lib/analytics";
 import { useScrollJourney } from "../../lib/useScrollJourney";
@@ -114,13 +114,13 @@ export default function Process() {
           ))}
         </div>
       </div>
-      <div className="relative rounded-2xl bg-primary/10 p-5 md:px-8 md:py-20 lg:px-12">
+      <div className="relative rounded-2xl bg-surface p-5 md:px-8 md:py-20 lg:px-12">
         <div className="process-panels">
         {steps.map((step, index) => (
           <div key={step.number} role="tabpanel" id={`process-panel-${index}`} aria-labelledby={`process-tab-${index}`} aria-hidden={active !== index} inert={active !== index} tabIndex={active === index ? 0 : -1} className="process-journey-panel rounded-lg focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">
             <div className="grid items-center gap-5 md:gap-10 md:grid-cols-[0.65fr_1.35fr]">
               <div className="process-illustration flex items-center gap-5 md:flex-col md:text-center">
-                <Image src={`/stickers/${step.sticker}`} alt="" aria-hidden width={240} height={240} className="w-16 h-16 md:w-36 md:h-36 lg:w-40 lg:h-40 shrink-0 object-contain -rotate-6" />
+                <ProcessSticker file={step.sticker} />
                 <p className="text-2xl lg:text-3xl text-primary leading-tight [font-family:var(--font-bellaboo)]">{step.note}</p>
               </div>
               <div className="process-journey-copy">

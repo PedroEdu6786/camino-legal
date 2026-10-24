@@ -1,3 +1,5 @@
+import { editableColors } from "./color-lab/themes";
+import ThemePreviewControls from "./components/ui/ThemePreviewControls";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import SectionViewTracker from "./components/ui/SectionViewTracker";
@@ -8,6 +10,7 @@ import AnalyticsScripts from "./components/ui/AnalyticsScripts";
 import ConsentBanner from "./components/ui/ConsentBanner";
 import MotionEnhancer from "./components/ui/MotionEnhancer";
 import Navbar from "./components/layout/Navbar";
+import StickerInk from "./components/ui/StickerInk";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -82,10 +85,38 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
+
+        <Script id="site-color-preview" strategy="beforeInteractive">{`try {
+          const keys = ${JSON.stringify(editableColors.map(({key}) => key))};
+          const query = new URLSearchParams(location.search);
+          const storageKey = 'camino-site-preview';
+          const read = values => Object.fromEntries(keys.filter(key => typeof values?.[key] === 'string' && /^#[0-9a-f]{6}$/i.test(values[key])).map(key => [key, values[key]]));
+          let saved = null;
+          try { saved = sessionStorage.getItem(storageKey); } catch {}
+          if (query.get('preview') === 'original') {
+            saved = null;
+            try { sessionStorage.removeItem(storageKey); } catch {}
+          } else if (query.get('preview') === 'custom') {
+            saved = JSON.stringify(read(Object.fromEntries(query)));
+            try { sessionStorage.setItem(storageKey, saved); } catch {}
+            document.documentElement.classList.remove('dark');
+          }
+          if (saved && location.pathname !== '/color-lab') {
+            document.documentElement.classList.remove('dark');
+            const colors = read(JSON.parse(saved));
+            document.documentElement.dataset.sitePreview = 'true';
+            for (const [key, value] of Object.entries(colors)) {
+              document.documentElement.style.setProperty('--lab-' + key, value);
+              document.documentElement.setAttribute('data-lab-' + key.toLowerCase(), 'true');
+            }
+          }
+        } catch {}`}</Script>
+        <StickerInk />
         <Suspense fallback={null}><AnalyticsScripts /><SectionViewTracker /></Suspense>
         <ConsentBanner />
         <Navbar />
         {children}
+        <ThemePreviewControls />
         <MotionEnhancer />
       </body>
     </html>

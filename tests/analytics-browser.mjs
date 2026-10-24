@@ -107,7 +107,15 @@ try {
   const changes=await events('quote_change');assert.ok(changes.every(event=>event[2].quote_id===viewedQuote),'view/change use same mounted quote identity');assert.equal(changes.length,3);assert.equal(changes.at(-1)[2].estimated_total_minor,1161654);
   await click('.quote-disclosure summary');await click('.quote-disclosure:nth-of-type(2) summary');await pause(120);assert.equal((await events('quote_disclosure_toggle')).length,2);
   for(const service of services.slice(1)){await change('#quote-service',service);const event=(await events('quote_change')).at(-1);assert.equal(event[2].service_id,service);assert.ok(!('estimated_total_minor' in event[2]),'unknown amounts omitted in provider projection');}
-  await page.eval(()=>document.querySelector('.quote-sheet > a').addEventListener('click',event=>event.preventDefault()));await click('.quote-sheet > a');assert.equal((await events('quote_request_intent')).length,1);assert.equal((await events('lead_submitted')).length,0,'mailto intent never lead');
+  for (const [channel, selector] of [['email', '.quote-contact-actions > a[href^="mailto:"]'], ['whatsapp', '.quote-contact-actions > a[href^="https://wa.me/"]']]) {
+    await page.eval(selector => document.querySelector(selector).addEventListener('click', event => event.preventDefault()), selector);
+    await click(selector);
+    const intents = (await events('quote_request_intent')).filter(event => event[2].channel === channel);
+    assert.equal(intents.length, 1);
+    assert.equal(intents[0][2].action_id, `quote.request_${channel}`);
+    assert.equal(await page.eval(channel => window.__meta.filter(call => call[0] === 'track' && call[1] === 'Contact' && call[2].channel === channel).length, channel), 1);
+  }
+  assert.equal((await events('lead_submitted')).length, 0, 'consultation intent never counts as a submitted lead');
   console.log('PASS quote controls, both disclosures, custom unknown prices, mail intent');
   await goto('/servicios');console.log('DIRECTORY');for(const index of [1,2,3,4,0])await click(`.explorer-choices button:nth-child(${index+1})`);assert.equal((await events('service_select')).length,5,'all five deliberate choices, initial default excluded');
   await goto('/preguntas');console.log('FAQ');await click('details summary');await pause(120);assert.equal((await events('faq_toggle')).length,1);
