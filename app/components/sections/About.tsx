@@ -9,7 +9,7 @@ const principles = [
 
 export default function About() {
   return (
-    <section id="about" aria-labelledby="about-title" className="relative mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+    <section data-analytics-section="about" id="about" aria-labelledby="about-title" className="relative mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
       <div className="grid gap-8 md:gap-10 lg:gap-16 md:grid-cols-[0.9fr_1.1fr] items-center">
         <BrandArtwork />
         <div>
@@ -26,7 +26,7 @@ export default function About() {
               </li>
             ))}
           </ul>
-          <Link href="/nosotros" className="about-story-link inline-flex items-center gap-3 mt-8 rounded-lg bg-button-bg text-button-text px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 motion-reduce:transform-none">Más sobre Camino <span aria-hidden="true">→</span></Link>
+          <Link data-analytics-event="cta_click" data-analytics-action="home.about" data-analytics-source="home_about"  href="/nosotros" className="about-story-link inline-flex items-center gap-3 mt-8 rounded-lg bg-button-bg text-button-text px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 motion-reduce:transform-none">Más sobre Camino <span aria-hidden="true">→</span></Link>
         </div>
       </div>
     </section>

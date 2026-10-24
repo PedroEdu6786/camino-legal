@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { openConsentPreferences, trackEvent } from "../../lib/analytics";
 import TermsModal from "../ui/TermsModal";
-import { trackEvent, trackMeta } from "../../lib/analytics";
 
 export default function Footer() {
   const [termsOpen, setTermsOpen] = useState(false);
@@ -36,10 +36,10 @@ export default function Footer() {
             {/* Contact info */}
             <div className="flex flex-col gap-3 lg:gap-4">
               <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">Contacto</h3>
-              <Link href="/contacto" className="text-xs lg:text-sm opacity-70 hover:opacity-100 underline underline-offset-4">Cuéntanos tu caso →</Link>
+              <Link data-analytics-event="cta_click" data-analytics-action="footer.contact" data-analytics-source="footer"  href="/contacto" className="text-xs lg:text-sm opacity-70 hover:opacity-100 underline underline-offset-4">Cuéntanos tu caso →</Link>
               <a
                 href="mailto:info@caminolegal.com.mx"
-                onClick={() => { trackEvent("email_click", { source: "footer" }); trackMeta("Contact"); }}
+                data-analytics-event="email_click" data-analytics-action="footer.email" data-analytics-source="footer"
                 className="text-xs lg:text-sm opacity-70 transition-opacity hover:opacity-100"
               >
                 info@caminolegal.com.mx
@@ -54,7 +54,7 @@ export default function Footer() {
                   href="https://www.instagram.com/caminolegalmx/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent("social_click", { network: "instagram" })}
+                  data-analytics-event="social_click" data-analytics-action="footer.social.instagram" data-analytics-source="footer" data-analytics-network="instagram"
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Instagram"
                 >
@@ -66,7 +66,7 @@ export default function Footer() {
                   href="https://www.facebook.com/people/Camino-Legal/61575735953072/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent("social_click", { network: "facebook" })}
+                  data-analytics-event="social_click" data-analytics-action="footer.social.facebook" data-analytics-source="footer" data-analytics-network="facebook"
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Facebook"
                 >
@@ -78,7 +78,7 @@ export default function Footer() {
                   href="https://linktr.ee/caminolegalmx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent("social_click", { network: "linktree" })}
+                  data-analytics-event="social_click" data-analytics-action="footer.social.linktree" data-analytics-source="footer" data-analytics-network="linktree"
                   className="opacity-70 transition-opacity hover:opacity-100"
                   aria-label="Linktree"
                 >
@@ -90,9 +90,17 @@ export default function Footer() {
             </div>
           </div>
 
+          <button
+            type="button"
+            onClick={openConsentPreferences}
+            className="mt-8 text-xs underline underline-offset-4 opacity-70 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            Preferencias de cookies
+          </button>
+
           {/* Bottom bar */}
           <button
-            onClick={() => setTermsOpen(true)}
+            onClick={() => { trackEvent("utility_interaction", { action_id: "footer.legal", source_surface: "footer", utility: "legal", action: "open" }); setTermsOpen(true); }}
             className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-xs opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
           >
             &copy; {new Date().getFullYear()} Camino Legal. Todos los derechos reservados.

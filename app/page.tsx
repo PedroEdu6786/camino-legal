@@ -7,7 +7,6 @@ import Banner from "./components/sections/Banner";
 import Reviews from "./components/sections/Reviews";
 import BackgroundCurves from "./components/ui/BackgroundCurves";
 import MobileStickyBar from "./components/ui/MobileStickyBar";
-import SectionViewTracker from "./components/ui/SectionViewTracker";
 
 export default function Home() {
   return (
@@ -23,7 +22,6 @@ export default function Home() {
       </main>
       <Footer />
       <MobileStickyBar />
-      <SectionViewTracker />
     </div>
   );
 }

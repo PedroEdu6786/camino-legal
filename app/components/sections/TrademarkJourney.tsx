@@ -36,7 +36,7 @@ const stages = [
 
 export default function TrademarkJourney() {
   return (
-    <section id="ruta-de-tu-marca" aria-labelledby="trademark-journey-title" className="site-container section-space trademark-journey">
+    <section data-analytics-section="trademark.route" id="ruta-de-tu-marca" aria-labelledby="trademark-journey-title" className="site-container section-space trademark-journey">
       <div className="trademark-journey-heading" data-reveal>
         <p className="hand-note">De la primera idea al ®</p>
         <h2 id="trademark-journey-title">La ruta de tu marca</h2>
@@ -46,7 +46,7 @@ export default function TrademarkJourney() {
         {stages.map((stage, index) => (
           <li key={stage.title}>
             <span className="trademark-step" aria-hidden="true">Paso {String(index + 1).padStart(2, "0")}</span>
-            <div className="trademark-stage-copy">
+            <div data-analytics-step={String(index + 1).padStart(2, "0")} className="trademark-stage-copy">
               <p className="trademark-timing">{stage.timing}</p>
               <h3>{stage.title}</h3>
               <p>{stage.description}</p>
@@ -58,7 +58,7 @@ export default function TrademarkJourney() {
           </li>
         ))}
       </TrademarkRoute>
-      <div className="trademark-aftercare" data-reveal>
+      <div data-analytics-section="trademark.milestones" className="trademark-aftercare" data-reveal>
         <div className="trademark-aftercare-heading"><span className="trademark-registered" aria-hidden="true">®</span><div><p className="hand-note">La ruta no termina aquí.</p><h3>Tu marca tiene futuro.<br />Vamos a cuidarlo.</h3></div></div>
         <dl className="trademark-milestones">
           <div><dt>10 años</dt><dd>De vigencia desde que se concede el registro.</dd></div>
@@ -72,7 +72,7 @@ export default function TrademarkJourney() {
         <h3>De tu lado, tres cosas</h3>
         <ul className="trademark-owner-tips"><li><strong>Mantente cerca.</strong> Revisa tu correo y WhatsApp, responde a nuestras solicitudes y avísanos si encuentras una marca parecida.</li><li><strong>Guarda su historia.</strong> Conserva pruebas de uso con fecha: facturas, publicaciones, empaques o fotos.</li><li><strong>Usa tu marca con cuidado.</strong> Tal como fue solicitada; reserva el símbolo ® o M.R. para cuando tengas el registro.</li></ul>
       </div>
-      <p className="fine-print trademark-legal-note">Los tiempos entre etapas pueden variar. Si hay un oficio, te indicaremos la fecha límite aplicable; dejarlo sin respuesta puede causar el abandono de la solicitud. Referencia: <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPPI.pdf" target="_blank" rel="noopener noreferrer" aria-label="Ley Federal de Protección a la Propiedad Industrial (abre en otra pestaña)">Ley Federal de Protección a la Propiedad Industrial</a>.</p>
+      <p className="fine-print trademark-legal-note">Los tiempos entre etapas pueden variar. Si hay un oficio, te indicaremos la fecha límite aplicable; dejarlo sin respuesta puede causar el abandono de la solicitud. Referencia: <a data-analytics-event="outbound_reference_click" data-analytics-action="trademark.law" data-analytics-source="trademark_journey" data-analytics-destination="trademark_law" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPPI.pdf" target="_blank" rel="noopener noreferrer" aria-label="Ley Federal de Protección a la Propiedad Industrial (abre en otra pestaña)">Ley Federal de Protección a la Propiedad Industrial</a>.</p>
     </section>
   );
 }

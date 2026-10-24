@@ -1,71 +1,72 @@
 "use server";
-
 import nodemailer from "nodemailer";
-import { sendMetaLead } from "../lib/metaCapi";
+import { cookies, headers } from "next/headers";
+import { deliverEmail, type EmailOutcome } from "../lib/server/emailDelivery";
+import { CONSENT_COOKIE, createReceipt, matchingHashes, readConsent, safeUserAgent, websiteSourceUrl } from "../lib/server/analyticsSecurity";
 
-export type FormState = { success: boolean; message: string } | null;
-
-function escapeHtml(value: string) {
+export type FormState = {
+  success: boolean;
+  message: string;
+  outcome?: EmailOutcome | "validation_failed";
+  submissionId?: string;
+  outcomeEventId?: string;
+  conversionReceipt?: string;
+  attemptId?: string;
+  failureCategory?: string;
+} | null;
+const value = (data: FormData, field: string) => typeof data.get(field) === "string" ? String(data.get(field)).trim() : "";
+function escapeHtml(input: string) {
   const entities: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-  return value.replace(/[&<>"']/g, character => entities[character]);
+  return input.replace(/[&<>"']/g, character => entities[character]);
 }
-
-export async function sendEmail(
-  _prevState: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const name = (formData.get("name") as string)?.trim();
-  const phone = (formData.get("phone") as string)?.trim() || "";
-  const email = (formData.get("email") as string)?.trim();
-  const message = (formData.get("message") as string)?.trim();
-  // Present only when the visitor granted analytics consent (see Contact.tsx)
-  const metaEventId = (formData.get("metaEventId") as string)?.trim();
-
-  if (!name || !email || !message) {
-    return { success: false, message: "Por favor, completa todos los campos." };
+export async function sendEmail(_prevState: FormState, formData: FormData): Promise<FormState> {
+  const name = value(formData, "name");
+  const phone = value(formData, "phone");
+  const email = value(formData, "email");
+  const message = value(formData, "message");
+  const formId = value(formData, "formKind") === "evaluation" || value(formData, "formId") === "trademark_evaluation" ? "trademark_evaluation" : "contact";
+  const submittedAttempt = value(formData, "attemptId");
+  const attemptId = /^[a-zA-Z0-9_-]{1,100}$/.test(submittedAttempt) ? submittedAttempt : undefined;
+  if (!name || name.length > 150 || !email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !message || message.length > 5000 ||
+    (formId === "contact" && !/^\d{10}$/.test(phone)) || (phone && !/^\d{10}$/.test(phone))) {
+    return { success: false, outcome: "validation_failed", failureCategory: "invalid_fields", attemptId, message: "Por favor, revisa los campos e incluye un correo válido." };
   }
-
+  // Request-time evidence is used only for collection eligibility, never to dispatch CAPI after SMTP.
+  let consent = null;
+  try { consent = readConsent((await cookies()).get(CONSENT_COOKIE)?.value); } catch { /* Email does not depend on cookies. */ }
+  const consentVersion = value(formData, "consentVersion");
+  const eligible = consent?.status === "granted" && consent.version === consentVersion;
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
+    host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT) || 587,
     secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 10000,
   });
-
-  try {
-    await transporter.sendMail({
-      from: `"Camino Legal Web" <${process.env.SMTP_USER}>`,
-      to: "info@caminolegal.com.mx",
-      replyTo: email,
-      subject: `Nuevo contacto: ${name}`,
-      html: `
-        <h2>Nuevo mensaje desde el sitio web</h2>
-        <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
-        ${phone ? `<p><strong>Tel&eacute;fono:</strong> +52 ${escapeHtml(phone)}</p>` : ""}
-        <p><strong>Correo:</strong> ${escapeHtml(email)}</p>
-        <hr />
-        <p><strong>Mensaje:</strong></p>
-        <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
-      `,
-    });
-  } catch (error) {
-    console.error("[sendEmail] SMTP error:", error);
-    return {
-      success: false,
-      message:
-        "Ocurri\u00f3 un error al enviar tu mensaje. Por favor int\u00e9ntalo de nuevo o cont\u00e1ctanos directamente.",
-    };
+  const recipient = "info@caminolegal.com.mx";
+  const result = await deliverEmail({
+    formId, consentStatus: eligible ? "granted" : consent?.status === "denied" ? "denied" : "unknown", recipient,
+    send: () => transporter.sendMail({
+      from: `"Camino Legal Web" <${process.env.SMTP_USER}>`, to: recipient, replyTo: email,
+      subject: `Nuevo contacto: ${name.replace(/[\r\n]/g, " ")}`,
+      html: `<h2>Nuevo mensaje desde el sitio web</h2><p><strong>Nombre:</strong> ${escapeHtml(name)}</p>${phone ? `<p><strong>Tel&eacute;fono:</strong> +52 ${escapeHtml(phone)}</p>` : ""}<p><strong>Correo:</strong> ${escapeHtml(email)}</p><hr /><p><strong>Mensaje:</strong></p><p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
+    }),
+  });
+  transporter.close();
+  if (result.outcome !== "accepted") {
+    return { success: false, outcome: result.outcome, submissionId: result.submissionId, attemptId, failureCategory: result.outcome,
+      message: result.outcome === "unknown" ? "No pudimos confirmar el envío después de dos intentos. Puedes contactarnos directamente para verificarlo." : "Ocurrió un error al enviar tu mensaje. Por favor inténtalo de nuevo o contáctanos directamente." };
   }
-
-  if (metaEventId && phone) {
-    await sendMetaLead({ email, phone, eventId: metaEventId });
+  const now = Date.now();
+  let clientUserAgent: string | undefined;
+  if (eligible) {
+    try { clientUserAgent = safeUserAgent((await headers()).get("user-agent")); } catch { /* Missing request evidence disables handoff. */ }
   }
-
-  return {
-    success: true,
-    message: "\u00a1Mensaje enviado! Pronto nos ponemos en contacto contigo.",
-  };
+  const eventSourceUrl = websiteSourceUrl(formId, value(formData, "sourcePath"));
+  const conversionReceipt = eligible && result.outcomeEventId ? createReceipt({
+    outcomeEventId: result.outcomeEventId, occurredAt: now, expiresAt: now + 300000,
+    consentVersion, formId, ...matchingHashes(email, phone),
+    ...(eventSourceUrl ? { eventSourceUrl } : {}), ...(clientUserAgent ? { clientUserAgent } : {}),
+  }) : null;
+  return { success: true, outcome: "accepted", submissionId: result.submissionId, outcomeEventId: result.outcomeEventId, attemptId,
+    ...(conversionReceipt ? { conversionReceipt } : {}), message: "¡Mensaje enviado! Pronto nos ponemos en contacto contigo." };
 }

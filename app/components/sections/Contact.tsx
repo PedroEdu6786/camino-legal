@@ -1,15 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
-import { sendEmail, type FormState } from "../../actions/sendEmail";
-import {
-  getConsent,
-  subscribeToConsent,
-  trackEvent,
-  trackMeta,
-} from "../../lib/analytics";
+import { useTrackedForm } from "../ui/useTrackedForm";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -28,39 +22,20 @@ const inputClass =
   "w-full rounded-xl border-2 border-foreground/10 bg-background px-4 py-3 text-sm placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 transition-colors duration-200";
 
 export default function Contact() {
-  const [state, action] = useActionState<FormState, FormData>(sendEmail, null);
+  const { state, action, instanceId, start, invalid, submit } = useTrackedForm("contact");
   const [phone, setPhone] = useState("");
-  // Stable per page view; exposed to the form only when consent is granted
-  const [eventId] = useState(() => crypto.randomUUID());
-  const consented = useSyncExternalStore(
-    subscribeToConsent,
-    () => getConsent() === "granted",
-    () => false,
-  );
-  const formStartedRef = useRef(false);
-  const submitTrackedRef = useRef(false);
-
-  useEffect(() => {
-    if (state?.success && !submitTrackedRef.current) {
-      submitTrackedRef.current = true;
-      trackEvent("contact_form_submit");
-      trackMeta("Lead", { eventID: eventId });
-    }
-  }, [state, eventId]);
-
-  const handleFormFocus = () => {
-    if (!formStartedRef.current) {
-      formStartedRef.current = true;
-      trackEvent("form_start");
-    }
-  };
+  const [fields, setFields] = useState({ name: "", email: "", message: "" });
+  const field = (key: keyof typeof fields) => ({
+    value: fields[key],
+    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFields(previous => ({ ...previous, [key]: event.target.value })),
+  });
 
   const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
   };
 
   return (
-    <section
+    <section data-analytics-section="contact"
       id="contact"
       className="contact-page mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
     >
@@ -114,7 +89,7 @@ export default function Contact() {
             href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => { trackEvent("whatsapp_click", { source: "contact_card" }); trackMeta("Contact"); }}
+            data-analytics-event="whatsapp_click" data-analytics-action="contact.whatsapp" data-analytics-source="contact"
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0 group-hover:bg-[#25D366]/20 transition-colors">
@@ -131,7 +106,7 @@ export default function Contact() {
           {/* Email card */}
           <a
             href="mailto:info@caminolegal.com.mx"
-            onClick={() => { trackEvent("email_click", { source: "contact_card" }); trackMeta("Contact"); }}
+            data-analytics-event="email_click" data-analytics-action="contact.email" data-analytics-source="contact"
             className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
           >
             <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
@@ -179,10 +154,7 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form action={action} onFocus={handleFormFocus} className="flex flex-col gap-4">
-                {consented && (
-                  <input type="hidden" name="metaEventId" value={eventId} />
-                )}
+              <form action={action} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} data-analytics-form={instanceId ? "contact" : undefined} data-analytics-instance={instanceId || undefined} className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label
@@ -194,6 +166,7 @@ export default function Contact() {
                     <input
                       id="name"
                       name="name"
+                      {...field("name")}
                       type="text"
                       required
                       placeholder="Tu nombre completo"
@@ -240,6 +213,7 @@ export default function Contact() {
                   <input
                     id="email"
                     name="email"
+                    {...field("email")}
                     type="email"
                     required
                     placeholder="tu@correo.com"
@@ -256,6 +230,7 @@ export default function Contact() {
                   <textarea
                     id="message"
                     name="message"
+                    {...field("message")}
                     required
                     rows={4}
                     placeholder="Cu&eacute;ntanos en qu&eacute; podemos ayudarte&hellip;"

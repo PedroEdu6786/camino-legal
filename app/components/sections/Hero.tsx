@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
 import { trackEvent } from "../../lib/analytics";
+import { useState, useSyncExternalStore } from "react";
 
 function subscribeToTheme(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -23,6 +23,7 @@ export default function Hero() {
   const [flashing, setFlashing] = useState(false);
 
   const toggleDark = () => {
+    trackEvent("utility_interaction", { action_id: "hero.theme", source_surface: "hero", utility: "theme", action: "toggle" });
     const next = !isDark;
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
@@ -31,7 +32,7 @@ export default function Hero() {
   };
 
   return (
-    <section
+    <section data-analytics-section="hero"
       id="hero-section"
       onPointerMove={event => {
         if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -141,14 +142,14 @@ export default function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center gap-3 animate-fade-up animation-delay-400">
           <Link
-            href="/servicios"
+            data-analytics-event="cta_click" data-analytics-action="hero.services" data-analytics-source="hero"  href="/servicios"
             className="w-full sm:w-auto text-center rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
           >
             Ver servicios
           </Link>
           <Link
-            href="/contacto"
-            onClick={() => { trackEvent("cta_click", { source: "hero" }); }}
+            data-analytics-event="cta_click" data-analytics-action="hero.contact" data-analytics-source="hero"  href="/contacto"
+
             className="w-full sm:w-auto text-center rounded-lg border border-foreground/20 px-8 py-4 text-sm font-semibold tracking-widest uppercase transition-all duration-200 ease-out hover:border-foreground/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
           >
             Cu&eacute;ntanos tu caso

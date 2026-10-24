@@ -40,7 +40,7 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-20 lg:px-8 scroll-mt-24">
+    <section data-analytics-section="faq" id="faq" aria-labelledby="faq-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-20 lg:px-8 scroll-mt-24">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 items-start">
         <div data-reveal className="lg:sticky lg:top-28">
           <div className="flex items-center gap-4 mb-5">
@@ -51,15 +51,15 @@ export default function FAQ() {
           <p className="mt-4 text-sm md:text-base leading-relaxed opacity-70 max-w-sm">Lo que conviene saber antes de dar el primer paso con Camino.</p>
         </div>
         <div className="home-faq-list flex flex-col gap-3">
-          {faqs.map(faq => (
-            <details key={faq.question} name="home-questions" className="home-faq-item rounded-2xl bg-primary/5 open:bg-primary/10">
+          {faqs.map((faq, index) => (
+            <details data-analytics-faq={`faq.item.${index + 1}`} key={faq.question} name="home-questions" className="home-faq-item rounded-2xl bg-primary/5 open:bg-primary/10">
               <summary className="flex items-center justify-between gap-5 p-5 md:p-6 cursor-pointer rounded-2xl focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">
                 <span className="text-sm md:text-base font-semibold leading-relaxed">{faq.question}</span>
                 <span aria-hidden="true" className="home-faq-toggle shrink-0 text-xl text-primary">+</span>
               </summary>
               <div className="px-5 pb-5 md:px-6 md:pb-6">
                 <p className="text-sm md:text-base leading-relaxed opacity-75">{faq.answer}</p>
-                {faq.href && <Link href={faq.href} className="inline-flex mt-4 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">{faq.link} <span aria-hidden="true" className="ml-2">→</span></Link>}
+                {faq.href && <Link data-analytics-event="cta_click" data-analytics-action={`faq.link.${index + 1}`} data-analytics-source="faq" href={faq.href} className="inline-flex mt-4 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">{faq.link} <span aria-hidden="true" className="ml-2">→</span></Link>}
               </div>
             </details>
           ))}

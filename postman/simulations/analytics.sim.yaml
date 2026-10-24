@@ -1,0 +1,5 @@
+simulation: camino-analytics
+routing: path
+mocks:
+  - routeKey: meta
+    path: ../mocks/meta-capi/config.yaml

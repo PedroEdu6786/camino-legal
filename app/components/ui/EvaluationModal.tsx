@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
-import { sendEmail, type FormState } from "../../actions/sendEmail";
-import { trackEvent, trackMeta } from "../../lib/analytics";
+import { useEffect, useRef, useState } from "react";
+import { useTrackedForm } from "./useTrackedForm";
+import { trackEvent } from "../../lib/analytics";
 import styles from "./EvaluationModal.module.css";
 
-export default function EvaluationModal({ onClose }: { onClose: () => void }) {
+export default function EvaluationModal({ onClose, quoteContext = {} }: { onClose: () => void; quoteContext?: Record<string, string | number | boolean | null> }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const close = () => {
+  const close = (reason = "dismiss") => {
+    trackEvent("evaluation_close", { ...quoteContext, form_id: "trademark_evaluation", source_surface: "evaluation_modal", close_reason: reason });
     dialogRef.current?.close();
     onClose();
   };
@@ -16,18 +17,9 @@ export default function EvaluationModal({ onClose }: { onClose: () => void }) {
     value: fields[key],
     onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFields(previous => ({ ...previous, [key]: event.target.value })),
   });
-  const [state, action, pending] = useActionState<FormState, FormData>(async (previous, data) => {
-    data.set("message", [
-      "Solicitud desde Cotizaciones: evaluación de viabilidad de marca.",
-      "Quiero comenzar únicamente con la evaluación de $799 MXN, IVA incluido.",
-      `Mensaje: ${data.get("details") || "Me gustaría que me contacten para conocer los siguientes pasos."}`,
-    ].join("\n\n"));
-    try {
-      return await sendEmail(previous, data);
-    } catch {
-      return { success: false, message: "No pudimos enviar tu solicitud. Tus datos siguen aquí; inténtalo de nuevo." };
-    }
-  }, null);
+  const { state, action, pending, instanceId, start, invalid, submit } = useTrackedForm("trademark_evaluation", quoteContext, data => {
+    data.set("message", ["Solicitud desde Cotizaciones: evaluación de viabilidad de marca.", "Quiero comenzar únicamente con la evaluación de $799 MXN, IVA incluido.", `Mensaje: ${data.get("details") || "Me gustaría que me contacten para conocer los siguientes pasos."}`].join("\n\n"));
+  });
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -46,11 +38,11 @@ export default function EvaluationModal({ onClose }: { onClose: () => void }) {
       aria-labelledby="evaluation-title"
       aria-describedby="evaluation-description"
       onClose={onClose}
-      onCancel={event => { event.preventDefault(); if (!pending) close(); }}
-      onClick={event => { if (event.target === event.currentTarget && !pending) close(); }}
+      onCancel={event => { event.preventDefault(); if (!pending) close("escape"); }}
+      onClick={event => { if (event.target === event.currentTarget && !pending) close("backdrop"); }}
     >
       <div className={styles.content}>
-        <button type="button" className={styles.close} onClick={close} disabled={pending} aria-label="Cerrar evaluación">×</button>
+        <button type="button" className={styles.close} onClick={() => close()} disabled={pending} aria-label="Cerrar evaluación">×</button>
         <p className={styles.note}>Hablemos de tu marca.</p>
         <h2 id="evaluation-title">¿Cómo prefieres contactarnos?</h2>
         <p id="evaluation-description">Te contamos cómo empezar con la evaluación de <strong>$799 MXN, IVA incluido.</strong></p>
@@ -58,7 +50,7 @@ export default function EvaluationModal({ onClose }: { onClose: () => void }) {
           <div className={styles.success} role="status">
             <h3>¡Recibimos tu solicitud!</h3>
             <p>Nos pondremos en contacto contigo para confirmar los detalles y los siguientes pasos.</p>
-            <button type="button" className="site-button" onClick={close}>Listo</button>
+            <button type="button" className="site-button" onClick={() => close("success_done")}>Listo</button>
           </div>
         ) : (
           <>
@@ -67,10 +59,10 @@ export default function EvaluationModal({ onClose }: { onClose: () => void }) {
             href={`https://wa.me/529992505160?text=${encodeURIComponent("Hola, Camino Legal. Me interesa la evaluación de mi marca de $799 MXN. ¿Me cuentan cómo empezar?")}`}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => { trackEvent("whatsapp_click", { source: "evaluation_modal" }); trackMeta("Contact"); }}
+            data-analytics-event="whatsapp_click" data-analytics-action="evaluation.whatsapp" data-analytics-source="evaluation_modal" data-analytics-service="registro-de-marca"
           >Hablar por WhatsApp ↗</a>
           <p className={styles.divider}>O déjanos tu correo y te contactamos.</p>
-          <form action={action} aria-busy={pending} className={styles.form}>
+          <form data-analytics-form={instanceId ? "trademark_evaluation" : undefined} data-analytics-instance={instanceId || undefined} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} action={action} aria-busy={pending} className={styles.form}>
             <fieldset disabled={pending}>
               <label htmlFor="evaluation-name">Tu nombre</label>
               <input id="evaluation-name" name="name" {...field("name")} autoComplete="name" required maxLength={150} placeholder="¿Cómo te llamas?" />

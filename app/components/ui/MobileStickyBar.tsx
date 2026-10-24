@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { trackEvent, trackMeta } from "../../lib/analytics";
 
 export default function MobileStickyBar() {
   const [visible, setVisible] = useState(false);
@@ -39,7 +38,7 @@ export default function MobileStickyBar() {
           href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => { trackEvent("whatsapp_click", { source: "sticky_bar" }); trackMeta("Contact"); }}
+          data-analytics-event="whatsapp_click" data-analytics-action="sticky.whatsapp" data-analytics-source="mobile_sticky"
           className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[#25D366] hover:bg-foreground/5 transition-colors"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -52,7 +51,7 @@ export default function MobileStickyBar() {
 
         <Link
           href="/contacto"
-          onClick={() => { trackEvent("cta_click", { source: "sticky_bar" }); }}
+          data-analytics-event="cta_click" data-analytics-action="sticky.contact" data-analytics-source="mobile_sticky"
           className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-foreground hover:bg-foreground/5 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

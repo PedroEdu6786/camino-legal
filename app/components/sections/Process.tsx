@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "../../lib/analytics";
 import { useScrollJourney } from "../../lib/useScrollJourney";
 import { useRef, useState } from "react";
 
@@ -57,19 +58,20 @@ export default function Process() {
   const { geometry, jumpTo } = useScrollJourney(track, stage, steps.length, setActive);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const selectStep = (index: number, focus = false) => {
+  const selectStep = (index: number, focus = false, control = "tab") => {
+    if (index !== active) trackEvent("process_step_select", { source_surface: "process", step_id: steps[index].number, control_id: control });
     jumpTo(index);
     if (focus) tabs.current[index]?.focus({ preventScroll: true });
   };
 
   return (
-    <section id="process" aria-labelledby="process-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+    <section data-analytics-section="process" id="process" aria-labelledby="process-title" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
       <div className="md:hidden">
         <h2 className="text-2xl font-bold tracking-tight">¿Cómo funciona Camino?</h2>
         <p className="mt-3 text-sm leading-relaxed opacity-70">Tú das el primer paso. El resto, lo recorremos contigo.</p>
         <div className="mt-6 space-y-2">
           {steps.map(step => (
-            <details key={step.number} name="process-mobile" className="process-mobile-step group rounded-xl bg-primary/5 open:bg-primary/10">
+            <details onToggle={event => { if (event.currentTarget.open && event.nativeEvent.isTrusted) trackEvent("process_step_select", { source_surface: "process", step_id: step.number, control_id: "tab" }); }} key={step.number} name="process-mobile" className="process-mobile-step group rounded-xl bg-primary/5 open:bg-primary/10">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-4 py-4 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">
                 <h3 className="text-sm font-semibold">{step.title}</h3>
                 <span aria-hidden="true" className="shrink-0 text-xl leading-none text-primary group-open:rotate-45">+</span>
@@ -78,7 +80,7 @@ export default function Process() {
             </details>
           ))}
         </div>
-        <Link href="/contacto" className="mt-6 inline-flex min-h-11 items-center rounded-lg bg-button-bg px-5 py-3 text-sm font-semibold text-button-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">Cuéntanos tu caso <span aria-hidden="true" className="ml-2">↗</span></Link>
+        <Link data-analytics-event="cta_click" data-analytics-action="process.contact" data-analytics-source="process" href="/contacto" className="mt-6 inline-flex min-h-11 items-center rounded-lg bg-button-bg px-5 py-3 text-sm font-semibold text-button-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">Cuéntanos tu caso <span aria-hidden="true" className="ml-2">↗</span></Link>
       </div>
       <div className="hidden md:block">
       <div ref={track} className="process-scroll-track" style={geometry ? { height: geometry.height + geometry.travel } : undefined}>
@@ -124,8 +126,8 @@ export default function Process() {
               <div className="process-journey-copy">
                 <h3 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">{step.title}</h3>
                 <p className="mt-4 text-sm md:text-base leading-relaxed opacity-80 max-w-xl">{step.description}</p>
-                {index === 0 && <Link href="/contacto" className="inline-flex mt-5 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">Cuéntanos tu caso ↗</Link>}
-                {index === 1 && <Link href="/cotizaciones" className="inline-flex mt-5 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">Explorar cotizaciones ↗</Link>}
+                {index === 0 && <Link data-analytics-event="cta_click" data-analytics-action="process.contact" data-analytics-source="process" href="/contacto" className="inline-flex mt-5 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">Cuéntanos tu caso ↗</Link>}
+                {index === 1 && <Link data-analytics-event="cta_click" data-analytics-action="process.quotation" data-analytics-source="process" href="/cotizaciones" className="inline-flex mt-5 text-sm font-semibold text-primary underline underline-offset-4 hover:decoration-2">Explorar cotizaciones ↗</Link>}
               </div>
             </div>
           </div>
@@ -134,12 +136,12 @@ export default function Process() {
         <div className="mt-5 md:mt-0 md:absolute md:inset-x-8 md:bottom-6 lg:inset-x-12 flex items-center justify-between gap-4">
           <span className="text-xs md:text-sm opacity-60" aria-live="polite">Paso {active + 1} de {steps.length}</span>
           <div className="flex items-center gap-3">
-            <button type="button" aria-label="Paso anterior" disabled={active === 0} onClick={() => selectStep(active - 1)} className="process-back rounded-full w-11 h-11 text-xl text-primary bg-primary/10 disabled:opacity-30 disabled:cursor-default cursor-pointer hover:enabled:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">←</button>
-            {active < steps.length - 1 ? <button type="button" onClick={() => selectStep(active + 1)} className="process-next rounded-lg bg-button-bg text-button-text px-5 py-3 text-sm font-semibold cursor-pointer transition-transform hover:-translate-y-0.5 motion-reduce:transform-none">Siguiente <span aria-hidden="true">→</span></button> : <Link href="/contacto" className="rounded-lg bg-button-bg text-button-text px-5 py-3 text-sm font-semibold">Empecemos <span aria-hidden="true">→</span></Link>}
+            <button type="button" aria-label="Paso anterior" disabled={active === 0} onClick={() => selectStep(active - 1, false, "previous")} className="process-back rounded-full w-11 h-11 text-xl text-primary bg-primary/10 disabled:opacity-30 disabled:cursor-default cursor-pointer hover:enabled:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">←</button>
+            {active < steps.length - 1 ? <button type="button" onClick={() => selectStep(active + 1, false, "next")} className="process-next rounded-lg bg-button-bg text-button-text px-5 py-3 text-sm font-semibold cursor-pointer transition-transform hover:-translate-y-0.5 motion-reduce:transform-none">Siguiente <span aria-hidden="true">→</span></button> : <Link data-analytics-event="cta_click" data-analytics-action="process.contact" data-analytics-source="process" href="/contacto" className="rounded-lg bg-button-bg text-button-text px-5 py-3 text-sm font-semibold">Empecemos <span aria-hidden="true">→</span></Link>}
           </div>
         </div>
       </div>
-      <a href="#process-end" className="inline-block mt-3 text-xs text-primary underline underline-offset-4">Continuar después de los pasos ↓</a>
+      <a data-analytics-event="navigation_click" data-analytics-action="process.continue" data-analytics-source="process" href="#process-end" className="inline-block mt-3 text-xs text-primary underline underline-offset-4">Continuar después de los pasos ↓</a>
       </div>
       </div>
       <div id="process-end" className="scroll-mt-28" />

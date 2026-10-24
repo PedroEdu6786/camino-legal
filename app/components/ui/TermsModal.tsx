@@ -1,5 +1,6 @@
 "use client";
 
+import { trackEvent } from "../../lib/analytics";
 import { useEffect, useState } from "react";
 
 type Tab = "privacidad" | "cookies" | "terminos";
@@ -38,7 +39,7 @@ function PrivacidadContent() {
         En cumplimiento con lo dispuesto por la Ley Federal de Protecci&oacute;n de Datos Personales
         en Posesi&oacute;n de los Particulares y dem&aacute;s disposiciones aplicables, la marca comercial
         CL CAMINO LEGAL&reg;, con sitio web caminolegal.com.mx, correo electr&oacute;nico{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>{" "}
         y tel&eacute;fono +52 999 250 5160, es responsable del tratamiento de sus datos personales.
@@ -94,7 +95,7 @@ function PrivacidadContent() {
       <p>
         Si no desea que sus datos sean utilizados para estas finalidades secundarias, podr&aacute;
         solicitarlo enviando un correo a{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
         .
@@ -134,7 +135,7 @@ function PrivacidadContent() {
       <p>
         Para ejercer sus derechos ARCO deber&aacute; enviar una solicitud al correo
         electr&oacute;nico{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
         , incluyendo su nombre completo, medio para comunicarle la respuesta, descripci&oacute;n
@@ -149,7 +150,7 @@ function PrivacidadContent() {
       <p>
         Usted podr&aacute; revocar el consentimiento otorgado para el tratamiento de sus datos
         personales enviando una solicitud al correo{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
         .
@@ -164,7 +165,7 @@ function PrivacidadContent() {
       <p>
         Usted podr&aacute; solicitar la limitaci&oacute;n del uso o divulgaci&oacute;n de sus datos
         personales enviando un correo electr&oacute;nico a{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
         .
@@ -198,7 +199,7 @@ function PrivacidadContent() {
       </p>
       <p>
         <strong>Correo electr&oacute;nico:</strong>{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.privacidad" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
       </p>
@@ -511,7 +512,7 @@ function TerminosContent() {
       <p>CL CAMINO LEGAL&reg;</p>
       <p>
         <strong>Correo:</strong>{" "}
-        <a href="mailto:info@caminolegal.com.mx" className="underline font-medium">
+        <a data-analytics-event="email_click" data-analytics-action="legal.email.terminos" data-analytics-source="legal_dialog" href="mailto:info@caminolegal.com.mx" className="underline font-medium">
           info@caminolegal.com.mx
         </a>
       </p>
@@ -559,11 +560,13 @@ export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
   }, [open]);
 
   const handleTabChange = (tab: Tab) => {
+    if (tab !== activeTab) trackEvent("utility_interaction", { action_id: `legal.tab.${tab}`, source_surface: "legal_dialog", utility: "legal", action: "select" });
     setActiveTab(tab);
     window.history.replaceState(null, "", `#${tab}`);
   };
 
   const handleClose = () => {
+    trackEvent("utility_interaction", { action_id: "legal.close", source_surface: "legal_dialog", utility: "legal", action: "close" });
     if (HASH_TO_TAB[window.location.hash]) {
       window.history.replaceState(
         null,

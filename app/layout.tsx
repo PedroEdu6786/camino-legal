@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import SectionViewTracker from "./components/ui/SectionViewTracker";
 import { Poppins, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -80,7 +82,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Script id="theme-init" strategy="beforeInteractive">{`try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`}</Script>
-        <AnalyticsScripts />
+        <Suspense fallback={null}><AnalyticsScripts /><SectionViewTracker /></Suspense>
         <ConsentBanner />
         <Navbar />
         {children}

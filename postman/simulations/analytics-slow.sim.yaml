@@ -1,0 +1,10 @@
+simulation: camino-analytics-slow
+routing: path
+mocks:
+  - routeKey: meta
+    path: ../mocks/meta-capi/config.yaml
+    scenarios:
+      - overrides:
+          conditions:
+            latency:
+              delay_ms: 1500

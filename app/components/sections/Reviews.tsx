@@ -1,5 +1,6 @@
 "use client";
 
+import { trackEvent } from "../../lib/analytics";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -25,6 +26,7 @@ export default function Reviews() {
   const [visibleCount, setVisibleCount] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const touchStart = useRef<number | null>(null);
   const maxIndex = reviews.length - visibleCount;
 
   useEffect(() => {
@@ -56,8 +58,8 @@ export default function Reviews() {
     setCurrent(index);
   }, []);
 
-  const prev = () => scrollToCard(Math.max(0, current - 1));
-  const next = () => scrollToCard(Math.min(maxIndex, current + 1));
+  const prev = () => { trackEvent("review_interaction", { source_surface: "reviews", control_id: "previous" }); scrollToCard(Math.max(0, current - 1)); };
+  const next = () => { trackEvent("review_interaction", { source_surface: "reviews", control_id: "next" }); scrollToCard(Math.min(maxIndex, current + 1)); };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -78,7 +80,7 @@ export default function Reviews() {
   }, [maxIndex]);
 
   return (
-    <section id="reviews" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
+    <section data-analytics-section="reviews" id="reviews" className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8">
 
       <div className="flex items-center gap-4 mb-10 md:mb-14 lg:mb-16">
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
@@ -97,6 +99,8 @@ export default function Reviews() {
       {/* Scroll container */}
       <div
         ref={containerRef}
+        onTouchStart={event => { touchStart.current = event.touches[0]?.clientX ?? null; }}
+        onTouchEnd={event => { if (touchStart.current !== null && Math.abs((event.changedTouches[0]?.clientX ?? touchStart.current) - touchStart.current) > 30) trackEvent("review_interaction", { source_surface: "reviews", control_id: "swipe" }); touchStart.current = null; }}
         className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {reviews.map((text, i) => (
@@ -119,7 +123,7 @@ export default function Reviews() {
           {Array.from({ length: maxIndex + 1 }).map((_, i) => (
             <button
               key={i}
-              onClick={() => scrollToCard(i)}
+              onClick={() => { trackEvent("review_interaction", { source_surface: "reviews", control_id: "dot", review_index: i + 1 }); scrollToCard(i); }}
               aria-label={`Ir a rese\u00f1a ${i + 1}`}
               className={`rounded-full transition-all duration-300 ${
                 i === current

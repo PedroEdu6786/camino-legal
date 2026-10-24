@@ -8,11 +8,11 @@ import { trackEvent } from "../../lib/analytics";
 import NavPill from "./NavPill";
 
 const navLinks = [
-  { href: "/", label: "Inicio" },
-  { href: "/servicios", label: "Servicios" },
-  { href: "/cotizaciones", label: "Cotizaciones" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/preguntas", label: "Preguntas" },
+  { id: "home", href: "/", label: "Inicio" },
+  { id: "services", href: "/servicios", label: "Servicios" },
+  { id: "quotation", href: "/cotizaciones", label: "Cotizaciones" },
+  { id: "about", href: "/nosotros", label: "Nosotros" },
+  { id: "faq", href: "/preguntas", label: "Preguntas" },
 ];
 
 function NavLabel({ label }: { label: string; active: boolean }) {
@@ -35,7 +35,7 @@ export default function Navbar() {
     <header className={`sticky top-0 z-50 bg-primary transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
       <nav className={`mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 transition-[padding] duration-300 ${scrolled ? "py-3 lg:py-4" : "py-4 lg:py-6"}`}>
         {/* Logo / Brand */}
-        <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <Link data-analytics-event="navigation_click" data-analytics-action="nav.logo" data-analytics-source="navbar"  href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <Image
             src="/camino-legal-white.png"
             alt="Camino Legal"
@@ -51,7 +51,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={link.href}
+                  data-analytics-event="navigation_click" data-analytics-action={`nav.${link.id}`} data-analytics-source="navbar_desktop" href={link.href}
                   aria-current={isActive(link.href) ? "page" : undefined}
                   className="camino-nav-item text-sm lg:text-base font-medium text-white/70 transition-colors hover:text-white"
                 >
@@ -61,9 +61,9 @@ export default function Navbar() {
             ))}
           </ul>
           <Link
-            href="/contacto"
+            data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_desktop"  href="/contacto"
             aria-current={isActive("/contacto") ? "page" : undefined}
-            onClick={() => { trackEvent("cta_click", { source: "navbar" }); setMenuOpen(false); }}
+            onClick={() => setMenuOpen(false)}
             className="camino-nav-contact rounded-lg bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
           >
             <NavLabel label="Contáctanos" active={isActive("/contacto")} />
@@ -73,9 +73,9 @@ export default function Navbar() {
         {/* Mobile right: CTA pill + hamburger */}
         <div className="lg:hidden flex items-center gap-2">
           <Link
-            href="/contacto"
+            data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_mobile_pill"  href="/contacto"
             aria-current={isActive("/contacto") ? "page" : undefined}
-            onClick={() => { trackEvent("cta_click", { source: "navbar" }); setMenuOpen(false); }}
+            onClick={() => setMenuOpen(false)}
             className="camino-nav-contact rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors duration-200"
           >
             <NavLabel label="Contáctanos" active={isActive("/contacto")} />
@@ -83,7 +83,7 @@ export default function Navbar() {
           <button
             type="button"
             className="inline-flex items-center justify-center rounded-md p-2 text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => { trackEvent("utility_interaction", { action_id: "nav.menu", source_surface: "navbar_mobile_menu", utility: "menu", action: menuOpen ? "close" : "open" }); setMenuOpen(!menuOpen); }}
             aria-expanded={menuOpen}
             aria-label="Toggle navigation menu"
           >
@@ -107,7 +107,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={link.href}
+                  data-analytics-event="navigation_click" data-analytics-action={`nav.${link.id}`} data-analytics-source="navbar_mobile_menu" href={link.href}
                   aria-current={isActive(link.href) ? "page" : undefined}
                   className="camino-nav-item text-sm font-medium text-white/70 transition-colors hover:text-white"
                   onClick={() => setMenuOpen(false)}
@@ -118,7 +118,7 @@ export default function Navbar() {
             ))}
             <li>
               <Link
-                href="/contacto"
+                data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_mobile_menu"  href="/contacto"
                 aria-current={isActive("/contacto") ? "page" : undefined}
                 className="camino-nav-item text-sm font-medium text-white/70 transition-colors hover:text-white"
                 onClick={() => setMenuOpen(false)}
