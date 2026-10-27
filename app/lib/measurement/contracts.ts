@@ -1,4 +1,4 @@
-export const SERVICE_IDS = ["registro-de-marca", "contratos-y-convenios", "derechos-de-autor", "consultoria-legal", "paquete-web-legal"] as const;
+export const SERVICE_IDS = ["registro-de-marca", "registro-de-aviso-comercial", "contratos-y-convenios", "derechos-de-autor", "consultoria-legal", "paquete-web-legal"] as const;
 export type ServiceId = (typeof SERVICE_IDS)[number];
 export const EVENT_NAMES = ["page_view", "navigation_click", "cta_click", "service_select", "quote_view", "quote_change", "quote_request_intent", "evaluation_open", "evaluation_close", "form_view", "form_start", "form_submit_attempt", "form_validation_failed", "form_submit_failed", "lead_submitted", "whatsapp_click", "email_click", "social_click", "outbound_reference_click", "section_view", "trademark_step_view", "faq_toggle", "process_step_select", "review_interaction", "quote_disclosure_toggle", "scroll_depth", "utility_interaction"] as const;
 export type AnalyticsEvent = (typeof EVENT_NAMES)[number];

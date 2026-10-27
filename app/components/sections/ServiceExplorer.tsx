@@ -5,9 +5,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ServiceLink from "../ui/ServiceLink";
-import { services, money, trademarkQuote } from "../../lib/services";
+import { serviceDetails as services, money, trademarkQuote } from "../../lib/services";
 
-const goals = ["Mi marca", "Mis acuerdos", "Mi obra", "Una decisión", "Mi sitio web"];
+const goals = ["Mi marca", "Mis acuerdos", "Mi obra", "Una decisión", "Mi sitio web", "Mi eslogan"];
 
 export default function ServiceExplorer() {
   const [active, setActive] = useState(0);

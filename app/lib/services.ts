@@ -46,6 +46,17 @@ export const services = [
   },
 ] as const;
 
+// Dedicated detail pages also include services outside the homepage's five categories.
+export const serviceDetails = [...services, {
+  slug: "registro-de-aviso-comercial", title: "Registro de aviso comercial", short: "Tu frase, con respaldo.",
+  description: "Te acompañamos en el registro de la frase que distingue tu negocio, producto o servicio ante el IMPI.",
+  image: "/stickers/Recurso 81.png",
+  includes: ["Estudio de distintividad y disponibilidad de tu frase", "Búsqueda de avisos y marcas en conflicto", "Definición de clase y vía de protección", "Preparación, presentación y seguimiento ante el IMPI"],
+  needs: ["La frase que quieres proteger", "Los productos o servicios que anuncia", "Datos de la persona o personas titulares"],
+  factors: "El estudio se cobra una vez por aviso. Los honorarios de gestión y la tarifa IMPI se calculan por cada clase.",
+  deliverables: ["Resultado del estudio de viabilidad", "Documentación y seguimiento de tu solicitud"],
+}];
+
 export const money = (cents: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(cents / 100);
 export const trademarkRates = { evaluation: 79900, management: 228700, official: 281377, rules: 61600 };
 
