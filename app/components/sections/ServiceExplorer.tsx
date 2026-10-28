@@ -7,7 +7,17 @@ import Link from "next/link";
 import ServiceLink from "../ui/ServiceLink";
 import { serviceDetails as services, money, trademarkQuote } from "../../lib/services";
 
-const goals = ["Mi marca", "Mis acuerdos", "Mi obra", "Una decisión", "Mi sitio web", "Mi eslogan"];
+// Bold text shows the actual service name; the small text describes what it
+// covers, so people looking for a specific document (e.g. an NDA or an aviso
+// de privacidad) find the right option.
+const subtitles: Record<string, string> = {
+  "registro-de-marca": "Protege el nombre que distingue a tu negocio, ante el IMPI",
+  "contratos-y-convenios": "Prestación de servicios, NDA, convenios y más",
+  "derechos-de-autor": "Respalda la autoría de tu obra, ante INDAUTOR",
+  "consultoria-legal": "Asesoría legal personalizada para tu caso",
+  "paquete-web-legal": "Aviso de privacidad, términos y cookies para tu sitio",
+  "registro-de-aviso-comercial": "Registra la frase que distingue a tu negocio, ante el IMPI",
+};
 
 export default function ServiceExplorer() {
   const [active, setActive] = useState(0);
@@ -17,7 +27,7 @@ export default function ServiceExplorer() {
     <p className="explorer-prompt">Selecciona lo que necesitas ↓</p>
     <div className="explorer-layout">
       <div className="explorer-choices" role="group" aria-label="Elige lo que quieres proteger">
-        {services.map((item, index) => <button type="button" key={item.slug} aria-pressed={active === index} aria-controls="service-preview" onClick={() => { if (index !== active) trackEvent("service_select", { action_id: `directory.select.${item.slug}`, source_surface: "service_directory", previous_service_id: service.slug, service_id: item.slug, service_context: "explicit" }); setActive(index); }}><Image src={item.image} width={48} height={48} alt="" /><span>{goals[index]}<small>{item.title}</small></span><span aria-hidden="true">→</span></button>)}
+        {services.map((item, index) => <button type="button" key={item.slug} aria-pressed={active === index} aria-controls="service-preview" onClick={() => { if (index !== active) trackEvent("service_select", { action_id: `directory.select.${item.slug}`, source_surface: "service_directory", previous_service_id: service.slug, service_id: item.slug, service_context: "explicit" }); setActive(index); }}><Image src={item.image} width={48} height={48} alt="" /><span>{item.title}<small>{subtitles[item.slug] ?? item.short}</small></span><span aria-hidden="true">→</span></button>)}
       </div>
       <div id="service-preview" className="explorer-preview" aria-live="polite" aria-atomic="true">
         <div key={service.slug} className="explorer-preview-inner">

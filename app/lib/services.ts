@@ -12,7 +12,7 @@ export const services = [
     slug: "contratos-y-convenios", title: "Contratos y convenios", short: "Acuerdos que sí entiendes.",
     description: "Redactamos y revisamos acuerdos adaptados a tu forma de trabajar. Te ayudamos a entender tus compromisos antes de firmar.",
     image: "/stickers/Recurso 80.png",
-    includes: ["Contratos de prestación de servicios", "Acuerdos de confidencialidad (NDA)", "Acuerdos comerciales", "Revisión y orientación antes de firmar"],
+    includes: ["Redacción de distintos tipos de contratos, como prestación de servicios", "Acuerdos de confidencialidad (NDA) y acuerdos comerciales", "Revisión y orientación antes de firmar", "Documentos complementarios según el caso: avisos de privacidad, términos y condiciones, cláusulas de cookies"],
     needs: ["Tipo de acuerdo y objetivo", "Personas involucradas y responsabilidades", "Documento existente, si necesitas una revisión"],
     factors: "La cotización depende de si necesitas una revisión o una redacción, la complejidad del acuerdo y los documentos involucrados. Definimos el alcance y las revisiones en tu propuesta.",
     deliverables: ["Documento redactado o revisado según el alcance acordado", "Explicación de compromisos, riesgos y puntos a considerar"],

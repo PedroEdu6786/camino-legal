@@ -25,13 +25,13 @@ export const serviceQuotes = {
     firstStep: "Empieza con la búsqueda por $560 MXN, incluidos en el total. Después decides si continúas.",
   },
   "contratos-y-convenios": {
-    title: "Contrato de prestación de servicios", unit: "Un contrato",
-    lines: [["Diagnóstico · una persona o empresa", 39900], ["Redacción y versión final · un contrato", 210000]],
-    plans: [[["Al inicio", 249900]], [["Al inicio · diagnóstico", 39900], ["Antes de la Etapa 2", 210000]]],
-    stages: ["Diagnóstico · 3 días hábiles: formulario sobre tu operación, revisión de entregables, plazos y cobros, identificación de riesgos y mapa de cláusulas.", "Redacción y revisión · 10 días hábiles: contrato a medida con cláusulas de pago, entregables, confidencialidad, terminación y titularidad de lo creado. Incluye una ronda de ajustes.", "Versión final · incluida: documento listo para firmar, instrucciones de uso y firma, y formato editable para próximos clientes."],
-    deliverables: ["Contrato a la medida de tu servicio.", "Reporte de diagnóstico de riesgos y cláusulas que los cubren.", "Guía de uso y firma."],
-    notes: ["Esta cotización corresponde a un contrato de prestación de servicios. Otros acuerdos y revisiones se cotizan según su alcance.", "Anexos por separado: convenio de confidencialidad $799.00 MXN; aviso de privacidad $799.00 MXN; términos y condiciones $699.00 MXN.", "Los cambios de fondo posteriores a la ronda de ajustes se cotizan aparte."],
-    firstStep: "Empieza con el diagnóstico por $399 MXN, incluidos en el total. Después decides si continúas.",
+    title: "Redacción de un contrato", unit: "Un contrato",
+    lines: [["Diagnóstico y asesoría legal · una persona o empresa", 39900], ["Redacción y versión final · un contrato", 210000]],
+    plans: [[["Al inicio", 249900]], [["Al inicio · diagnóstico", 39900], ["Antes de la redacción", 210000]]],
+    stages: ["Diagnóstico y asesoría legal · 3 días hábiles: llenas un formulario sobre tu situación y agenda una asesoría para identificar qué necesitas realmente y definir el alcance del servicio.", "Redacción del contrato · 10 días hábiles: con base en el diagnóstico y una vez realizado el pago correspondiente, elaboramos el contrato que mejor se adapte a tus necesidades.", "Revisión y ajustes · incluida: revisas el documento y hacemos los ajustes necesarios dentro del alcance acordado, hasta llegar a la versión final lista para firmar."],
+    deliverables: ["Contrato redactado a la medida de tus necesidades.", "Reporte de diagnóstico de riesgos y cláusulas que los cubren.", "Documento final listo para firmar, con guía de uso."],
+    notes: ["Trabajamos con distintos tipos de contratos y convenios, como prestación de servicios, confidencialidad (NDA) y acuerdos comerciales. Esta cotización corresponde a la redacción de un contrato; las revisiones de documentos existentes y otros tipos de acuerdo se cotizan según su alcance.", "Según tu caso, pueden requerirse documentos complementarios como aviso de privacidad, términos y condiciones o cláusulas sobre cookies; se cotizan por separado, por ejemplo, un aviso de privacidad o un convenio de confidencialidad desde $799.00 MXN.", "Los cambios de fondo posteriores a la ronda de ajustes se cotizan aparte."],
+    firstStep: "Empieza con el diagnóstico y la asesoría por $399 MXN, incluidos en el total. Después decides si continúas con la redacción.",
   },
 } as const;
 
