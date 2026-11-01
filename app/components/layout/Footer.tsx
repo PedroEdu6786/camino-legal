@@ -4,16 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { openConsentPreferences, trackEvent } from "../../lib/analytics";
-import TermsModal from "../ui/TermsModal";
+import TermsModal, { type Tab } from "../ui/TermsModal";
 
 export default function Footer() {
   const [termsOpen, setTermsOpen] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<Tab>("terminos");
+
+  const openLegalModal = (tab: Tab = "terminos") => {
+    trackEvent("utility_interaction", {
+      action_id: "footer.legal",
+      source_surface: "footer",
+      utility: "legal",
+      action: "open",
+    });
+    setSelectedTab(tab);
+    setTermsOpen(true);
+    window.history.replaceState(null, "", `#${tab}`);
+  };
 
   return (
     <>
       <footer className="bg-brand-burgundy text-[#F2ECEA]">
         <div className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:px-8 lg:py-20">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-[auto_1fr_1fr_1fr] lg:gap-12">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
             {/* Logo */}
             <div className="flex items-start">
               <Image
@@ -44,6 +57,39 @@ export default function Footer() {
               >
                 info@caminolegal.com.mx
               </a>
+            </div>
+
+            {/* Legal */}
+            <div className="flex flex-col items-start gap-3 lg:gap-4">
+              <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wider">Legal</h3>
+              <button
+                type="button"
+                onClick={() => openLegalModal("terminos")}
+                className="inline-flex items-center gap-2 rounded-lg border border-[#F2ECEA]/60 bg-[#F2ECEA]/10 px-3.5 py-2 text-xs lg:text-sm font-semibold text-[#F2ECEA] transition-colors hover:bg-[#F2ECEA] hover:text-brand-burgundy focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer"
+              >
+                T&eacute;rminos y Condiciones <span aria-hidden="true">&rarr;</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => openLegalModal("privacidad")}
+                className="text-left text-xs lg:text-sm opacity-70 transition-opacity hover:opacity-100 hover:underline underline-offset-4 cursor-pointer"
+              >
+                Aviso de Privacidad
+              </button>
+              <button
+                type="button"
+                onClick={() => openLegalModal("cookies")}
+                className="text-left text-xs lg:text-sm opacity-70 transition-opacity hover:opacity-100 hover:underline underline-offset-4 cursor-pointer"
+              >
+                Aviso de Cookies
+              </button>
+              <button
+                type="button"
+                onClick={openConsentPreferences}
+                className="text-left text-xs lg:text-sm underline underline-offset-4 opacity-70 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 cursor-pointer"
+              >
+                Preferencias de cookies
+              </button>
             </div>
 
             {/* Social & legal */}
@@ -90,26 +136,45 @@ export default function Footer() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={openConsentPreferences}
-            className="mt-8 text-xs underline underline-offset-4 opacity-70 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4"
-          >
-            Preferencias de cookies
-          </button>
-
           {/* Bottom bar */}
-          <button
-            onClick={() => { trackEvent("utility_interaction", { action_id: "footer.legal", source_surface: "footer", utility: "legal", action: "open" }); setTermsOpen(true); }}
-            className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 text-center text-xs opacity-50 w-full cursor-pointer hover:opacity-70 transition-opacity"
-          >
-            &copy; {new Date().getFullYear()} Camino Legal. Todos los derechos reservados.
-          </button>
+          <div className="mt-10 lg:mt-14 border-t border-background/20 pt-6 lg:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs opacity-70">
+            <button
+              type="button"
+              onClick={() => openLegalModal("terminos")}
+              className="text-center sm:text-left hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              &copy; {new Date().getFullYear()} Camino Legal. Todos los derechos reservados.
+            </button>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              <button
+                type="button"
+                onClick={() => openLegalModal("terminos")}
+                className="opacity-100 underline underline-offset-4 transition-opacity cursor-pointer font-semibold"
+              >
+                T&eacute;rminos y Condiciones
+              </button>
+              <button
+                type="button"
+                onClick={() => openLegalModal("privacidad")}
+                className="hover:opacity-100 hover:underline underline-offset-4 transition-opacity cursor-pointer"
+              >
+                Aviso de Privacidad
+              </button>
+              <button
+                type="button"
+                onClick={() => openLegalModal("cookies")}
+                className="hover:opacity-100 hover:underline underline-offset-4 transition-opacity cursor-pointer"
+              >
+                Aviso de Cookies
+              </button>
+            </div>
+          </div>
         </div>
       </footer>
 
       <TermsModal
         open={termsOpen}
+        initialTab={selectedTab}
         onOpen={() => setTermsOpen(true)}
         onClose={() => setTermsOpen(false)}
       />

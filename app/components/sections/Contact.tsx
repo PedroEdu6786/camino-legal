@@ -171,6 +171,23 @@ export default function Contact() {
                   <p className="text-xs text-primary">{state.message}</p>
                 )}
                 <SubmitButton />
+                <p className="text-[11px] opacity-60 text-center mt-3">
+                  Al enviar, aceptas nuestros{" "}
+                  <a
+                    href="#terminos"
+                    className="underline underline-offset-2 hover:opacity-100 transition-opacity"
+                  >
+                    T&eacute;rminos y Condiciones
+                  </a>{" "}
+                  y{" "}
+                  <a
+                    href="#privacidad"
+                    className="underline underline-offset-2 hover:opacity-100 transition-opacity"
+                  >
+                    Aviso de Privacidad
+                  </a>
+                  .
+                </p>
               </form>
             )}
           </div>

@@ -134,6 +134,22 @@ export default function Navbar() {
                 <NavLabel label="Contacto" active={isActive("/contacto")} />
               </Link>
             </li>
+            <li className="pt-3 mt-1 border-t border-foreground/10 flex flex-wrap gap-x-4 gap-y-2 text-xs text-foreground/60">
+              <a
+                href="#terminos"
+                className="hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                T&eacute;rminos y Condiciones
+              </a>
+              <a
+                href="#privacidad"
+                className="hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                Aviso de Privacidad
+              </a>
+            </li>
           </ul>
         </div>
       )}

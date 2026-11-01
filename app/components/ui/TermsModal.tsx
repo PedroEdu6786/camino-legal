@@ -1,9 +1,9 @@
 "use client";
 
 import { trackEvent } from "../../lib/analytics";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type Tab = "privacidad" | "cookies" | "terminos";
+export type Tab = "privacidad" | "cookies" | "terminos";
 
 const HASH_TO_TAB: Record<string, Tab> = {
   "#privacidad": "privacidad",
@@ -13,6 +13,7 @@ const HASH_TO_TAB: Record<string, Tab> = {
 
 interface TermsModalProps {
   open: boolean;
+  initialTab?: Tab;
   onOpen?: () => void;
   onClose: () => void;
 }
@@ -527,13 +528,27 @@ function TerminosContent() {
 }
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: "terminos", label: "T\u00e9rminos y Condiciones" },
   { id: "privacidad", label: "Aviso de Privacidad" },
   { id: "cookies", label: "Aviso de Cookies" },
-  { id: "terminos", label: "T\u00e9rminos y Condiciones" },
 ];
 
-export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("privacidad");
+export default function TermsModal({ open, initialTab = "terminos", onOpen, onClose }: TermsModalProps) {
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      modalRef.current?.focus();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      const hashTab = HASH_TO_TAB[window.location.hash];
+      setActiveTab(hashTab || initialTab);
+    }
+  }, [open, initialTab]);
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -577,6 +592,17 @@ export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
     onClose();
   };
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   if (!open) return null;
 
   return (
@@ -585,20 +611,28 @@ export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
       onClick={handleClose}
     >
       <div
-        className="relative flex flex-col w-full max-w-2xl max-h-[85vh] rounded-xl bg-background text-foreground shadow-2xl overflow-hidden"
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative flex flex-col w-full max-w-2xl max-h-[85vh] rounded-xl bg-background text-foreground shadow-2xl overflow-hidden focus:outline-none"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Términos y condiciones y avisos legales"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Tab bar */}
-        <div className="flex-none border-b border-foreground/10 px-6 pt-6 pr-12 md:px-8 md:pt-6 md:pr-14">
-          <div className="flex gap-0 overflow-x-auto">
+        <div className="flex-none border-b border-foreground/10 px-6 pt-6 pr-14 md:px-8 md:pt-6 md:pr-16">
+          <div className="flex gap-2 overflow-x-auto pb-px" role="tablist" aria-label="Avisos legales y términos">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`px-3 py-2 text-xs font-semibold border-b-2 -mb-px transition-colors whitespace-nowrap ${
+                className={`px-3.5 py-2.5 text-xs md:text-sm font-semibold border-b-2 -mb-px transition-all whitespace-nowrap cursor-pointer rounded-t-md ${
                   activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/40 hover:text-foreground/70"
+                    ? "border-primary text-primary bg-primary/5"
+                    : "border-transparent text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5"
                 }`}
               >
                 {tab.label}
@@ -609,9 +643,10 @@ export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
 
         {/* Close button */}
         <button
+          type="button"
           onClick={handleClose}
-          className="absolute right-4 top-4 text-foreground/50 hover:text-foreground transition-colors"
-          aria-label="Cerrar"
+          className="absolute right-4 top-4 text-foreground/50 hover:text-foreground transition-colors p-2 rounded-lg hover:bg-foreground/5 cursor-pointer"
+          aria-label="Cerrar modal"
         >
           <svg
             className="h-6 w-6"
@@ -625,10 +660,24 @@ export default function TermsModal({ open, onOpen, onClose }: TermsModalProps) {
         </button>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+        <div className="flex-1 overflow-y-auto p-6 md:p-8" tabIndex={0}>
           {activeTab === "privacidad" && <PrivacidadContent />}
           {activeTab === "cookies" && <CookiesContent />}
           {activeTab === "terminos" && <TerminosContent />}
+        </div>
+
+        {/* Modal footer */}
+        <div className="flex-none border-t border-foreground/10 px-6 py-3.5 md:px-8 flex items-center justify-between gap-4 bg-surface/50">
+          <span className="text-xs text-foreground/50 hidden sm:inline">
+            CL Camino Legal&reg; &middot; Documentos Legales
+          </span>
+          <button
+            type="button"
+            onClick={handleClose}
+            className="ml-auto rounded-lg bg-button-bg text-button-text px-5 py-2 text-xs md:text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
+          >
+            Entendido
+          </button>
         </div>
       </div>
     </div>
