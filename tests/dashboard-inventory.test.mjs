@@ -12,10 +12,10 @@ const evidence = { id:'review',assetKey:asset.key,environment:'production',kind:
 const manifest = { assets:[asset],selections:[selection],evidence:[evidence],discovery:{checkedAt:null,scope:'Selected property only',complete:false} };
 
 test('catalog covers every canonical event exactly once without inventing Meta destinations', () => {
-  assert.equal(measurementCatalog.length,27);
+  assert.equal(measurementCatalog.length,28);
   assert.deepEqual(measurementCatalog.map(row=>row.name), [...EVENT_NAMES]);
   assert.deepEqual(measurementCatalog.filter(row=>row.meta).map(row=>[row.name,row.meta]), [
-    ['page_view','PageView'],['quote_request_intent','Contact'],['lead_submitted','Lead'],['whatsapp_click','Contact'],['email_click','Contact'],
+    ['page_view','PageView'],['quote_request_intent','Contact'],['lead_submitted','Lead'],['whatsapp_click','Contact'],['email_click','Contact'],['service_banner_click','ViewContent'],
   ]);
   for (const event of EVENT_NAMES) assert.equal(providerEventName(event,'ga4'),event);
   assert.equal(measurementCatalog.find(row=>row.name==='lead_submitted').registrationRequired,true);

@@ -19,7 +19,7 @@ export type VerificationEvidence = {
 export type EvidenceView = { status: EvidenceStatus; verifiedAt: string | null; source: string | null; method: VerificationEvidence['method'] | null };
 export type EventDefinition = {
   name: AnalyticsEvent; label: string; trigger: string; scope: string;
-  category: 'lead' | 'intent' | 'engagement'; google: AnalyticsEvent; meta: 'PageView' | 'Lead' | 'Contact' | null;
+  category: 'lead' | 'intent' | 'engagement'; google: AnalyticsEvent; meta: 'PageView' | 'Lead' | 'Contact' | 'ViewContent' | null;
   registrationRequired: boolean;
 };
 export type EventCoverage = EventDefinition & { implementation: 'implemented'; destinations: Record<Provider, {

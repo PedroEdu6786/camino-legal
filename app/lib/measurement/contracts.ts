@@ -1,9 +1,9 @@
 export const SERVICE_IDS = ["registro-de-marca", "registro-de-aviso-comercial", "contratos-y-convenios", "derechos-de-autor", "consultoria-legal", "paquete-web-legal"] as const;
 export type ServiceId = (typeof SERVICE_IDS)[number];
-export const EVENT_NAMES = ["page_view", "navigation_click", "cta_click", "service_select", "quote_view", "quote_change", "quote_request_intent", "evaluation_open", "evaluation_close", "form_view", "form_start", "form_submit_attempt", "form_validation_failed", "form_submit_failed", "lead_submitted", "whatsapp_click", "email_click", "social_click", "outbound_reference_click", "section_view", "trademark_step_view", "faq_toggle", "process_step_select", "review_interaction", "quote_disclosure_toggle", "scroll_depth", "utility_interaction"] as const;
+export const EVENT_NAMES = ["page_view", "navigation_click", "cta_click", "service_select", "quote_view", "quote_change", "quote_request_intent", "evaluation_open", "evaluation_close", "form_view", "form_start", "form_submit_attempt", "form_validation_failed", "form_submit_failed", "lead_submitted", "whatsapp_click", "email_click", "social_click", "outbound_reference_click", "section_view", "trademark_step_view", "faq_toggle", "process_step_select", "review_interaction", "quote_disclosure_toggle", "scroll_depth", "utility_interaction", "service_banner_click"] as const;
 export type AnalyticsEvent = (typeof EVENT_NAMES)[number];
-export const META_EVENT_NAMES = { page_view: "PageView", lead_submitted: "Lead", whatsapp_click: "Contact", email_click: "Contact", quote_request_intent: "Contact" } as const;
-export function providerEventName(name: AnalyticsEvent, provider: "meta"): "PageView" | "Lead" | "Contact" | null;
+export const META_EVENT_NAMES = { page_view: "PageView", lead_submitted: "Lead", whatsapp_click: "Contact", email_click: "Contact", quote_request_intent: "Contact", service_banner_click: "ViewContent" } as const;
+export function providerEventName(name: AnalyticsEvent, provider: "meta"): "PageView" | "Lead" | "Contact" | "ViewContent" | null;
 export function providerEventName(name: AnalyticsEvent, provider: "ga4"): AnalyticsEvent;
 export function providerEventName(name: AnalyticsEvent, provider: "ga4" | "meta") {
   return provider === "ga4" ? name : Object.hasOwn(META_EVENT_NAMES, name) ? META_EVENT_NAMES[name as keyof typeof META_EVENT_NAMES] : null;
@@ -26,15 +26,15 @@ export function serviceFromDestination(path: string, search = "") {
   const route = pageIdentity(path);
   return route.service_id !== "unspecified" ? serviceId(route.service_id) : path === "/cotizaciones" ? serviceId(new URLSearchParams(search).get("servicio")) : "unspecified";
 }
-const SOURCES = new Set(["navbar_desktop", "navbar_mobile_pill", "navbar_mobile_menu", "navbar", "footer", "legal_dialog", "legal", "sticky", "mobile_sticky", "mobile_sticky_bar", "hero", "home", "home_services", "home_about", "home_banner", "services_preview", "about", "banner", "services", "process", "reviews", "service_directory", "directory", "service_detail", "service", "quotation", "quote", "evaluation_modal", "trademark_evaluation", "contact", "contact_form", "contact_card", "faq", "trademark", "trademark_journey", "page"]);
+const SOURCES = new Set(["navbar_desktop", "navbar_mobile_pill", "navbar_mobile_menu", "navbar", "footer", "legal_dialog", "legal", "sticky", "mobile_sticky", "mobile_sticky_bar", "hero", "home", "home_services", "home_about", "home_banner", "services_preview", "about", "banner", "services", "process", "reviews", "service_directory", "directory", "service_detail", "service_sticky_banner", "service", "quotation", "quote", "evaluation_modal", "trademark_evaluation", "contact", "contact_form", "contact_card", "faq", "trademark", "trademark_journey", "page"]);
 const SIMPLE_IDS = ["nav.logo", "nav.home", "nav.services", "nav.quotation", "nav.about", "nav.faq", "nav.contact", "nav.menu", "footer.contact", "footer.email", "footer.legal", "sticky.contact", "sticky.whatsapp", "hero.services", "hero.contact", "hero.theme", "home.services_all", "home.quotations", "home.about", "home.banner_contact", "process.previous", "process.next", "process.contact", "process.quotation", "process.start", "process.continue", "reviews.previous", "reviews.next", "reviews.swipe", "directory.contact", "service.breadcrumb", "service.back", "service.scope", "service.deliverables", "service.investment", "service.preparation", "trademark.route", "trademark.milestones", "trademark.law", "quote.service", "quote.classes", "quote.ownership_rules", "quote.payment_count", "quote.includes", "quote.cost_breakdown", "quote.payment_schedule", "quote.request_email", "quote.request_whatsapp", "quote.evaluation", "evaluation.whatsapp", "evaluation.submit", "evaluation.close", "evaluation.done", "about.contact", "about.services", "contact.whatsapp", "contact.email", "contact.submit", "quote_cost_breakdown", "quote_payment_schedule", "hero-section", "hero", "services", "process", "about", "reviews", "contact", "faq", "alcance", "entregables", "inversion", "preparacion", "ruta-de-tu-marca", "intro", "belief", "principles", "guidance", "quotation", "before_start", "service_hero", "about_hero", "about_belief", "about_principles", "quote_intro", "quote_guidance", "service_scope", "service_deliverables", "service_investment", "service_preparation", "trademark_route", "trademark_milestones"];
 const IDS = new Set(SIMPLE_IDS);
-for (const service of SERVICE_IDS) for (const prefix of ["home.service", "directory.select", "directory.preview", "directory.index", "service.quote"]) IDS.add(`${prefix}.${service}`);
+for (const service of SERVICE_IDS) for (const prefix of ["home.service", "directory.select", "directory.preview", "directory.index", "service.quote", "service.sticky_quote"]) IDS.add(`${prefix}.${service}`);
 for (const network of ["instagram", "facebook", "linktree"]) { IDS.add(`footer.social.${network}`); }
 for (let index = 0; index < 20; index++) for (const prefix of ["faq.item", "faq.link", "trademark.faq", "process.tab", "reviews.dot"]) IDS.add(`${prefix}.${index}`);
 for (let index = 1; index <= 5; index++) IDS.add(`trademark.step.${String(index).padStart(2, "0")}`);
 for (const tab of ["terminos", "privacidad", "cookies", "terms", "privacy"]) { IDS.add(`legal.tab.${tab}`); IDS.add(`legal.email.${tab}`); }
-IDS.add("legal.close");
+IDS.add("legal.close"); IDS.add("service.sticky_quote.dismiss");
 export function registeredId(value: unknown): value is string { return typeof value === "string" && IDS.has(value); }
 const ENUMS: Record<string, readonly string[]> = {
   session_source: ["direct", "google", "bing", "facebook", "instagram", "linktree", "other", "unknown"],
@@ -50,7 +50,7 @@ const ENUMS: Record<string, readonly string[]> = {
   failure_category: ["recipient_rejected", "transport_failure", "unknown", "validation"],
   quote_type: ["estimate", "custom"], currency: ["MXN"], price_kind: ["estimate"],
   state: ["open", "closed"], channel: ["email", "whatsapp", "social"], network: ["instagram", "facebook", "linktree"],
-  interaction_origin: ["user", "visibility"], utility: ["menu", "theme", "legal"], action: ["open", "close", "select", "toggle"],
+  interaction_origin: ["user", "visibility"], utility: ["menu", "theme", "legal", "banner"], action: ["open", "close", "select", "toggle"],
 };
 const CORRELATION = new Set(["event_id", "attempt_id", "outcome_event_id", "page_view_id", "form_instance_id", "quote_id", "retry_parent_attempt_id"]);
 export function opaqueId(value: unknown): value is string { return typeof value === "string" && /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value); }

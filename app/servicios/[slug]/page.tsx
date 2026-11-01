@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import SiteFrame from "../../components/layout/SiteFrame";
 import ServiceScrollHint from "../../components/ui/ServiceScrollHint";
+import ServiceQuoteBanner from "../../components/ui/ServiceQuoteBanner";
 import TrademarkJourney from "../../components/sections/TrademarkJourney";
 import { serviceDetails as services, money, trademarkQuote } from "../../lib/services";
 
@@ -44,5 +45,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       ["¿Qué pasa después de la resolución?", "Si el IMPI concede el registro, recibirás el título, el manual de uso de tu marca y recordatorios calendarizables de declaración de uso y renovación."],
     ].map(([q,a], index) => <details data-analytics-faq={`trademark.faq.${index + 1}`} key={q}><summary>{q}</summary><p>{a}</p></details>)}</section>}
     <div className="site-container end-link"><Link data-analytics-event="navigation_click" data-analytics-action="service.back" data-analytics-source="service_detail"  className="text-link" href="/servicios">← Explorar otros servicios</Link></div>
+    <ServiceQuoteBanner key={`quote-banner-${slug}`} slug={slug} title={service.title} />
   </SiteFrame>;
 }

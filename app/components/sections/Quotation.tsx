@@ -79,7 +79,7 @@ export default function Quotation({ initialService, explicitService = false }: {
         <p className="fine-print">IVA incluido. Confirmaremos clases y alcance antes de iniciar. Importes de la cotización 2026.</p>
       </> : fixedQuote ? <>
         <div className="quote-total"><span>Total · IVA incluido</span><strong className="quote-total-value">{money(fixedTotal!)} <small>MXN</small></strong></div>
-        <details className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines">{fixedQuote.lines.map(([label, amount]) => <div key={label}><dt>{label}</dt><dd>{money(amount)}</dd></div>)}</dl></details>
+        {service.slug !== "contratos-y-convenios" && <details className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines">{fixedQuote.lines.map(([label, amount]) => <div key={label}><dt>{label}</dt><dd>{money(amount)}</dd></div>)}</dl></details>}
         <details className="quote-disclosure"><summary>{fixedPlan!.length === 1 ? "Cuándo pagar" : `Cómo se distribuyen tus ${fixedPlan!.length} pagos`}</summary><ol className="payment-schedule">{fixedPlan!.map(([label, amount]) => <li key={label}><span>{label}</span><strong>{money(amount)}</strong></li>)}</ol></details>
         <details className="quote-disclosure"><summary>Gastos adicionales y condiciones</summary><ul className="content-list">{fixedQuote.notes.map(note => <li key={note}>{note}</li>)}</ul></details>
         <p className="fine-print">Importes de la cotización 2026, IVA incluido. Confirmaremos el alcance antes de iniciar. No se realiza ningún cobro desde esta página.</p>

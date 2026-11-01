@@ -29,7 +29,8 @@ const descriptions: Record<AnalyticsEvent, Description> = {
   review_interaction: ['Explora testimonios', 'Cambia manualmente un testimonio.', 'Testimonios'],
   quote_disclosure_toggle: ['Consulta un desglose', 'Abre o cierra costos o calendario de pagos.', 'Cotizaciones'],
   scroll_depth: ['Avanza por una página', 'Alcanza un hito de desplazamiento registrado.', 'Páginas públicas'],
-  utility_interaction: ['Usa una opción del sitio', 'Activa menú, tema o contenido legal.', 'Opciones del sitio'],
+  service_banner_click: ['Abre cotización desde el aviso', 'Activa el aviso fijo de una página de servicio hacia su cotización.', 'Páginas de servicio'],
+  utility_interaction: ['Usa una opción del sitio', 'Activa menú, tema, contenido legal o cierra el aviso de cotización.', 'Opciones del sitio'],
 };
 const intents = new Set<AnalyticsEvent>(['whatsapp_click', 'email_click', 'quote_request_intent']);
 export const measurementCatalog: EventDefinition[] = EVENT_NAMES.map(name => ({
