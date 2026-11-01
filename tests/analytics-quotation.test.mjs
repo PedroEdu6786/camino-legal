@@ -21,7 +21,7 @@ test('analytics estimate matches every displayed class/rules combination in inte
 });
 
 test('custom services report unknown prices and no trademark-only controls', () => {
-  for (const service of services.filter(service => ["consultoria-legal", "paquete-web-legal"].includes(service.slug))) {
+  for (const service of services.filter(service => ["paquete-web-legal"].includes(service.slug))) {
     const value = quoteSnapshot('same-quote-instance', service.slug, 10, true, 1);
     assert.equal(value.service_id, service.slug);
     assert.equal(value.quote_type, 'custom');

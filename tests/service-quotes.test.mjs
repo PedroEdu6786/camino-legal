@@ -4,7 +4,7 @@ import { serviceQuotes, serviceQuoteTotal, servicePaymentPlan } from '../app/lib
 import { quoteSnapshot } from '../app/lib/quoteAnalytics.ts';
 
 test('2026 PDF totals and every payment plan reconcile in centavos', () => {
-  const totals = { 'registro-de-aviso-comercial': 589900, 'derechos-de-autor': 259900, 'contratos-y-convenios': 249900 };
+  const totals = { 'registro-de-aviso-comercial': 589900, 'derechos-de-autor': 259900, 'contratos-y-convenios': 249900, 'consultoria-legal': 39900 };
   for (const [slug, total] of Object.entries(totals)) {
     assert.equal(serviceQuoteTotal(slug), total);
     for (const plan of serviceQuotes[slug].plans) {

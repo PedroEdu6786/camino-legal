@@ -33,6 +33,15 @@ export const serviceQuotes = {
     notes: ["Trabajamos con distintos tipos de contratos y convenios, como prestación de servicios, confidencialidad (NDA) y acuerdos comerciales. Esta cotización corresponde a la redacción de un contrato; las revisiones de documentos existentes y otros tipos de acuerdo se cotizan según su alcance.", "Según tu caso, pueden requerirse documentos complementarios como aviso de privacidad, términos y condiciones o cláusulas sobre cookies; se cotizan por separado, por ejemplo, un aviso de privacidad o un convenio de confidencialidad desde $799.00 MXN.", "Los cambios de fondo posteriores a la ronda de ajustes se cotizan aparte."],
     firstStep: "Empieza con el diagnóstico y la asesoría por $399 MXN, incluidos en el total. Después decides si continúas con la redacción.",
   },
+  "consultoria-legal": {
+    title: "Consultoría legal", unit: "Una consultoría",
+    lines: [["Consultoría legal · reunión en línea y diagnóstico por escrito", 39900]],
+    plans: [[["Al agendar", 39900]]],
+    stages: ["Reunión en línea · aprox. 45 minutos: revisamos tu idea o proyecto y los documentos que compartas, y te explicamos tus opciones de protección. Recibes el enlace por correo al agendar.", "Diagnóstico por escrito · 3 días hábiles: riesgos identificados y la vía recomendada.", "Cotización personalizada: te compartimos el costo del servicio que necesitas."],
+    deliverables: ["Diagnóstico por escrito con riesgos identificados y la vía recomendada.", "Cotización personalizada del servicio que necesitas."],
+    notes: ["Abonable al costo total del servicio cotizado, si lo contratas dentro de los 30 días naturales siguientes a la entrega de tu diagnóstico."],
+    firstStep: "Abonable al costo total del servicio cotizado, si lo contratas dentro de los 30 días naturales siguientes a la entrega de tu diagnóstico.",
+  },
 } as const;
 
 export function getServiceQuote(slug: string) {

@@ -64,8 +64,13 @@ export default function Quotation({ initialService, explicitService = false }: {
         <div className="quote-evaluation"><p>¿Prefieres empezar poco a poco?</p><p className="fine-print">Evalúa tu marca por <strong>$799 MXN</strong>, incluidos en el total. Después decides si continúas.</p>
         <button type="button" className="text-link" aria-haspopup="dialog" onClick={() => { trackEvent("evaluation_open", { ...analyticsContext, form_id: "trademark_evaluation", action_id: "quote.evaluation" }); setEvaluationOpen(true); }}>Empezar con la evaluación →</button></div>
       </> : fixedQuote ? <>
-        <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{fixedQuote.plans.map(plan => <label key={plan.length}><input type="radio" name="payments" checked={fixedPlan?.length === plan.length} onChange={() => { change("payment_count", plan.length); setPayments(plan.length); }} /><span>{plan.length === 1 ? "Pago único" : `${plan.length} pagos`}</span></label>)}</div></fieldset>
-        <div className="quote-evaluation"><p>¿Prefieres empezar poco a poco?</p><p className="fine-print">{fixedQuote.firstStep}</p></div>
+        {fixedQuote.plans.length > 1 && <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{fixedQuote.plans.map(plan => <label key={plan.length}><input type="radio" name="payments" checked={fixedPlan?.length === plan.length} onChange={() => { change("payment_count", plan.length); setPayments(plan.length); }} /><span>{plan.length === 1 ? "Pago único" : `${plan.length} pagos`}</span></label>)}</div></fieldset>}
+        {service.slug === "consultoria-legal" && <div className="quote-field-group">
+          <h2>¿Qué incluye?</h2>
+          <ul className="content-list"><li>Reunión en línea de aprox. 45 minutos.</li><li>Revisión de tu caso y orientación sobre tus opciones de protección.</li><li>Diagnóstico por escrito en 3 días hábiles, con riesgos y vía recomendada.</li><li>Cotización personalizada del servicio que necesitas.</li></ul>
+          <p className="fine-print">Para agendar, cuéntanos tu idea o situación y comparte los documentos que tengas.</p>
+        </div>}
+        <div className="quote-evaluation">{fixedQuote.plans.length > 1 && <p>¿Prefieres empezar poco a poco?</p>}<p className="fine-print">{fixedQuote.firstStep}</p></div>
       </> : <><h2>¿Cómo se cotiza?</h2><p>{service.factors}</p><h3>Cuéntanos sobre tu proyecto</h3><ul className="content-list">{service.needs.map(n => <li key={n}>{n}</li>)}</ul></>}
     </div>
     <div data-analytics-quote={quoteId ? JSON.stringify(analyticsContext) : undefined} className="quote-sheet" aria-live="polite" aria-atomic="true">
@@ -79,7 +84,7 @@ export default function Quotation({ initialService, explicitService = false }: {
         <p className="fine-print">IVA incluido. Confirmaremos clases y alcance antes de iniciar. Importes de la cotización 2026.</p>
       </> : fixedQuote ? <>
         <div className="quote-total"><span>Total · IVA incluido</span><strong className="quote-total-value">{money(fixedTotal!)} <small>MXN</small></strong></div>
-        {service.slug !== "contratos-y-convenios" && <details className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines">{fixedQuote.lines.map(([label, amount]) => <div key={label}><dt>{label}</dt><dd>{money(amount)}</dd></div>)}</dl></details>}
+        {service.slug !== "contratos-y-convenios" && fixedQuote.lines.length > 1 && <details className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines">{fixedQuote.lines.map(([label, amount]) => <div key={label}><dt>{label}</dt><dd>{money(amount)}</dd></div>)}</dl></details>}
         <details className="quote-disclosure"><summary>{fixedPlan!.length === 1 ? "Cuándo pagar" : `Cómo se distribuyen tus ${fixedPlan!.length} pagos`}</summary><ol className="payment-schedule">{fixedPlan!.map(([label, amount]) => <li key={label}><span>{label}</span><strong>{money(amount)}</strong></li>)}</ol></details>
         <details className="quote-disclosure"><summary>Gastos adicionales y condiciones</summary><ul className="content-list">{fixedQuote.notes.map(note => <li key={note}>{note}</li>)}</ul></details>
         <p className="fine-print">Importes de la cotización 2026, IVA incluido. Confirmaremos el alcance antes de iniciar. No se realiza ningún cobro desde esta página.</p>
