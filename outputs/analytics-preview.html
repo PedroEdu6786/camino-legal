@@ -1,0 +1,111 @@
+<style>
+#camino-analytics-preview{--cp-bg:light-dark(#f2ecea,#231c1e);--cp-panel:light-dark(#fffaf7,#302629);--cp-text:light-dark(#2f2a2b,#f2ecea);--cp-muted:light-dark(#6c595d,#c6b1b7);--cp-line:light-dark(#ddcecb,#564046);--cp-brand:light-dark(#622831,#edb4c0);--cp-selected:light-dark(#622831,#edb4c0);--cp-onselected:light-dark(#fffaf7,#301a20);--cp-soft:light-dark(#eadbdc,#423035);color:var(--cp-text);background:var(--cp-bg);font-family:Poppins,system-ui,sans-serif;border-radius:14px;overflow:hidden;font-size:14px;line-height:1.5}
+#camino-analytics-preview *{box-sizing:border-box}
+#camino-analytics-preview .cp-top{padding:20px 110px 18px 24px;border-bottom:1px solid var(--cp-line);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#camino-analytics-preview .cp-brand{font-size:22px;font-weight:600;letter-spacing:-1px;color:var(--cp-brand)}
+#camino-analytics-preview .cp-demo{font-size:12px;color:var(--cp-muted)}
+#camino-analytics-preview .cp-main{padding:24px}
+#camino-analytics-preview .cp-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+#camino-analytics-preview h2{font-size:27px;letter-spacing:-.8px;margin:0 0 4px;color:var(--cp-text);font-weight:500}
+#camino-analytics-preview h3{font-size:16px;font-weight:500;margin:0 0 14px;color:var(--cp-text)}
+#camino-analytics-preview p{margin:0;color:var(--cp-muted)}
+#camino-analytics-preview button,#camino-analytics-preview select{font:inherit;color:var(--cp-text);background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:8px;padding:10px 14px;min-height:44px;cursor:pointer}
+#camino-analytics-preview button:focus-visible,#camino-analytics-preview select:focus-visible,#camino-analytics-preview summary:focus-visible{outline:3px solid var(--cp-brand);outline-offset:3px}
+#camino-analytics-preview .cp-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+#camino-analytics-preview .cp-nav button[aria-selected="true"]{background:var(--cp-selected);color:var(--cp-onselected);border-color:var(--cp-selected)}
+#camino-analytics-preview .cp-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:24px}
+#camino-analytics-preview .cp-stat{background:var(--cp-panel);padding:20px;border-radius:10px}
+#camino-analytics-preview .cp-value{font-size:32px;font-weight:500;letter-spacing:-1px;margin:6px 0;font-variant-numeric:tabular-nums}
+#camino-analytics-preview .cp-small{font-size:12px;color:var(--cp-muted)}
+#camino-analytics-preview .cp-split{display:grid;grid-template-columns:1.15fr 1fr;gap:28px;margin-top:24px}
+#camino-analytics-preview .cp-row{display:flex;justify-content:space-between;align-items:start;gap:16px;padding:12px 0;border-bottom:1px solid var(--cp-line)}
+#camino-analytics-preview .cp-bar{height:8px;background:var(--cp-soft);border-radius:4px;margin:8px 0 16px;overflow:hidden}
+#camino-analytics-preview .cp-fill{height:100%;background:var(--cp-brand);border-radius:4px}
+#camino-analytics-preview .cp-notice{background:var(--cp-soft);padding:16px 18px;border-radius:8px;margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+#camino-analytics-preview .cp-notice p{color:var(--cp-text)}
+#camino-analytics-preview .cp-table-wrap{overflow-x:auto}
+#camino-analytics-preview table{border-collapse:collapse;width:100%;font-size:13px}
+#camino-analytics-preview th{text-align:left;color:var(--cp-muted);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--cp-line)}
+#camino-analytics-preview td{padding:16px 10px;border-bottom:1px solid var(--cp-line);vertical-align:top}
+#camino-analytics-preview .cp-pill{display:inline-block;border:1px solid var(--cp-line);border-radius:20px;padding:3px 9px;font-size:12px;white-space:nowrap}
+#camino-analytics-preview .cp-id{font-family:ui-monospace,monospace;font-size:12px;color:var(--cp-muted);overflow-wrap:anywhere}
+#camino-analytics-preview details{margin-top:18px;padding:16px;background:var(--cp-panel);border-radius:8px}
+#camino-analytics-preview summary{cursor:pointer;font-weight:500}
+#camino-analytics-preview .cp-detailgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:18px 0}
+#camino-analytics-preview .cp-detailgrid strong{display:block;font-weight:500;margin-bottom:4px}
+#camino-analytics-preview .cp-task{padding:20px 0;border-bottom:1px solid var(--cp-line)}
+#camino-analytics-preview .cp-task h3{margin-bottom:7px}
+#camino-analytics-preview .cp-task p{margin:6px 0}
+#camino-analytics-preview .cp-footer{padding:14px 24px;border-top:1px solid var(--cp-line);font-size:12px;color:var(--cp-muted)}
+#camino-analytics-preview [hidden]{display:none!important}
+@media(max-width:650px){#camino-analytics-preview .cp-main{padding:18px}#camino-analytics-preview .cp-stats,#camino-analytics-preview .cp-split,#camino-analytics-preview .cp-detailgrid{grid-template-columns:1fr}#camino-analytics-preview .cp-stat{padding:16px}#camino-analytics-preview .cp-top{padding-left:18px}#camino-analytics-preview h2{font-size:24px}}
+</style>
+<div id="camino-analytics-preview">
+  <header class="cp-top"><span class="cp-brand">camino legal®</span><span class="cp-demo">Vista previa · Todos los datos son ficticios</span></header>
+  <main class="cp-main">
+    <div class="cp-heading"><div><h2>Analítica del sitio</h2><p>Resultados, cuentas y confianza en el seguimiento.</p></div><label class="cp-small">Período de ejemplo<br><select id="cp-period"><option value="28">Últimos 28 días completos</option><option value="7">Últimos 7 días completos</option></select></label></div>
+    <nav class="cp-nav" role="tablist" aria-label="Analítica">
+      <button id="cp-tab-overview" role="tab" type="button" aria-controls="cp-overview" aria-selected="true" data-view="overview">Resumen</button>
+      <button id="cp-tab-accounts" role="tab" type="button" aria-controls="cp-accounts" aria-selected="false" data-view="accounts">Cuentas registradas</button>
+      <button id="cp-tab-events" role="tab" type="button" aria-controls="cp-events" aria-selected="false" data-view="events">Eventos y conversiones</button>
+      <button id="cp-tab-health" role="tab" type="button" aria-controls="cp-health" aria-selected="false" data-view="health">Pendientes de seguimiento · 2</button>
+    </nav>
+    <section id="cp-overview" role="tabpanel" aria-labelledby="cp-tab-overview">
+      <div class="cp-stats" aria-live="polite">
+        <div class="cp-stat"><p>Usuarios activos · Google</p><div class="cp-value" id="cp-users">1,240</div><span class="cp-small">Personas observadas por GA4</span></div>
+        <div class="cp-stat"><p>Sesiones · Google</p><div class="cp-value" id="cp-sessions">1,580</div><span class="cp-small">Visitas registradas en el período</span></div>
+        <div class="cp-stat"><p>Solicitudes observadas · Google</p><div class="cp-value" id="cp-leads">24</div><span class="cp-small">Eventos lead_submitted · no ventas</span></div>
+      </div>
+      <div class="cp-split">
+        <section><h3>Páginas más vistas</h3>
+          <div class="cp-row"><span>Inicio</span><span id="cp-home">920 vistas</span></div><div class="cp-bar"><div class="cp-fill" style="width:100%"></div></div>
+          <div class="cp-row"><span>Registro de marca</span><span id="cp-trademark">610 vistas</span></div><div class="cp-bar"><div class="cp-fill" style="width:66%"></div></div>
+          <div class="cp-row"><span>Cotizaciones</span><span id="cp-quote">380 vistas</span></div><div class="cp-bar"><div class="cp-fill" style="width:41%"></div></div>
+        </section>
+        <section><h3>Intención de contacto</h3><div class="cp-row"><span>Clics en WhatsApp</span><strong id="cp-whatsapp">46</strong></div><div class="cp-row"><span>Clics en correo</span><strong id="cp-email">18</strong></div><div class="cp-row"><span>Solicitud de cotización por correo</span><strong id="cp-request">12</strong></div><p class="cp-small" style="margin-top:14px">Un clic no confirma una conversación ni una solicitud recibida.</p></section>
+      </div>
+      <div class="cp-notice"><div><h3 style="margin-bottom:4px">Meta · Inventario disponible</h3><p>Pixel identificado. Métricas web no disponibles en este ejemplo.</p></div><button type="button" data-go="accounts">Ver cuenta y cobertura →</button></div>
+    </section>
+    <section id="cp-accounts" role="tabpanel" aria-labelledby="cp-tab-accounts" hidden>
+      <h3>Qué tenemos registrado</h3><p style="margin-bottom:18px">Ejemplo: dos recursos activos, uno anterior y uno de pruebas. Descubrimiento limitado a las cuentas con acceso.</p>
+      <div class="cp-table-wrap"><table><thead><tr><th>Recurso</th><th>Uso</th><th>Identificadores</th><th>Responsable</th></tr></thead><tbody>
+        <tr><td>Google Analytics 4<br><span class="cp-small">Sitio de Camino Legal</span></td><td><span class="cp-pill">Activo · informes</span></td><td><div class="cp-id">Propiedad: GA-DEMO</div><div class="cp-id">Flujo: WEB-DEMO</div><div class="cp-id">Medición: G-DEMO</div></td><td>Por confirmar</td></tr>
+        <tr><td>Meta Pixel / conjunto de datos<br><span class="cp-small">Sitio de Camino Legal</span></td><td><span class="cp-pill">Activo · seguimiento</span></td><td class="cp-id">Pixel: META-DEMO</td><td>Por confirmar</td></tr>
+        <tr><td>Propiedad anterior de Google</td><td><span class="cp-pill">Anterior</span><br><span class="cp-small">No se suma a los informes</span></td><td class="cp-id">GA-ANTERIOR-DEMO</td><td>Por confirmar</td></tr>
+        <tr><td>Pixel de desarrollo</td><td><span class="cp-pill">Excluido</span><br><span class="cp-small">Solo pruebas</span></td><td class="cp-id">META-PRUEBAS-DEMO</td><td>Por confirmar</td></tr>
+      </tbody></table></div>
+      <details><summary>Detalle de Google Analytics 4</summary><div class="cp-detailgrid"><div><strong>Entorno seleccionado</strong>Producción · recurso de ejemplo</div><div><strong>Alcance del descubrimiento</strong>Solo recursos accesibles</div><div><strong>Relación de identificadores</strong>Cuenta → propiedad → flujo web → ID de medición</div><div><strong>Evidencia</strong>Simulada; pendiente de revisión real</div></div></details>
+    </section>
+    <section id="cp-events" role="tabpanel" aria-labelledby="cp-tab-events" hidden>
+      <h3>Qué medimos y qué falta confirmar</h3><p style="margin-bottom:18px">Muestra de 5 eventos. El catálogo completo incluirá los 27 eventos actuales.</p>
+      <div class="cp-table-wrap"><table><thead><tr><th>Acción del visitante</th><th>En el sitio</th><th>Google</th><th>Meta</th></tr></thead><tbody>
+        <tr><td>Visita una página<br><span class="cp-id">page_view</span></td><td>Implementado</td><td>Observado*<br><span class="cp-small">page_view</span></td><td>Mapea a PageView<br><span class="cp-small">Recepción sin verificar</span></td></tr>
+        <tr><td>Envía una solicitud aceptada<br><span class="cp-id">lead_submitted</span></td><td>Implementado</td><td>Observado*<br><span class="cp-small">Registro como conversión: pendiente</span></td><td>Mapea a Lead<br><span class="cp-small">Recepción sin verificar</span></td></tr>
+        <tr><td>Hace clic en WhatsApp<br><span class="cp-id">whatsapp_click</span></td><td>Implementado</td><td>Observado*</td><td>Contact · compartido</td></tr>
+        <tr><td>Hace clic en correo<br><span class="cp-id">email_click</span></td><td>Implementado</td><td>Observado*</td><td>Contact · compartido</td></tr>
+        <tr><td>Cambia su cotización<br><span class="cp-id">quote_change</span></td><td>Implementado</td><td>Observado*</td><td>No aplica<br><span class="cp-small">No se envía a Meta</span></td></tr>
+      </tbody></table></div>
+      <p class="cp-small" style="margin-top:12px">*Estado simulado, no evidencia de recepción real.</p>
+      <details open><summary>Solicitud aceptada: ver las cuatro verificaciones</summary><div class="cp-detailgrid"><div><strong>1. Implementado</strong>El sitio tiene definido el evento.</div><div><strong>2. Destino configurado</strong>Existe un ID de destino seleccionado.</div><div><strong>3. Registrado como conversión</strong>Pendiente de confirmar en Google.</div><div><strong>4. Observado por el proveedor</strong>24 eventos en el ejemplo de 28 días.</div></div><p class="cp-small">Una configuración existente no demuestra recepción. Contact en Meta agrupa varias intenciones; no permite repartir automáticamente su total entre ellas.</p></details>
+    </section>
+    <section id="cp-health" role="tabpanel" aria-labelledby="cp-tab-health" hidden>
+      <h3>Lo que necesita revisión</h3><p>Ejemplos de pendientes con una acción concreta, sin cambiar cuentas desde esta página.</p>
+      <article class="cp-task"><h3>Confirmar la conversión principal de Google</h3><span class="cp-pill">Verificación pendiente</span><p>El evento lead_submitted aparece en el ejemplo, pero no está confirmado su registro como evento clave.</p><p><strong>Siguiente paso:</strong> revisar Eventos clave en la propiedad seleccionada y registrar la evidencia.</p><span class="cp-small">Responsable: por asignar · Evidencia: aún no registrada</span></article>
+      <article class="cp-task"><h3>Verificar recepción y duplicados en Meta</h3><span class="cp-pill">Recepción sin verificar</span><p>El sitio contempla Lead desde navegador y servidor. La configuración no demuestra que Meta los cuente una sola vez.</p><p><strong>Siguiente paso:</strong> revisar recepción y deduplicación en Events Manager; conservar fecha y alcance de la comprobación.</p><span class="cp-small">Responsable: por asignar · Evidencia: aún no registrada</span></article>
+      <details><summary>Cómo se presentan los datos que faltan</summary><div class="cp-detailgrid"><div><strong>0 observado</strong>La consulta permite afirmar cero.</div><div><strong>Sin acceso</strong>La cuenta no permite consultar.</div><div><strong>No disponible</strong>La fuente no ofrece esta métrica.</div><div><strong>Desactualizado</strong>Existe evidencia anterior; se muestra su fecha.</div></div></details>
+    </section>
+  </main>
+  <footer class="cp-footer">Propuesta interactiva · Cifras, identificadores y estados simulados · Sin conexión a Google o Meta</footer>
+</div>
+<script>
+(()=>{
+ const root=document.getElementById('camino-analytics-preview');
+ const tabs=Array.from(root.querySelectorAll('[data-view]'));
+ function show(name){tabs.forEach(tab=>{const selected=tab.dataset.view===name;tab.setAttribute('aria-selected',String(selected));root.querySelector('#cp-'+tab.dataset.view).hidden=!selected;});}
+ tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>show(tab.dataset.view));tab.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[next].focus();show(tabs[next].dataset.view);});});
+ root.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>{show(button.dataset.go);root.querySelector('#cp-tab-'+button.dataset.go).focus();}));
+ const samples={'28':['1,240','1,580','24','920 vistas','610 vistas','380 vistas','46','18','12'],'7':['310','395','6','230 vistas','153 vistas','95 vistas','12','5','3']};
+ const targets=['users','sessions','leads','home','trademark','quote','whatsapp','email','request'];
+ root.querySelector('#cp-period').addEventListener('change',event=>{samples[event.target.value].forEach((value,index)=>{root.querySelector('#cp-'+targets[index]).textContent=value;});});
+})();
+</script>

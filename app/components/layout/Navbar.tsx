@@ -1,22 +1,43 @@
 "use client";
 
-import Image from "next/image";
+import BrandLogo from "../ui/BrandLogo";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { scrollTo } from "../../lib/scrollTo";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { trackEvent } from "../../lib/analytics";
+import NavPill from "./NavPill";
 
 const navLinks = [
-  { href: "#services", label: "Servicios" },
-  { href: "#process", label: "Proceso" },
-  { href: "#about", label: "Nosotros" },
-  { href: "#reviews", label: "Clientes" },
-  { href: "#faq", label: "Preguntas" },
+  { id: "home", href: "/", label: "Inicio" },
+  { id: "services", href: "/servicios", label: "Servicios" },
+  { id: "quotation", href: "/cotizaciones", label: "Cotizaciones" },
+  { id: "about", href: "/nosotros", label: "Nosotros" },
+  { id: "faq", href: "/preguntas", label: "Preguntas" },
 ];
 
+function NavLabel({ label }: { label: string; active: boolean }) {
+  return <span>{label}</span>;
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const resetScrollOnArrival = useRef(false);
+
+  const navigateToTop = (href: string) => {
+    resetScrollOnArrival.current = href !== pathname;
+    setMenuOpen(false);
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  };
+
+  useLayoutEffect(() => {
+    if (!resetScrollOnArrival.current) return;
+    resetScrollOnArrival.current = false;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -25,55 +46,52 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 bg-primary transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
+    <header className={`sticky top-0 z-50 bg-background transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
       <nav className={`mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 transition-[padding] duration-300 ${scrolled ? "py-3 lg:py-4" : "py-4 lg:py-6"}`}>
         {/* Logo / Brand */}
-        <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <Image
-            src="/camino-legal-white.png"
-            alt="Camino Legal"
-            width={140}
-            height={40}
-            className="h-8 md:h-10 lg:h-12 w-auto hover-wiggle"
-          />
+        <Link data-analytics-event="navigation_click" data-analytics-action="nav.logo" data-analytics-source="navbar"  href="/" onNavigate={() => navigateToTop("/")}>
+          <BrandLogo variant="symbol" className="h-8 md:h-10 lg:h-12 text-brand-orange hover-wiggle" />
         </Link>
 
         {/* Desktop links + CTA */}
-        <div className="hidden md:flex items-center gap-8 lg:gap-12">
+        <NavPill>
           <ul className="flex items-center gap-8 lg:gap-12">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={link.href}
-                  className="text-sm lg:text-base font-medium text-white/70 transition-colors hover:text-white"
+                  data-analytics-event="navigation_click" data-analytics-action={`nav.${link.id}`} data-analytics-source="navbar_desktop" href={link.href} onNavigate={() => navigateToTop(link.href)}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className="camino-nav-item text-sm lg:text-base font-medium text-foreground/80 transition-colors hover:text-primary"
                 >
-                  {link.label}
+                  <NavLabel label={link.label} active={isActive(link.href)} />
                 </Link>
               </li>
             ))}
           </ul>
-          <a
-            href="#contact"
-            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "navbar" }); scrollTo("contact"); }}
-            className="rounded-lg bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200"
+          <Link
+            data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_desktop"  href="/contacto" onNavigate={() => navigateToTop("/contacto")}
+            aria-current={isActive("/contacto") ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+            className="camino-nav-contact rounded-lg bg-primary/10 hover:bg-primary/20 px-4 py-2 text-sm font-semibold text-primary transition-colors duration-200"
           >
-            Cont&aacute;ctanos
-          </a>
-        </div>
+            <NavLabel label="Contáctanos" active={isActive("/contacto")} />
+          </Link>
+        </NavPill>
 
         {/* Mobile right: CTA pill + hamburger */}
-        <div className="md:hidden flex items-center gap-2">
-          <a
-            href="#contact"
-            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "navbar" }); scrollTo("contact"); }}
-            className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors duration-200"
+        <div className="lg:hidden flex items-center gap-2">
+          <Link
+            data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_mobile_pill"  href="/contacto" onNavigate={() => navigateToTop("/contacto")}
+            aria-current={isActive("/contacto") ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+            className="camino-nav-contact rounded-lg bg-primary/10 hover:bg-primary/20 px-3 py-1.5 text-xs font-semibold text-primary transition-colors duration-200"
           >
-            Cont&aacute;ctanos
-          </a>
+            <NavLabel label="Contáctanos" active={isActive("/contacto")} />
+          </Link>
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
+            className="inline-flex items-center justify-center rounded-md p-2 text-primary"
+            onClick={() => { trackEvent("utility_interaction", { action_id: "nav.menu", source_surface: "navbar_mobile_menu", utility: "menu", action: menuOpen ? "close" : "open" }); setMenuOpen(!menuOpen); }}
             aria-expanded={menuOpen}
             aria-label="Toggle navigation menu"
           >
@@ -92,27 +110,45 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-background/20 px-6 pb-4">
+        <div className="lg:hidden border-t border-foreground/10 px-6 pb-4">
           <ul className="flex flex-col gap-4 pt-4">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={link.href}
-                  className="block text-sm font-medium text-white/70 transition-colors hover:text-white"
+                  data-analytics-event="navigation_click" data-analytics-action={`nav.${link.id}`} data-analytics-source="navbar_mobile_menu" href={link.href} onNavigate={() => navigateToTop(link.href)}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className="camino-nav-item text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {link.label}
+                  <NavLabel label={link.label} active={isActive(link.href)} />
                 </Link>
               </li>
             ))}
             <li>
               <Link
-                href="#contact"
-                className="block text-sm font-medium text-white/70 transition-colors hover:text-white"
+                data-analytics-event="cta_click" data-analytics-action="nav.contact" data-analytics-source="navbar_mobile_menu"  href="/contacto" onNavigate={() => navigateToTop("/contacto")}
+                aria-current={isActive("/contacto") ? "page" : undefined}
+                className="camino-nav-item text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
                 onClick={() => setMenuOpen(false)}
               >
-                Contacto
+                <NavLabel label="Contacto" active={isActive("/contacto")} />
               </Link>
+            </li>
+            <li className="pt-3 mt-1 border-t border-foreground/10 flex flex-wrap gap-x-4 gap-y-2 text-xs text-foreground/60">
+              <a
+                href="#terminos"
+                className="hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                T&eacute;rminos y Condiciones
+              </a>
+              <a
+                href="#privacidad"
+                className="hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                Aviso de Privacidad
+              </a>
             </li>
           </ul>
         </div>

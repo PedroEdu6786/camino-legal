@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Analytics
+
+The site tracks canonical pages, service exploration, quotations, form lifecycles, and deliberate content interactions after consent. Website email outcomes are recorded separately; an unknown transport outcome retries once under the same logical submission.
+
+Use Node 26 for `npm test`, `npm run lint`, and the isolated `npm run test:browser` harness. The browser harness requires the dedicated synthetic build and loopback SMTP settings described in the [analytics operations guide](.claude/analytics/site-expansion/operations.md).
+
+Browser providers stay disabled until `NEXT_PUBLIC_ANALYTICS_PROVIDERS_REVIEWED=true` is explicitly configured after review. See the [verification and launch checklist](.claude/analytics/site-expansion/verification.md) for local evidence and production settings still requiring owner verification.

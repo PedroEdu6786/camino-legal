@@ -1,15 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import formStyles from "../ui/ContactForm.module.css";
+import PhoneField from "../ui/PhoneField";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
-import { sendEmail, type FormState } from "../../actions/sendEmail";
-import {
-  getConsent,
-  subscribeToConsent,
-  trackEvent,
-  trackMeta,
-} from "../../lib/analytics";
+import { useTrackedForm } from "../ui/useTrackedForm";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -17,52 +13,27 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-button-bg px-5 py-3.5 text-sm font-bold text-button-text transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-95 active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+      className="w-full cursor-pointer rounded-xl bg-button-bg px-5 py-3.5 text-sm font-bold text-button-text transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-95 active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
     >
       {pending ? "Enviando\u2026" : "Enviar mensaje"}
     </button>
   );
 }
 
-const inputClass =
-  "w-full rounded-xl border-2 border-foreground/10 bg-background px-4 py-3 text-sm placeholder:text-foreground/30 focus:outline-none focus:border-primary/40 transition-colors duration-200";
-
 export default function Contact() {
-  const [state, action] = useActionState<FormState, FormData>(sendEmail, null);
-  const [phone, setPhone] = useState("");
-  // Stable per page view; exposed to the form only when consent is granted
-  const [eventId] = useState(() => crypto.randomUUID());
-  const consented = useSyncExternalStore(
-    subscribeToConsent,
-    () => getConsent() === "granted",
-    () => false,
-  );
-  const formStartedRef = useRef(false);
-  const submitTrackedRef = useRef(false);
+  const { state, action, instanceId, start, invalid, submit } = useTrackedForm("contact");
+  const [fields, setFields] = useState({ name: "", email: "", message: "" });
+  const field = (key: keyof typeof fields) => ({
+    value: fields[key],
+    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFields(previous => ({ ...previous, [key]: event.target.value })),
+  });
 
-  useEffect(() => {
-    if (state?.success && !submitTrackedRef.current) {
-      submitTrackedRef.current = true;
-      trackEvent("contact_form_submit");
-      trackMeta("Lead", { eventID: eventId });
-    }
-  }, [state, eventId]);
 
-  const handleFormFocus = () => {
-    if (!formStartedRef.current) {
-      formStartedRef.current = true;
-      trackEvent("form_start");
-    }
-  };
-
-  const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
-  };
 
   return (
-    <section
+    <section data-analytics-section="contact"
       id="contact"
-      className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
+      className="contact-page mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-24 lg:px-8"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         {/* Left — fun copy */}
@@ -98,11 +69,11 @@ export default function Contact() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
               Hablemos de
               <br />
               <span className="text-secondary">tu caso</span>
-            </h2>
+            </h1>
             <p className="text-xs md:text-sm lg:text-base leading-relaxed opacity-60">
               Comp&aacute;rtenos tu caso y con gusto te orientamos sobre el
               proceso, tiempos y costos.
@@ -114,8 +85,8 @@ export default function Contact() {
             href="https://api.whatsapp.com/send/?phone=529992505160&text&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => { trackEvent("whatsapp_click", { source: "contact_card" }); trackMeta("Contact"); }}
-            className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
+            data-analytics-event="whatsapp_click" data-analytics-action="contact.whatsapp" data-analytics-source="contact"
+            className={`${formStyles.panel} flex items-center gap-4 rounded-3xl border border-foreground/10 p-6 hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 transition-colors duration-200 group`}
           >
             <span className="w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0 group-hover:bg-[#25D366]/20 transition-colors">
               <svg className="w-5 h-5 text-[#25D366]" fill="currentColor" viewBox="0 0 24 24">
@@ -131,8 +102,8 @@ export default function Contact() {
           {/* Email card */}
           <a
             href="mailto:info@caminolegal.com.mx"
-            onClick={() => { trackEvent("email_click", { source: "contact_card" }); trackMeta("Contact"); }}
-            className="flex items-center gap-4 rounded-2xl border border-foreground/8 bg-foreground/[0.02] p-5 hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-200 group"
+            data-analytics-event="email_click" data-analytics-action="contact.email" data-analytics-source="contact"
+            className={`${formStyles.panel} flex items-center gap-4 rounded-3xl border border-foreground/10 p-6 hover:border-primary/40 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 transition-colors duration-200 group`}
           >
             <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
               <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -160,7 +131,7 @@ export default function Contact() {
             />
           )}
 
-          <div className="rounded-3xl border-2 border-foreground/8 bg-foreground/[0.02] p-6 md:p-8">
+          <div className={`${formStyles.panel} rounded-3xl border border-foreground/10 p-6 sm:p-10`}>
             {state?.success ? (
               <div className="flex flex-col items-center gap-5 text-center py-6">
                 <Image
@@ -179,93 +150,44 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form action={action} onFocus={handleFormFocus} className="flex flex-col gap-4">
-                {consented && (
-                  <input type="hidden" name="metaEventId" value={eventId} />
-                )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label
-                      htmlFor="name"
-                      className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                    >
-                      Nombre completo
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="Tu nombre completo"
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label
-                      htmlFor="phone"
-                      className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                    >
-                      Tel&eacute;fono
-                    </label>
-                    <div className="flex items-center rounded-xl border-2 border-foreground/10 bg-background focus-within:border-primary/40 transition-colors duration-200">
-                      <span className="pl-4 pr-2 text-sm text-foreground/40 select-none shrink-0">
-                        +52
-                      </span>
-                      <span className="text-foreground/15 text-sm shrink-0">
-                        |
-                      </span>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        inputMode="numeric"
-                        required
-                        minLength={10}
-                        maxLength={10}
-                        placeholder="5512345678"
-                        value={phone}
-                        onChange={handlePhone}
-                        className="flex-1 bg-transparent px-3 py-3 text-sm placeholder:text-foreground/30 focus:outline-none"
-                      />
+              <form action={action} onChange={start} onInvalidCapture={invalid} onSubmitCapture={submit} data-analytics-form={instanceId ? "contact" : undefined} data-analytics-instance={instanceId || undefined} className={formStyles.form}>
+                <fieldset>
+                  <div className={formStyles.contactRow}>
+                    <div>
+                      <label htmlFor="name">Tu nombre</label>
+                      <input id="name" name="name" {...field("name")} type="text" autoComplete="name" required placeholder="¿Cómo te llamas?" />
+                    </div>
+                    <div>
+                      <label htmlFor="phone">Teléfono</label>
+                      <PhoneField id="phone" />
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="email"
-                    className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                  >
-                    Correo electr&oacute;nico
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="tu@correo.com"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="message"
-                    className="text-xs font-semibold opacity-50 uppercase tracking-wide"
-                  >
-                    &iquest;En qu&eacute; podemos ayudarte?
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={4}
-                    placeholder="Cu&eacute;ntanos en qu&eacute; podemos ayudarte\u2026"
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
+                  <label htmlFor="email">Correo electrónico</label>
+                  <input id="email" name="email" {...field("email")} type="email" autoComplete="email" required placeholder="tu@correo.com" />
+                  <label htmlFor="message">¿En qué podemos ayudarte?</label>
+                  <textarea id="message" name="message" {...field("message")} required rows={6} placeholder="Cuéntanos en qué podemos ayudarte…" />
+                </fieldset>
                 {state?.success === false && (
-                  <p className="text-xs text-secondary">{state.message}</p>
+                  <p className="text-xs text-primary">{state.message}</p>
                 )}
                 <SubmitButton />
+                <p className="text-[11px] opacity-60 text-center mt-3">
+                  Al enviar, aceptas nuestros{" "}
+                  <a
+                    href="#terminos"
+                    className="underline underline-offset-2 hover:opacity-100 transition-opacity"
+                  >
+                    T&eacute;rminos y Condiciones
+                  </a>{" "}
+                  y{" "}
+                  <a
+                    href="#privacidad"
+                    className="underline underline-offset-2 hover:opacity-100 transition-opacity"
+                  >
+                    Aviso de Privacidad
+                  </a>
+                  .
+                </p>
               </form>
             )}
           </div>

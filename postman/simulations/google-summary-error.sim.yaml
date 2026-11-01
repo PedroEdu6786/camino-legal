@@ -1,0 +1,10 @@
+simulation: camino-google-summary-error
+routing: path
+mocks:
+  - routeKey: google
+    path: ../mocks/google-summary/config.yaml
+    scenarios:
+      - overrides:
+          conditions:
+            error:
+              status_code: 503

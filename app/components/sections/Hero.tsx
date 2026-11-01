@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useSyncExternalStore } from "react";
-import { scrollTo } from "../../lib/scrollTo";
+import Link from "next/link";
 import { trackEvent } from "../../lib/analytics";
+import { useState, useSyncExternalStore } from "react";
 
 function subscribeToTheme(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -23,6 +23,7 @@ export default function Hero() {
   const [flashing, setFlashing] = useState(false);
 
   const toggleDark = () => {
+    trackEvent("utility_interaction", { action_id: "hero.theme", source_surface: "hero", utility: "theme", action: "toggle" });
     const next = !isDark;
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
@@ -31,12 +32,25 @@ export default function Hero() {
   };
 
   return (
-    <section id="hero-section" className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0">
+    <section data-analytics-section="hero"
+      id="hero-section"
+      onPointerMove={event => {
+        if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty("--doodle-x", `${((event.clientX - bounds.left) / bounds.width - 0.5) * 16}px`);
+        event.currentTarget.style.setProperty("--doodle-y", `${((event.clientY - bounds.top) / bounds.height - 0.5) * 12}px`);
+      }}
+      onPointerLeave={event => {
+        event.currentTarget.style.setProperty("--doodle-x", "0px");
+        event.currentTarget.style.setProperty("--doodle-y", "0px");
+      }}
+      className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0"
+    >
       {/* Light bulb — toggles dark mode on click */}
       <button
         onClick={toggleDark}
         aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
-        className={`hidden lg:block absolute top-14 right-10 w-20 transition-all duration-300 ${flashing ? "scale-125" : "scale-100"} ${isDark ? "opacity-100 drop-shadow-[0_0_12px_rgba(255,220,100,0.6)]" : "opacity-60 hover:opacity-80"}`}
+        className={`hero-theme-toggle hidden lg:block absolute top-14 right-10 w-20 cursor-pointer transition-all duration-300 ${flashing ? "scale-125" : "scale-100"} ${isDark ? "opacity-100 drop-shadow-[0_0_12px_rgba(255,220,100,0.6)]" : "opacity-60 hover:opacity-80"}`}
       >
         <Image
           src="/stickers/Recurso 91.png"
@@ -56,7 +70,7 @@ export default function Hero() {
         height={70}
         aria-hidden
         priority
-        className="hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50"
+        className="hero-doodle hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50"
       />
       <Image
         src="/stickers/Recurso 85.png"
@@ -65,7 +79,7 @@ export default function Hero() {
         height={70}
         aria-hidden
         priority
-        className="hidden lg:block pointer-events-none select-none absolute bottom-20 right-8 w-28 -rotate-6 opacity-55"
+        className="hero-doodle hidden lg:block pointer-events-none select-none absolute bottom-20 right-8 w-28 -rotate-6 opacity-55"
       />
       <Image
         src="/stickers/Recurso 84.png"
@@ -74,7 +88,7 @@ export default function Hero() {
         height={80}
         aria-hidden
         priority
-        className="hidden lg:block pointer-events-none select-none absolute bottom-1/4 left-4 w-14 rotate-6 opacity-50"
+        className="hero-doodle hidden lg:block pointer-events-none select-none absolute bottom-1/4 left-4 w-14 rotate-6 opacity-50"
       />
       <div className="flex flex-col items-center text-center gap-10 md:gap-12 w-full">
         {/* Eyebrow label */}
@@ -94,7 +108,7 @@ export default function Hero() {
               strokeLinecap="round"
             />
           </svg>
-          <span className="text-[14px] uppercase tracking-[0.25em] text-secondary font-semibold">
+          <span className="text-[14px] uppercase tracking-[0.25em] text-primary font-semibold">
             Servicios Legales &middot; M&eacute;xico
           </span>
           <svg
@@ -127,20 +141,19 @@ export default function Hero() {
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center gap-3 animate-fade-up animation-delay-400">
-          <a
-            href="#services"
-            onClick={e => { e.preventDefault(); scrollTo("services"); }}
+          <Link
+            data-analytics-event="cta_click" data-analytics-action="hero.services" data-analytics-source="hero"  href="/servicios"
             className="w-full sm:w-auto text-center rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
           >
             Ver servicios
-          </a>
-          <a
-            href="#contact"
-            onClick={e => { e.preventDefault(); trackEvent("cta_click", { source: "hero" }); scrollTo("contact"); }}
+          </Link>
+          <Link
+            data-analytics-event="cta_click" data-analytics-action="hero.contact" data-analytics-source="hero"  href="/contacto"
+
             className="w-full sm:w-auto text-center rounded-lg border border-foreground/20 px-8 py-4 text-sm font-semibold tracking-widest uppercase transition-all duration-200 ease-out hover:border-foreground/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
           >
             Cu&eacute;ntanos tu caso
-          </a>
+          </Link>
         </div>
       </div>
     </section>

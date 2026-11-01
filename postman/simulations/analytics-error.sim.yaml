@@ -1,0 +1,10 @@
+simulation: camino-analytics-error
+routing: path
+mocks:
+  - routeKey: meta
+    path: ../mocks/meta-capi/config.yaml
+    scenarios:
+      - overrides:
+          conditions:
+            error:
+              status_code: 503
