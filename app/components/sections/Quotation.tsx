@@ -7,7 +7,6 @@ import { trackEvent } from "../../lib/analytics";
 import { quoteSnapshot } from "../../lib/quoteAnalytics";
 import ConsultationModal from "../ui/ConsultationModal";
 import { consultationMessage } from "../../lib/contactRequest";
-import EvaluationModal from "../ui/EvaluationModal";
 
 export default function Quotation({ initialService, explicitService = false }: { initialService: string; explicitService?: boolean }) {
   const quoteRef = useRef("");
@@ -28,7 +27,15 @@ export default function Quotation({ initialService, explicitService = false }: {
   const [rules, setRules] = useState(false);
   const [payments, setPayments] = useState(3);
   const [consultationOpen, setConsultationOpen] = useState(false);
-  const [evaluationOpen, setEvaluationOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const [sheetVisible, setSheetVisible] = useState(false);
+  useEffect(() => {
+    const el = sheetRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setSheetVisible(e.isIntersecting), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const service = quoteServices.find(s => s.slug === slug) ?? quoteServices[0];
   const fixedQuote = getServiceQuote(service.slug);
   const fixedPlan = servicePaymentPlan(service.slug, payments);
@@ -46,6 +53,7 @@ export default function Quotation({ initialService, explicitService = false }: {
     const next = quoteSnapshot(quoteId, control === "service" ? String(value) : slug, control === "classes" ? Number(value) : classes, control === "ownership_rules" ? Boolean(value) : rules, control === "payment_count" ? Number(value) : payments);
     trackEvent("quote_change", { ...next, service_context: "explicit", source_surface: "quotation", control_id: control, previous_value: control === "service" ? slug : control === "classes" ? classes : control === "ownership_rules" ? rules : payments });
   };
+  const totalLabel = trademark ? `${money(quote.total)} MXN` : fixedQuote ? `${money(fixedTotal!)} MXN` : "Según tu proyecto";
   const consultationDetail = trademark
     ? `Quiero registrar una marca en ${classes} ${classes === 1 ? "clase" : "clases"}${rules ? " y compartir su titularidad, por lo que incluí las Reglas de Uso" : ""}. Vi una cotización de ${money(quote.total)} MXN, con IVA incluido, y me gustaría ${payments === 1 ? "hacer un solo pago" : `pagar en ${payments} partes`}.${rules && payments !== 1 ? " También quisiera saber en qué momento se pagan las Reglas de Uso." : ""}`
     : fixedQuote ? `Me interesa ${fixedQuote.title}. Vi una cotización de ${money(fixedTotal!)} MXN, con IVA incluido, para ${fixedQuote.unit.toLowerCase()}, en ${fixedPlan!.length} ${fixedPlan!.length === 1 ? "pago" : "pagos"}. ${fixedPlan!.map(([label, amount]) => `${label}: ${money(amount)} MXN`).join("; ")}.`
@@ -61,8 +69,7 @@ export default function Quotation({ initialService, explicitService = false }: {
         <p className="fine-print">¿No lo sabes aún? Empieza con una; lo revisamos contigo. Para más de diez, contáctanos.</p>
         <label className="checkbox-label"><input type="checkbox" checked={rules} onChange={e => { change("ownership_rules", e.target.checked); setRules(e.target.checked); }} /><span>La marca tendrá más de un titular<span className="field-hint">Incluir Reglas de Uso · $616.00 MXN</span></span></label></div>
         <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{[1,2,3].map(n => <label key={n}><input type="radio" name="payments" value={n} checked={payments === n} onChange={() => { change("payment_count", n); setPayments(n); }} /><span>{n === 1 ? "Pago único" : `${n} pagos`}</span></label>)}</div></fieldset>
-        <div className="quote-evaluation"><p>¿Prefieres empezar poco a poco?</p><p className="fine-print">Evalúa tu marca por <strong>$799 MXN</strong>, incluidos en el total. Después decides si continúas.</p>
-        <button type="button" className="text-link" aria-haspopup="dialog" onClick={() => { trackEvent("evaluation_open", { ...analyticsContext, form_id: "trademark_evaluation", action_id: "quote.evaluation" }); setEvaluationOpen(true); }}>Empezar con la evaluación →</button></div>
+        <p className="fine-print quote-evaluation-note">Tu total incluye la evaluación de tu marca ($799 MXN). Después decides si continúas.</p>
       </> : fixedQuote ? <>
         {fixedQuote.plans.length > 1 && <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{fixedQuote.plans.map(plan => <label key={plan.length}><input type="radio" name="payments" checked={fixedPlan?.length === plan.length} onChange={() => { change("payment_count", plan.length); setPayments(plan.length); }} /><span>{plan.length === 1 ? "Pago único" : `${plan.length} pagos`}</span></label>)}</div></fieldset>}
         {service.slug === "consultoria-legal" && <div className="quote-field-group">
@@ -73,7 +80,7 @@ export default function Quotation({ initialService, explicitService = false }: {
         <div className="quote-evaluation">{fixedQuote.plans.length > 1 && <p>¿Prefieres empezar poco a poco?</p>}<p className="fine-print">{fixedQuote.firstStep}</p></div>
       </> : <><h2>¿Cómo se cotiza?</h2><p>{service.factors}</p><h3>Cuéntanos sobre tu proyecto</h3><ul className="content-list">{service.needs.map(n => <li key={n}>{n}</li>)}</ul></>}
     </div>
-    <div data-analytics-quote={quoteId ? JSON.stringify(analyticsContext) : undefined} className="quote-sheet" aria-live="polite" aria-atomic="true">
+    <div ref={sheetRef} data-analytics-quote={quoteId ? JSON.stringify(analyticsContext) : undefined} className="quote-sheet" aria-live="polite" aria-atomic="true">
       <h2>{trademark || fixedQuote ? "Tu inversión" : "Tu propuesta"}</h2><p>{fixedQuote ? `${fixedQuote.title} · ${fixedQuote.unit}` : service.title}{trademark ? ` · ${classes} ${classes === 1 ? "clase" : "clases"}` : ""}</p>
       {trademark ? <>
         <div className="quote-total"><span>Total · IVA incluido</span><strong key={`${classes}-${rules}`} className="quote-total-value">{money(quote.total)} <small>MXN</small></strong></div>
@@ -96,6 +103,9 @@ export default function Quotation({ initialService, explicitService = false }: {
       <p className="fine-print">Elige cómo consultarnos. Prepararemos el mensaje con los detalles de tu cotización.</p>
     </div>
     {consultationOpen && <ConsultationModal kind="quotation" initialMessage={consultationMessage(service.title, consultationDetail)} quoteContext={analyticsContext} onClose={() => setConsultationOpen(false)} />}
-    {evaluationOpen && <EvaluationModal quoteContext={analyticsContext} onClose={() => setEvaluationOpen(false)} />}
+    <div className="quote-mobile-bar" data-hidden={sheetVisible || undefined} aria-hidden={sheetVisible || undefined}>
+      <div><span>Total · IVA incluido</span><strong>{totalLabel}</strong></div>
+      <button type="button" tabIndex={sheetVisible ? -1 : 0} className="site-button" onClick={() => sheetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}>Ver cotización <span aria-hidden="true">↓</span></button>
+    </div>
   </div>;
 }

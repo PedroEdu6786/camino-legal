@@ -397,3 +397,16 @@ html:not(.dark) .site-main .service-stage { background: #BEE0FA; }
 html:not(.dark) .trademark-stage-art img[src*="stickers"] {
   filter: url("#camino-route-ink");
 }
+
+/* Mobile quotation: sticky total bar */
+.site-main .quote-mobile-bar { display: none; }
+@media (max-width: 767px) {
+  .site-main .quote-controls { padding: 20px; gap: 28px; }
+  .site-main .quote-section { padding-bottom: 88px; }
+  .site-main .quote-mobile-bar { position: fixed; inset: auto 0 0 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--background); border-top: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); box-shadow: 0 -8px 24px rgb(0 0 0 / .08); transition: transform .2s ease, opacity .2s ease; }
+  .site-main .quote-mobile-bar[data-hidden] { transform: translateY(100%); opacity: 0; pointer-events: none; }
+  .site-main .quote-mobile-bar span { display: block; font-size: 12px; opacity: .75; }
+  .site-main .quote-mobile-bar strong { font-size: 18px; }
+  .site-main .quote-mobile-bar .site-button { min-height: 44px; padding: 10px 16px; white-space: nowrap; }
+}
+@media (min-width: 768px) { .site-main .quote-mobile-bar { display: none; } }
