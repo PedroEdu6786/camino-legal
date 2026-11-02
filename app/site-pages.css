@@ -235,7 +235,6 @@
   .site-main .explorer-choices button { padding: 16px 12px; gap: 8px; }
   .site-main .explorer-choices button > span:first-of-type { font-size: 14px; }
   .site-main .explorer-choices img, .site-main .explorer-choices small { display: none; }
-  .site-main .explorer-choices button:last-child { grid-column: 1 / -1; }
 }
 
 /* A calmer rhythm for the services directory. */
