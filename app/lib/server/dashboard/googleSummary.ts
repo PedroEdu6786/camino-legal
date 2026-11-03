@@ -2,6 +2,8 @@ import { createHash, createSign } from 'node:crypto';
 import { emptySummaryMetrics, SUMMARY_METRICS, summaryPeriod, type GoogleSummary, type SummaryPeriod } from '../../dashboard/reporting.ts';
 
 const COOLDOWN = 15 * 60_000;
+const REQUEST_TIMEOUT = 15_000;
+const WINDOW_BUDGET = 8; // distinct provider calls per resource per cooldown window
 const messages = {
   not_connected: 'La lectura de Google Analytics no está configurada en este entorno.',
   forbidden: 'Google no permitió consultar esta propiedad. Revisa el acceso de lectura.',
@@ -42,9 +44,11 @@ export function createGoogleSummaryReader(options: Options = {}) {
   const cache = new Map<string, GoogleSummary>();
   const cooldowns = new Map<string, number>();
   const pending = new Map<string, Promise<GoogleSummary>>();
+  const blocked = new Map<string, number>(); // resource-wide pause (provider Retry-After)
+  const calls = new Map<string, number[]>(); // resource-wide call timestamps
   let tokenCache: { key: string; token: string; expires: number } | null = null;
   async function request(url: string, init: RequestInit): Promise<Response> {
-    return fetcher(url, { ...init, cache: 'no-store', signal: AbortSignal.timeout(5000) });
+    return fetcher(url, { ...init, cache: 'no-store', signal: AbortSignal.timeout(REQUEST_TIMEOUT) });
   }
   async function token(env: Record<string, string | undefined>): Promise<string> {
     if (env.GOOGLE_ANALYTICS_ACCESS_TOKEN) return env.GOOGLE_ANALYTICS_ACCESS_TOKEN;
@@ -81,11 +85,15 @@ export function createGoogleSummaryReader(options: Options = {}) {
     const inFlight = pending.get(key);
     if (inFlight) return inFlight;
     const cached = cache.get(key);
-    const next = cooldowns.get(resourceKey) ?? 0;
+    const recent = (calls.get(resourceKey) ?? []).filter(time => timestamp - time < COOLDOWN);
+    calls.set(resourceKey, recent);
+    const budgetUntil = recent.length >= WINDOW_BUDGET ? recent[0] + COOLDOWN : 0;
+    const next = Math.max(cooldowns.get(key) ?? 0, blocked.get(resourceKey) ?? 0, budgetUntil);
     if (cached?.retrievedAt && timestamp - Date.parse(cached.retrievedAt) < COOLDOWN) return cached;
     if (next > timestamp) return { ...base, ...(cached ? { metrics: cached.metrics, retrievedAt: cached.retrievedAt } : {}), state: cached ? 'stale' : 'deferred', nextRefreshAt: new Date(next).toISOString(), message: messages.deferred };
-    cooldowns.set(resourceKey, timestamp + COOLDOWN);
-    if (cooldowns.size > 8) cooldowns.delete(cooldowns.keys().next().value!);
+    cooldowns.set(key, timestamp + COOLDOWN);
+    recent.push(timestamp);
+    if (cooldowns.size > 32) cooldowns.delete(cooldowns.keys().next().value!);
     base.nextRefreshAt = new Date(timestamp + COOLDOWN).toISOString();
     const perform = async (): Promise<GoogleSummary> => {
     try {
@@ -95,7 +103,7 @@ export function createGoogleSummaryReader(options: Options = {}) {
         if (response.status === 429) {
           const retry = response.headers.get('retry-after');
           const until = retry && /^\d+$/.test(retry) ? timestamp + Number(retry) * 1000 : retry ? Date.parse(retry) : NaN;
-          if (Number.isFinite(until) && until > timestamp + COOLDOWN) { cooldowns.set(resourceKey, until); base.nextRefreshAt = new Date(until).toISOString(); }
+          if (Number.isFinite(until) && until > timestamp + COOLDOWN) { cooldowns.set(key, until); blocked.set(resourceKey, until); base.nextRefreshAt = new Date(until).toISOString(); }
         }
         const state = [401, 403].includes(response.status) ? 'forbidden' : 'error';
         return { ...base, state, message: messages[state] };
@@ -104,7 +112,7 @@ export function createGoogleSummaryReader(options: Options = {}) {
       if (!payload || typeof payload !== 'object') throw new Error('response');
       const report: GoogleSummary = { ...base, ...parseSummaryReport(payload, timezone), retrievedAt: now().toISOString() };
       cache.set(key, report);
-      if (cache.size > 16) cache.delete(cache.keys().next().value!);
+      if (cache.size > 32) cache.delete(cache.keys().next().value!);
       return report;
     } catch {
       return { ...base, ...(cached ? { metrics: cached.metrics, retrievedAt: cached.retrievedAt } : {}), state: cached ? 'stale' : 'error', message: messages.error };
