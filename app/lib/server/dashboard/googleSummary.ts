@@ -1,9 +1,7 @@
-import { createHash, createSign } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { emptySummaryMetrics, SUMMARY_METRICS, summaryPeriod, type GoogleSummary, type SummaryPeriod } from '../../dashboard/reporting.ts';
+import { COOLDOWN, WINDOW_BUDGET, createGoogleAccess, type AccessOptions } from './googleAccess.ts';
 
-const COOLDOWN = 15 * 60_000;
-const REQUEST_TIMEOUT = 15_000;
-const WINDOW_BUDGET = 8; // distinct provider calls per resource per cooldown window
 const messages = {
   not_connected: 'La lectura de Google Analytics no está configurada en este entorno.',
   forbidden: 'Google no permitió consultar esta propiedad. Revisa el acceso de lectura.',
@@ -12,7 +10,6 @@ const messages = {
   no_observations: 'Google no devolvió observaciones para este período. Esto no se interpreta automáticamente como cero.',
   deferred: 'Este recurso ya se consultó recientemente. El próximo intento estará disponible al finalizar el intervalo.',
 };
-type Options = { env?: Record<string, string | undefined>; fetcher?: typeof fetch; now?: () => Date };
 type ProviderReport = { metricHeaders?: { name?: string }[]; rows?: { metricValues?: { value?: string }[] }[]; rowCount?: number; metadata?: { timeZone?: string; subjectToThresholding?: boolean; dataLossFromOtherRow?: boolean; samplingMetadatas?: unknown[]; dataTruncationReasons?: unknown[]; schemaRestrictionResponse?: { activeMetricRestrictions?: unknown[] } } };
 
 export function parseSummaryReport(report: ProviderReport, timezone: string): Pick<GoogleSummary, 'state' | 'metrics' | 'message'> {
@@ -38,36 +35,13 @@ export function parseSummaryReport(report: ProviderReport, timezone: string): Pi
 }
 
 /** Server-only reader. Injected fetch is for contract tests; production destinations are fixed. */
-export function createGoogleSummaryReader(options: Options = {}) {
-  const fetcher = options.fetcher ?? fetch;
-  const now = options.now ?? (() => new Date());
+export function createGoogleSummaryReader(options: AccessOptions = {}) {
+  const { now, request, token } = createGoogleAccess(options);
   const cache = new Map<string, GoogleSummary>();
   const cooldowns = new Map<string, number>();
   const pending = new Map<string, Promise<GoogleSummary>>();
   const blocked = new Map<string, number>(); // resource-wide pause (provider Retry-After)
   const calls = new Map<string, number[]>(); // resource-wide call timestamps
-  let tokenCache: { key: string; token: string; expires: number } | null = null;
-  async function request(url: string, init: RequestInit): Promise<Response> {
-    return fetcher(url, { ...init, cache: 'no-store', signal: AbortSignal.timeout(REQUEST_TIMEOUT) });
-  }
-  async function token(env: Record<string, string | undefined>): Promise<string> {
-    if (env.GOOGLE_ANALYTICS_ACCESS_TOKEN) return env.GOOGLE_ANALYTICS_ACCESS_TOKEN;
-    const raw = env.GOOGLE_ANALYTICS_CREDENTIALS_JSON!;
-    const key = createHash('sha256').update(raw).digest('hex');
-    if (tokenCache?.key === key && tokenCache.expires > now().getTime() + 60_000) return tokenCache.token;
-    const credentials = JSON.parse(raw) as { client_email?: unknown; private_key?: unknown; type?: unknown };
-    if (credentials.type !== 'service_account' || typeof credentials.client_email !== 'string' || typeof credentials.private_key !== 'string') throw new Error('credentials');
-    const timestamp = Math.floor(now().getTime() / 1000);
-    const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
-    const assertion = `${encode({ alg: 'RS256', typ: 'JWT' })}.${encode({ iss: credentials.client_email, scope: 'https://www.googleapis.com/auth/analytics.readonly', aud: 'https://oauth2.googleapis.com/token', iat: timestamp, exp: timestamp + 3600 })}`;
-    const signature = createSign('RSA-SHA256').update(assertion).sign(credentials.private_key, 'base64url');
-    const response = await request('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${assertion}.${signature}` }) });
-    if (!response.ok) throw new Error('credentials');
-    const body = await response.json() as { access_token?: unknown; expires_in?: unknown };
-    if (typeof body.access_token !== 'string' || typeof body.expires_in !== 'number' || body.expires_in <= 0) throw new Error('credentials');
-    tokenCache = { key, token: body.access_token, expires: now().getTime() + Math.min(body.expires_in, 3600) * 1000 };
-    return tokenCache.token;
-  }
   return async (params: URLSearchParams): Promise<GoogleSummary> => {
     const env = options.env ?? process.env;
     const resourceId = env.GOOGLE_ANALYTICS_PROPERTY_ID;
