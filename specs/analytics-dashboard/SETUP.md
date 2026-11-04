@@ -69,6 +69,6 @@ If disconnected, check required variable names, numeric IDs and JSON configurati
 
 ## Scope and continuation
 
-The user deferred application authentication. Advertising is later scope. The approved 90-day limit applies to each query range, and the 30-day verification reminder concerns configuration evidence, not stopping reports or tracking.
+Application authentication was originally deferred; the new [Google reader access setup](AUTH-SETUP.md) supersedes that deferral. Configure reader authentication before serving this dashboard with live credentials. Advertising is later scope. The approved 90-day limit applies to each query range, and the 30-day verification reminder concerns configuration evidence, not stopping reports or tracking.
 
 The KPI slice is implemented; full discovery, comparisons, reporting breakdowns, production runtime verification, interactive acceptance and live console reconciliation are still open. See [task list](tasks.md) and [summary contract and test evidence](evidence/summary-contract.md). No deployment or provider mutation was performed as part of this handoff.

@@ -49,7 +49,7 @@ For the setup checklist and current handoff, see [SETUP.md](../SETUP.md). The us
 
 Set server-only `GOOGLE_ANALYTICS_PROPERTY_ID` (numeric property ID), `GOOGLE_ANALYTICS_STREAM_ID` (numeric web stream ID), and `GOOGLE_ANALYTICS_TIME_ZONE` (the property's exact IANA timezone). Supply either `GOOGLE_ANALYTICS_CREDENTIALS_JSON` with a service account granted read access to the property, or `GOOGLE_ANALYTICS_ACCESS_TOKEN` with analytics read scope. Measurement IDs beginning with `G-` are not numeric property or stream IDs. Never use a `NEXT_PUBLIC_` variable for credentials.
 
-The reader enforces a 15-minute per-resource cooldown and bounded cache within one process. Shared enforcement across instances and restarts remains a production-host task. Provider reporting latency is independent of refresh eligibility.
+The reader enforces a 15-minute cooldown per resource+period query, a budget of 8 distinct provider calls per resource per 15 minutes, a resource-wide pause on provider Retry-After, 15-second request timeouts, and a bounded cache, all within one process. Shared enforcement across instances and restarts remains a production-host task. Provider reporting latency is independent of refresh eligibility.
 
 ## Recorded results — 2026-10-24
 

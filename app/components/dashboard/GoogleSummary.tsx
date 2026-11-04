@@ -1,5 +1,7 @@
 "use client";
 
+import { checkReaderResponse } from '../../lib/dashboard/readerResponse';
+
 import { useEffect, useState, type FormEvent } from 'react';
 import { formatSummaryMetric, type GoogleSummary as Summary, type SummaryMetric } from '../../lib/dashboard/reporting';
 import styles from './AnalyticsDashboard.module.css';
@@ -24,6 +26,7 @@ export default function GoogleSummary() {
     const controller = new AbortController();
     fetch(`/api/admin/analytics/summary?${query}`, { signal: controller.signal, cache: 'no-store' })
       .then(async response => {
+        checkReaderResponse(response);
         const result = await response.json();
         if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'No fue posible consultar el informe.');
         if (!controller.signal.aborted) { setReport(result as Summary); setError(null); }
@@ -56,7 +59,7 @@ export default function GoogleSummary() {
     <div className={styles.summary} aria-busy={loading}>
       {primary.map(metric => <div key={metric.name}><span>{metric.label}</span><p className={report?.metrics[metric.name] == null || loading ? styles.missing : styles.metricValue}>{loading ? 'Consultando…' : formatSummaryMetric(metric.name, report?.metrics[metric.name] ?? null)}</p><small>{metric.description}</small></div>)}
     </div>
-    <div className={styles.supportingMetrics}><p><strong>Sesiones:</strong> {loading ? 'Consultando…' : formatSummaryMetric('sessions', report?.metrics.sessions ?? null)}</p><p><strong>Solicitudes observadas:</strong> No disponible · conexión del informe de eventos pendiente</p></div>
+    <div className={styles.supportingMetrics}><p><strong>Sesiones:</strong> {loading ? 'Consultando…' : formatSummaryMetric('sessions', report?.metrics.sessions ?? null)}</p></div>
     {report?.retrievedAt && <p className={styles.caption}>Última consulta: {new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short', timeZone: report.period?.timezone ?? 'UTC' }).format(new Date(report.retrievedAt))}{report.state === 'stale' ? ' · Datos anteriores; actualización pendiente' : ''}</p>}
     {report?.nextRefreshAt && <p className={styles.caption}>Próxima consulta al proveedor disponible: {new Intl.DateTimeFormat('es-MX', { timeStyle: 'short', timeZone: report.period?.timezone ?? 'UTC' }).format(new Date(report.nextRefreshAt))}. Cambiar de período puede esperar este mismo intervalo.</p>}
     <details className={styles.metricDefinitions}><summary>Cómo interpretar estas métricas</summary><p>Visitantes corresponde a totalUsers de Google, no a usuarios activos ni a un conteo de personas identificadas por Camino Legal. Las vistas incluyen repeticiones. El rebote se calcula a partir de sesiones sin interacción; no equivale simplemente a visitar una sola página.</p><p>Las cifras reflejan la cobertura de Google y el consentimiento disponible. Sin sesiones no se calcula una tasa de rebote. Los datos ausentes no se convierten en cero.</p></details>

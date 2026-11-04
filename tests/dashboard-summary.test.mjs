@@ -38,7 +38,7 @@ test('reader sends one bounded web-stream report, coalesces requests and never s
   const body=JSON.parse(init.body);assert.equal(body.dimensionFilter.andGroup.expressions[0].filter.stringFilter.value,'789012');assert.equal(body.dimensionFilter.andGroup.expressions[1].filter.stringFilter.value,'web');assert.ok(init.signal);assert.equal(init.cache,'no-store');
   assert.ok(!JSON.stringify(a).includes(env.GOOGLE_ANALYTICS_ACCESS_TOKEN));
   assert.equal((await read(new URLSearchParams('days=28'))).state,'available');assert.equal(calls.length,1);
-  const changed=await read(new URLSearchParams('days=7'));assert.equal(changed.state,'deferred');assert.equal(changed.metrics.totalUsers,null);assert.equal(changed.period.days,7);
+  const changed=await read(new URLSearchParams('days=7'));assert.equal(changed.state,'available');assert.equal(changed.period.days,7);assert.equal(calls.length,2);
 });
 test('provider denial and rate limits are safe and consume cooldown without retry',async()=>{
   for(const status of [403,429,503]){
@@ -58,7 +58,7 @@ test('expired matching cache can remain visibly stale, never relabeled with anot
   const read=createGoogleSummaryReader({env,now:()=>time,fetcher:async()=>{if(!healthy)throw Error('private');return Response.json(report());}});
   const first=await read(new URLSearchParams('days=28'));time=new Date(now.getTime()+16*60_000);healthy=false;
   const stale=await read(new URLSearchParams('days=28'));assert.equal(stale.state,'stale');assert.deepEqual(stale.metrics,first.metrics);assert.equal(stale.retrievedAt,first.retrievedAt);
-  const other=await read(new URLSearchParams('days=7'));assert.equal(other.state,'deferred');assert.equal(other.metrics.totalUsers,null);
+  const other=await read(new URLSearchParams('days=7'));assert.equal(other.state,'error');assert.equal(other.metrics.totalUsers,null);
 });
 test('service account uses official read-only token exchange and ignores supplied token_uri',async()=>{
   const keys=generateKeyPairSync('rsa',{modulusLength:2048});
@@ -74,4 +74,12 @@ test('service account uses official read-only token exchange and ignores supplie
     return Response.json(report());
   }});
   const result=await read(new URLSearchParams());assert.equal(result.state,'available');assert.equal(requests.length,2);assert.ok(!JSON.stringify(result).includes('private-synthetic'));
+});
+test('switching periods works, but a provider Retry-After and a per-resource budget still protect quota',async()=>{
+  let calls=0;const read=createGoogleSummaryReader({env,now:()=>now,fetcher:async()=>{calls++;return new Response('x',{status:429,headers:{'retry-after':'1800'}});}});
+  assert.equal((await read(new URLSearchParams('days=28'))).state,'error');
+  assert.equal((await read(new URLSearchParams('days=7'))).state,'deferred');assert.equal(calls,1);
+  let n=0;const busy=createGoogleSummaryReader({env,now:()=>now,fetcher:async()=>{n++;return Response.json(report());}});
+  for(let i=1;i<=9;i++)await busy(new URLSearchParams(`start=2026-10-0${i}&end=2026-10-0${i}`));
+  assert.equal(n,8);
 });

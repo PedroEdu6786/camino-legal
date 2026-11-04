@@ -1,0 +1,11 @@
+.page { flex: 1; display: grid; align-items: center; padding: 48px 24px; background: var(--background); color: var(--foreground); }
+.panel { width: 100%; max-width: 440px; margin: 0 auto; }
+.brand { display: block; color: var(--primary); font-weight: 600; margin-bottom: 48px; }
+.panel h1 { font-size: 28px; font-weight: 500; line-height: 1.2; margin-bottom: 16px; }
+.panel p { line-height: 1.6; margin-bottom: 24px; }
+.message { padding: 16px; background: var(--surface); border-left: 3px solid var(--primary); }
+.panel button { width: 100%; padding: 14px 20px; min-height: 48px; cursor: pointer; background: var(--button-bg); color: var(--button-text); font-weight: 500; }
+.panel button:hover { filter: brightness(.92); }
+.panel .secondary { background: transparent; color: var(--foreground); text-decoration: underline; margin-top: 8px; }
+.panel a { display: inline-block; margin-top: 28px; padding: 8px 0; text-decoration: underline; text-underline-offset: 4px; }
+.panel :focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
