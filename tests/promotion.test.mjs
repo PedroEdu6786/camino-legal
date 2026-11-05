@@ -33,10 +33,12 @@ test('credits the study within the exact promotional package; extras remain at r
   assert.equal(quoteSnapshot('test', 'consultoria-legal', 1, false, 1, true).estimated_total_minor, 39900);
 });
 
-test('tab preview overrides dates in both directions and automatic restores the schedule', async () => {
+test('private preview shows either campaign state while the public site remains unchanged', async () => {
   const { promotionPreviewMode, promotionPreviewState } = await import('../app/lib/promotionPreview.ts');
   const expired = Date.parse('2026-12-01T12:00:00-06:00');
-  assert.equal(promotionPreviewState(expired, 'automatic').phase, 'ended');
+  for (const date of ['2026-11-05T12:00:00-06:00', '2026-11-15T12:00:00-06:00', '2026-12-01T12:00:00-06:00']) {
+    assert.equal(promotionPreviewState(Date.parse(date), 'automatic').phase, null);
+  }
   assert.equal(promotionPreviewState(expired, 'automatic').preview, false);
   const active = promotionPreviewState(expired, 'active');
   assert.equal(active.phase, 'active');

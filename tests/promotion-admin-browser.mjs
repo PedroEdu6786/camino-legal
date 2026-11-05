@@ -91,7 +91,7 @@ try {
     assert.equal(await page.eval(() => !!document.querySelector('aside[aria-label="Vista previa privada de promoción"]')), true);
     await page.screenshot({ path: `/private/tmp/camino-private-preview-${width}.png`, format: 'png' });
     await admin(page);
-    await choose(page, 'Usar fechas reales');
+    await choose(page, 'Sitio actual');
     assert.equal(await page.eval(() => sessionStorage.getItem('camino-promotion-preview')), null);
     assert.deepEqual(page.consoleErrors, []);
     console.log(`PASS ${width}: protected controls, active welcome/prices, teaser/regular prices, cross-document persistence, reset, no overflow or hydration errors`);
@@ -100,7 +100,7 @@ try {
   await clean.goto(base);
   assert.equal(await clean.eval(() => sessionStorage.getItem('camino-promotion-preview')), null);
   assert.equal(await clean.eval(() => !!document.querySelector('aside[aria-label="Vista previa privada de promoción"]')), false);
-  console.log('PASS independent tab stays on real dates');
+  console.log('PASS independent tab keeps the current public site');
   await mockReports(clean);
   await admin(clean);
   await choose(clean, 'Promoción activa');
