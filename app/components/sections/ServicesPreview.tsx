@@ -1,3 +1,4 @@
+import { PromotionCardPrice } from "../promotion/PromotionHighlights";
 import Image from "next/image";
 import Link from "next/link";
 import ServiceLink from "../ui/ServiceLink";
@@ -48,6 +49,7 @@ export default function ServicesPreview() {
               <h3 id={`preview-${service.slug}`} className="text-base md:text-lg font-semibold leading-snug">{service.title}</h3>
               <p className="mt-2 text-sm md:text-base leading-relaxed opacity-70">{service.description}</p>
             </div>
+            {service.slug === "registro-de-marca" && <PromotionCardPrice />}
             <span className="mt-auto pt-2 text-sm font-semibold text-primary underline-offset-4 group-hover:underline">
               Ver servicio <span aria-hidden="true">&rarr;</span>
             </span>

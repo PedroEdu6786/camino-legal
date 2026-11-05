@@ -1,0 +1,30 @@
+.badge { display: inline-block; width: fit-content; background: var(--button-bg); color: var(--button-text); border-radius: 6px; padding: 5px 9px; font-size: 11px; line-height: 1.4; font-weight: 600; }
+.cardPrice small { font-size: 11px; font-weight: 400; }
+.caption { display: block; font-size: 11px; line-height: 1.5; font-weight: 400; }
+.cardPrice { display: flex; flex-direction: column; align-items: start; gap: 8px; color: var(--primary); }
+.cardPrice > span:nth-child(2) { font-weight: 600; font-size: 22px; }
+.cardPrice :global(.service-price-previous) { margin-right: 8px; font-size: 13px; font-weight: 400; text-decoration-thickness: 1.5px; }
+
+/* Keep the original centered hero, with the campaign dates in its open corner. */
+.campaignHero { min-height: calc(100dvh - 4rem); }
+@media (min-width: 768px) { .campaignHero { min-height: calc(100dvh - 5rem); } }
+@media (min-width: 1024px) { .campaignHero { min-height: calc(100dvh - 6rem); padding-block: 0; } }
+.campaignHero > :global(.hero-theme-toggle) { top: 33.333%; left: 8px; right: auto; width: 40px; }
+.campaignHero > :global(.hero-campaign-sparkle) { display: none; }
+.calendar { position: absolute; top: 24px; right: 8px; width: 170px; text-align: center; color: var(--primary); transform: rotate(4deg); }
+.calendar > span { display: block; font-size: 13px; }
+.calendar strong { display: block; white-space: nowrap; font-size: 52px; font-weight: 600; line-height: 1.4; letter-spacing: -.07em; }
+.calendar strong span { color: var(--secondary); font-weight: 400; }
+.calendarArrow { width: 80px; height: 40px; object-fit: contain; margin: 8px auto 0; transform: rotate(18deg); }
+.offerCopy { max-width: 620px; font-size: 18px; line-height: 1.6; color: var(--primary); }
+.offerCopy strong { font-weight: 600; }
+ .offerLink { display: inline-flex; gap: 12px; align-items: center; margin-top: 8px; font-size: 15px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.offerLink:focus-visible { outline: 2px solid var(--primary); outline-offset: 5px; }
+@media (max-width: 1279px) {
+  .calendar { position: static; width: min(100%, 360px); transform: none; display: grid; grid-template-columns: 1fr auto; column-gap: 16px; text-align: left; align-items: center; }
+  .calendar > span:first-child { grid-column: 1; grid-row: 1; font-size: 14px; align-self: end; }
+  .calendar > span:last-of-type { grid-column: 1; grid-row: 2; font-size: 13px; align-self: start; }
+  .calendar strong { grid-column: 2; grid-row: 1 / 3; font-size: 48px; line-height: 1.2; }
+  .calendarArrow { display: none; }
+  .offerCopy { font-size: 17px; }
+}

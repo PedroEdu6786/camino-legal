@@ -1,5 +1,8 @@
 "use client";
 
+import campaignStyles from "../promotion/PromotionHighlights.module.css";
+import HomePromotion from "../promotion/PromotionHighlights";
+import { usePromotion } from "../promotion/usePromotion";
 import Image from "next/image";
 import Link from "next/link";
 import { trackEvent } from "../../lib/analytics";
@@ -15,6 +18,7 @@ function subscribeToTheme(callback: () => void) {
 }
 
 export default function Hero() {
+  const { phase } = usePromotion();
   const isDark = useSyncExternalStore(
     subscribeToTheme,
     () => document.documentElement.classList.contains("dark"),
@@ -44,7 +48,7 @@ export default function Hero() {
         event.currentTarget.style.setProperty("--doodle-x", "0px");
         event.currentTarget.style.setProperty("--doodle-y", "0px");
       }}
-      className="relative overflow-hidden mx-auto max-w-7xl px-6 min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:px-8 flex items-center py-10 lg:py-0"
+      className={`relative overflow-hidden mx-auto max-w-7xl px-6 lg:px-8 flex items-center py-10 ${phase === "active" ? campaignStyles.campaignHero : "min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-5rem)] lg:min-h-[calc(100dvh-6rem)] lg:py-0"}`}
     >
       {/* Light bulb — toggles dark mode on click */}
       <button
@@ -70,7 +74,7 @@ export default function Hero() {
         height={70}
         aria-hidden
         priority
-        className="hero-doodle hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50"
+        className="hero-campaign-sparkle hero-doodle hidden lg:block pointer-events-none select-none absolute top-1/3 left-2 w-10 -rotate-12 opacity-50"
       />
       <Image
         src="/stickers/Recurso 85.png"
@@ -90,7 +94,7 @@ export default function Hero() {
         priority
         className="hero-doodle hidden lg:block pointer-events-none select-none absolute bottom-1/4 left-4 w-14 rotate-6 opacity-50"
       />
-      <div className="flex flex-col items-center text-center gap-10 md:gap-12 w-full">
+      <div className={`flex flex-col items-center text-center w-full ${phase === "active" ? "gap-6 md:gap-8" : "gap-10 md:gap-12"}`}>
         {/* Eyebrow label */}
         <div className="flex items-center gap-3 animate-fade-up">
           <svg
@@ -139,10 +143,12 @@ export default function Hero() {
           Acompañamiento legal para artistas, personas creadoras y negocios.
         </p>
 
+        <HomePromotion />
+
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center gap-3 animate-fade-up animation-delay-400">
           <Link
-            data-analytics-event="cta_click" data-analytics-action="hero.services" data-analytics-source="hero"  href="/servicios"
+            data-analytics-event="cta_click" data-analytics-action="hero.services" data-analytics-source="hero" href="/servicios"
             className="w-full sm:w-auto text-center rounded-lg bg-button-bg px-8 py-4 text-sm font-semibold text-button-text tracking-widest uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95"
           >
             Ver servicios
