@@ -5,7 +5,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ServiceLink from "../ui/ServiceLink";
-import { serviceDetails as services, money, trademarkQuote } from "../../lib/services";
+import { serviceDetails as services } from "../../lib/services";
+
+import { PromotionBadge } from "../promotion/PromotionHighlights";
+import { usePromotion } from "../promotion/usePromotion";
+import TrademarkPrice, { TrademarkPromotionNote } from "../promotion/TrademarkPrice";
 
 // Bold text shows the actual service name; the small text describes what it
 // covers, so people looking for a specific document (e.g. an NDA or an aviso
@@ -20,6 +24,7 @@ const subtitles: Record<string, string> = {
 };
 
 export default function ServiceExplorer() {
+  const { phase } = usePromotion();
   const [active, setActive] = useState(0);
   const service = services[active];
   return <section data-analytics-section="services" className="site-container explorer-section" aria-labelledby="explorer-title">
@@ -27,12 +32,12 @@ export default function ServiceExplorer() {
     <p className="explorer-prompt">Selecciona lo que necesitas ↓</p>
     <div className="explorer-layout">
       <div className="explorer-choices" role="group" aria-label="Elige lo que quieres proteger">
-        {services.map((item, index) => <button type="button" key={item.slug} aria-pressed={active === index} aria-controls="service-preview" onClick={() => { if (index !== active) trackEvent("service_select", { action_id: `directory.select.${item.slug}`, source_surface: "service_directory", previous_service_id: service.slug, service_id: item.slug, service_context: "explicit" }); setActive(index); }}><Image src={item.image} width={48} height={48} alt="" /><span>{item.title}<small>{subtitles[item.slug] ?? item.short}</small></span><span aria-hidden="true">→</span></button>)}
+        {services.map((item, index) => <button type="button" key={item.slug} aria-pressed={active === index} aria-controls="service-preview" onClick={() => { if (index !== active) trackEvent("service_select", { action_id: `directory.select.${item.slug}`, source_surface: "service_directory", previous_service_id: service.slug, service_id: item.slug, service_context: "explicit" }); setActive(index); }}><Image src={item.image} width={48} height={48} alt="" /><span>{item.title}{index === 0 && <PromotionBadge />}<small>{subtitles[item.slug] ?? item.short}</small></span><span aria-hidden="true">→</span></button>)}
       </div>
       <div id="service-preview" className="explorer-preview" aria-live="polite" aria-atomic="true">
         <div key={service.slug} className="explorer-preview-inner">
           <div className="explorer-art"><Image src={service.image} width={220} height={220} alt="" /><span className="hand-note">{service.short}</span></div>
-          <div><h2>{service.title}</h2><p>{service.description}</p><p className="explorer-price">{active === 0 ? `${money(trademarkQuote(1).total)} MXN · una clase, IVA incluido` : "Cotización según el alcance de tu proyecto"}</p><ServiceLink className="site-button" data-analytics-event="cta_click" data-analytics-action={`directory.preview.${service.slug}`} data-analytics-source="service_directory" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Conocer el servicio <span aria-hidden="true">→</span></ServiceLink></div>
+          <div><h2>{service.title}</h2><p>{service.description}</p><p className="explorer-price" data-promotion={active === 0 && phase === "active" || undefined}>{active === 0 ? <><PromotionBadge /><span className="explorer-price-amount"><TrademarkPrice compare /> <small>MXN</small></span><span className="explorer-price-includes">Una clase · IVA y derechos IMPI incluidos</span><TrademarkPromotionNote /></> : "Cotización según el alcance de tu proyecto"}</p><ServiceLink className="site-button" data-analytics-event="cta_click" data-analytics-action={`directory.preview.${service.slug}`} data-analytics-source="service_directory" data-analytics-service={service.slug} href={`/servicios/${service.slug}`}>Conocer el servicio <span aria-hidden="true">→</span></ServiceLink></div>
         </div>
       </div>
     </div>

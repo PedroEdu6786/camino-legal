@@ -1,5 +1,7 @@
 "use client";
 
+import { usePromotion } from "../promotion/usePromotion";
+import { trademarkQuote, money } from "../../lib/services";
 import formStyles from "./ContactForm.module.css";
 
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +17,9 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
   kind?: "evaluation" | "quotation";
   initialMessage?: string;
 }) {
+  const { phase } = usePromotion();
+  const evaluationPrice = money(trademarkQuote(1, false, phase === "active").evaluation);
+  const campaignMessage = phase === "active" ? evaluationMessage.replace("$799", evaluationPrice).replace("con IVA incluido.", "con IVA incluido, abonable al registro de $5,699 MXN de la promoción del 13 al 27 de noviembre de 2026.") : evaluationMessage;
   const evaluation = kind === "evaluation";
   const formId: FormId = evaluation ? "trademark_evaluation" : "quotation_consultation";
   const prefix = evaluation ? "evaluation" : "consultation";
@@ -24,7 +29,7 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
     dialogRef.current?.close();
     onClose();
   };
-  const [fields, setFields] = useState({ name: "", email: "", message: initialMessage });
+  const [fields, setFields] = useState({ name: "", email: "", message: evaluation && initialMessage === evaluationMessage ? campaignMessage : initialMessage });
   const field = (key: keyof typeof fields) => ({
     value: fields[key],
     onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFields(previous => ({ ...previous, [key]: event.target.value })),
@@ -55,7 +60,7 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
         <button type="button" className={styles.close} onClick={() => close()} disabled={pending} aria-label={evaluation ? "Cerrar evaluación" : "Cerrar consulta"}>×</button>
         <p className={styles.note}>{evaluation ? "Hablemos de tu marca." : "Hablemos de tu proyecto."}</p>
         <h2 id={`${prefix}-title`}>{evaluation ? "Empecemos con la evaluación" : "Consulta tu cotización"}</h2>
-        <p id={`${prefix}-description`}>{evaluation ? <>Te contamos cómo empezar con la evaluación de <strong>$799 MXN, IVA incluido.</strong></> : "Déjanos tus datos y te responderemos por correo sobre el servicio que elegiste."}</p>
+        <p id={`${prefix}-description`}>{evaluation ? <>Te contamos cómo empezar con la evaluación de <strong>{evaluationPrice} MXN, IVA incluido.</strong></> : "Déjanos tus datos y te responderemos por correo sobre el servicio que elegiste."}</p>
         {state?.success ? (
           <div className={styles.success} role="status">
             <h3>¡Recibimos tu solicitud!</h3>
@@ -66,7 +71,7 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
           <>
           {evaluation && <><a
             className={`site-button ${styles.whatsapp}`}
-            href={`https://wa.me/529992505160?text=${encodeURIComponent("Hola, Camino Legal. Me interesa la evaluación de mi marca de $799 MXN. ¿Me cuentan cómo empezar?")}`}
+            href={`https://wa.me/529992505160?text=${encodeURIComponent(campaignMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
             data-analytics-event="whatsapp_click" data-analytics-action="evaluation.whatsapp" data-analytics-source="evaluation_modal" data-analytics-service="registro-de-marca"

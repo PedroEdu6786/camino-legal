@@ -1,3 +1,4 @@
+import TrademarkPrice from "../promotion/TrademarkPrice";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,7 +18,7 @@ const faqs = [
   {
     question: "\u00bfCu\u00e1nto cuesta trabajar con ustedes?",
     answer:
-      "El registro de marca para una clase tiene un total de $5,899.77 MXN, con IVA incluido. Los demás servicios se cotizan según su alcance. Puedes revisar el desglose y las opciones de pago antes de comenzar.",
+      <>El registro de marca para una clase tiene un total de <TrademarkPrice /> MXN, con IVA incluido. Los demás servicios se cotizan según su alcance. Puedes revisar el desglose y las opciones de pago antes de comenzar.</>,
     href: "/cotizaciones",
     link: "Ver cotizaciones",
   },

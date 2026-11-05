@@ -6,6 +6,7 @@ import { useState, type KeyboardEvent } from 'react';
 import type { DashboardInventory, AssetClass } from '../../lib/dashboard/contracts';
 import styles from './AnalyticsDashboard.module.css';
 import GoogleSummary from './GoogleSummary';
+import PromotionPreviewControls from './PromotionPreviewControls';
 import InsightsPanel from './InsightsPanel';
 
 const tabs = [{ id: 'overview', label: 'Resumen' }, { id: 'accounts', label: 'Cuentas registradas' }, { id: 'gaps', label: 'Pendientes de seguimiento' }] as const;
@@ -36,6 +37,7 @@ export default function AnalyticsDashboard({ inventory, signOutControl }: { inve
         <div className={styles.navNote}><strong>Seguimiento web</strong><p>Google Analytics.<br />Publicidad fuera de este alcance.</p></div>
       </nav>
       <main className={styles.sheet}>
+        <PromotionPreviewControls />
         <div className={styles.heading}><div><h1>{tabs.find(item => item.id === tab)?.label}</h1><p>{tab === 'overview' ? 'Visitantes, vistas y rebote del sitio, separados de la verificación del seguimiento.' : tab === 'accounts' ? 'Identificadores configurados y recursos revisados, sin mezclar cuentas anteriores.' : 'Comprobaciones concretas para confiar en el seguimiento.'}</p></div><span className={styles.preview}>Google Analytics · seguimiento web</span></div>
         <section id="analytics-panel-overview" role="tabpanel" aria-labelledby="analytics-tab-overview" hidden={tab !== 'overview'}>
           <GoogleSummary />

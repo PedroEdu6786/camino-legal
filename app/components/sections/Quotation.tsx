@@ -8,7 +8,11 @@ import { quoteSnapshot } from "../../lib/quoteAnalytics";
 import ConsultationModal from "../ui/ConsultationModal";
 import { consultationMessage } from "../../lib/contactRequest";
 
+import { usePromotion } from "../promotion/usePromotion";
+
 export default function Quotation({ initialService, explicitService = false }: { initialService: string; explicitService?: boolean }) {
+  const { phase } = usePromotion();
+  const promotional = phase === "active";
   const quoteRef = useRef("");
   const [quoteId, setQuoteId] = useState("");
   useEffect(() => {
@@ -40,22 +44,23 @@ export default function Quotation({ initialService, explicitService = false }: {
   const fixedQuote = getServiceQuote(service.slug);
   const fixedPlan = servicePaymentPlan(service.slug, payments);
   const fixedTotal = serviceQuoteTotal(service.slug);
-  const quote = trademarkQuote(classes, rules);
+  const quote = trademarkQuote(classes, rules, promotional);
+  const regularQuote = trademarkQuote(classes, rules);
   const trademark = service.slug === "registro-de-marca";
   const schedule: readonly (readonly [string, number])[] = payments === 1
     ? [["Al inicio", quote.total]]
     : payments === 2
       ? [["Al inicio", quote.evaluation + quote.management], ["Antes de la preparación", quote.official]]
       : [["Al inicio", quote.evaluation], ["Antes de la preparación", quote.official], ["Al entregar el acuse", quote.management]];
-  const snapshot = quoteSnapshot(quoteId, slug, classes, rules, payments);
+  const snapshot = quoteSnapshot(quoteId, slug, classes, rules, payments, promotional);
   const analyticsContext = { ...snapshot, service_context: selectionExplicit ? "explicit" : "displayed_default", source_surface: "quotation" };
   const change = (control: string, value: string | number | boolean) => {
-    const next = quoteSnapshot(quoteId, control === "service" ? String(value) : slug, control === "classes" ? Number(value) : classes, control === "ownership_rules" ? Boolean(value) : rules, control === "payment_count" ? Number(value) : payments);
+    const next = quoteSnapshot(quoteId, control === "service" ? String(value) : slug, control === "classes" ? Number(value) : classes, control === "ownership_rules" ? Boolean(value) : rules, control === "payment_count" ? Number(value) : payments, promotional);
     trackEvent("quote_change", { ...next, service_context: "explicit", source_surface: "quotation", control_id: control, previous_value: control === "service" ? slug : control === "classes" ? classes : control === "ownership_rules" ? rules : payments });
   };
   const totalLabel = trademark ? `${money(quote.total)} MXN` : fixedQuote ? `${money(fixedTotal!)} MXN` : "Según tu proyecto";
   const consultationDetail = trademark
-    ? `Quiero registrar una marca en ${classes} ${classes === 1 ? "clase" : "clases"}${rules ? " y compartir su titularidad, por lo que incluí las Reglas de Uso" : ""}. Vi una cotización de ${money(quote.total)} MXN, con IVA incluido, y me gustaría ${payments === 1 ? "hacer un solo pago" : `pagar en ${payments} partes`}.${rules && payments !== 1 ? " También quisiera saber en qué momento se pagan las Reglas de Uso." : ""}`
+    ? `Quiero registrar una marca en ${classes} ${classes === 1 ? "clase" : "clases"}${rules ? " y compartir su titularidad, por lo que incluí las Reglas de Uso" : ""}. Vi una cotización de ${money(quote.total)} MXN, ${promotional ? "con la promoción del 13 al 27 de noviembre de 2026, " : ""}con IVA incluido, y me gustaría ${payments === 1 ? "hacer un solo pago" : `pagar en ${payments} partes`}.${rules && payments !== 1 ? " También quisiera saber en qué momento se pagan las Reglas de Uso." : ""}`
     : fixedQuote ? `Me interesa ${fixedQuote.title}. Vi una cotización de ${money(fixedTotal!)} MXN, con IVA incluido, para ${fixedQuote.unit.toLowerCase()}, en ${fixedPlan!.length} ${fixedPlan!.length === 1 ? "pago" : "pagos"}. ${fixedPlan!.map(([label, amount]) => `${label}: ${money(amount)} MXN`).join("; ")}.`
     : "Quisiera platicarles de mi proyecto para conocer las opciones, los costos y los tiempos de trabajo.";
   return <div className="quote-workspace">
@@ -69,7 +74,11 @@ export default function Quotation({ initialService, explicitService = false }: {
         <p className="fine-print">¿No lo sabes aún? Empieza con una; lo revisamos contigo. Para más de diez, contáctanos.</p>
         <label className="checkbox-label"><input type="checkbox" checked={rules} onChange={e => { change("ownership_rules", e.target.checked); setRules(e.target.checked); }} /><span>La marca tendrá más de un titular<span className="field-hint">Incluir Reglas de Uso · $616.00 MXN</span></span></label></div>
         <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{[1,2,3].map(n => <label key={n}><input type="radio" name="payments" value={n} checked={payments === n} onChange={() => { change("payment_count", n); setPayments(n); }} /><span>{n === 1 ? "Pago único" : `${n} pagos`}</span></label>)}</div></fieldset>
-        <p className="fine-print quote-evaluation-note">Tu total incluye la evaluación de tu marca ($799 MXN). Después decides si continúas.</p>
+        <p className="fine-print quote-evaluation-note">{promotional ? <>
+          <span className="quote-study-label">Estudio de viabilidad</span>
+          <span className="quote-study-prices"><span className="quote-previous-price">Antes <del>{money(regularQuote.evaluation)}</del></span><strong><span className="sr-only">Ahora </span>{money(quote.evaluation)} MXN</strong></span>
+          Abonable al registro: forma parte de tu total. Después decides si continúas.
+        </> : <>Tu total incluye la evaluación de tu marca ({money(quote.evaluation)} MXN). Después decides si continúas.</>}</p>
       </> : fixedQuote ? <>
         {fixedQuote.plans.length > 1 && <fieldset className="quote-field-group"><legend>¿Cómo prefieres pagar?</legend><div className="payment-options">{fixedQuote.plans.map(plan => <label key={plan.length}><input type="radio" name="payments" checked={fixedPlan?.length === plan.length} onChange={() => { change("payment_count", plan.length); setPayments(plan.length); }} /><span>{plan.length === 1 ? "Pago único" : `${plan.length} pagos`}</span></label>)}</div></fieldset>}
         {service.slug === "consultoria-legal" && <div className="quote-field-group">
@@ -83,8 +92,13 @@ export default function Quotation({ initialService, explicitService = false }: {
     <div ref={sheetRef} data-analytics-quote={quoteId ? JSON.stringify(analyticsContext) : undefined} className="quote-sheet" aria-live="polite" aria-atomic="true">
       <h2>{trademark || fixedQuote ? "Tu inversión" : "Tu propuesta"}</h2><p>{fixedQuote ? `${fixedQuote.title} · ${fixedQuote.unit}` : service.title}{trademark ? ` · ${classes} ${classes === 1 ? "clase" : "clases"}` : ""}</p>
       {trademark ? <>
-        <div className="quote-total"><span>Total · IVA incluido</span><strong key={`${classes}-${rules}`} className="quote-total-value">{money(quote.total)} <small>MXN</small></strong></div>
-        <details onToggle={event => { if (event.nativeEvent.isTrusted) trackEvent("quote_disclosure_toggle", { ...analyticsContext, content_id: "quote_cost_breakdown", state: event.currentTarget.open ? "open" : "closed" }); }} className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines"><div><dt>Evaluación de viabilidad<small>Una marca</small></dt><dd>{money(quote.evaluation)}</dd></div><div><dt>Preparación y seguimiento<small>Honorarios por {classes} {classes === 1 ? "clase" : "clases"}</small></dt><dd>{money(quote.management)}</dd></div><div><dt>Tarifa oficial IMPI<small>Por {classes} {classes === 1 ? "clase" : "clases"}</small></dt><dd>{money(quote.official)}</dd></div>{rules && <div><dt>Reglas de Uso<small>Más de un titular</small></dt><dd>{money(quote.extra)}</dd></div>}</dl></details>
+        <div className="quote-total">
+          <span>{promotional ? "Promoción · 13–27 de noviembre" : "Total · IVA incluido"}</span>
+          {promotional && <span className="quote-previous-price">Antes <del>{money(regularQuote.total)} MXN</del></span>}
+          <strong key={`${classes}-${rules}-${promotional}`} className="quote-total-value">{promotional && <span className="sr-only">Ahora </span>}{money(quote.total)} <small>MXN</small></strong>
+          {promotional && <span className="quote-promotion-caption">Total · IVA y derechos IMPI incluidos</span>}
+        </div>
+        <details onToggle={event => { if (event.nativeEvent.isTrusted) trackEvent("quote_disclosure_toggle", { ...analyticsContext, content_id: "quote_cost_breakdown", state: event.currentTarget.open ? "open" : "closed" }); }} className="quote-disclosure"><summary>Ver desglose del total</summary><dl className="quote-lines"><div><dt>Evaluación de viabilidad<small>Una marca</small></dt><dd>{promotional && <del className="quote-breakdown-previous"><span className="sr-only">Antes </span>{money(regularQuote.evaluation)}</del>}{promotional && <span className="sr-only">Ahora </span>}{money(quote.evaluation)}</dd></div><div><dt>Preparación y seguimiento<small>Honorarios por {classes} {classes === 1 ? "clase" : "clases"}</small></dt><dd>{money(quote.management)}</dd></div><div><dt>Tarifa oficial IMPI<small>Por {classes} {classes === 1 ? "clase" : "clases"}</small></dt><dd>{money(quote.official)}</dd></div>{rules && <div><dt>Reglas de Uso<small>Más de un titular</small></dt><dd>{money(quote.extra)}</dd></div>}</dl></details>
 
         <details onToggle={event => { if (event.nativeEvent.isTrusted) trackEvent("quote_disclosure_toggle", { ...analyticsContext, content_id: "quote_payment_schedule", state: event.currentTarget.open ? "open" : "closed" }); }} className="quote-disclosure"><summary>{payments === 1 ? "Cuándo pagar" : `Cómo se distribuyen tus ${payments} pagos`}</summary><ol key={payments} className="payment-schedule">{schedule.map(([label, value]) => <li key={label}><span>{label}</span><strong>{money(value)}</strong></li>)}</ol>
         {rules && payments !== 1 && <p className="fine-print">Más $616.00 MXN por Reglas de Uso. Confirmaremos contigo cuándo se pagan; están incluidos en el total.</p>}</details>

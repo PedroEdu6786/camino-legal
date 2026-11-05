@@ -7,6 +7,8 @@ import SectionViewTracker from '../ui/SectionViewTracker';
 import ConsentBanner from '../ui/ConsentBanner';
 import MotionEnhancer from '../ui/MotionEnhancer';
 import Navbar from './Navbar';
+import PromotionNotice from '../promotion/PromotionNotice';
+import PromotionPreviewIndicator from '../promotion/PromotionPreviewIndicator';
 import { publicAnalyticsPath } from '../../lib/measurement/contracts';
 import { suspendMarketingCollection } from '../../lib/analytics';
 
@@ -45,5 +47,5 @@ export default function PublicSiteChrome() {
     };
   }, []);
   if (!publicAnalyticsPath(path)) return null;
-  return <><Suspense fallback={null}><AnalyticsScripts /><SectionViewTracker /></Suspense><ConsentBanner /><Navbar /><MotionEnhancer /></>;
+  return <><Suspense fallback={null}><AnalyticsScripts /><SectionViewTracker /></Suspense><ConsentBanner /><PromotionPreviewIndicator /><PromotionNotice /><Navbar /><MotionEnhancer /></>;
 }
