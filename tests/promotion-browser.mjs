@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Browser } from '../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs';
 const browser = await Browser.launch({extraArgs:['--disable-gpu']});
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
-// Start the dev server with NEXT_PUBLIC_PROMOTION_PREVIEW=off for date-boundary checks.
+// A fresh test tab follows real dates; no admin preview selection is stored.
 const base = process.env.PROMOTION_TEST_URL || 'http://localhost:3002';
 if (!['localhost', '127.0.0.1'].includes(new URL(base).hostname)) throw new Error('Local preview only');
 async function wait(page, fn) {

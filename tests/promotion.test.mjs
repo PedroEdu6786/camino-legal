@@ -32,3 +32,29 @@ test('credits the study within the exact promotional package; extras remain at r
   assert.equal(trademarkQuote(1).evaluation, 79900);
   assert.equal(quoteSnapshot('test', 'consultoria-legal', 1, false, 1, true).estimated_total_minor, 39900);
 });
+
+test('tab preview overrides dates in both directions and automatic restores the schedule', async () => {
+  const { promotionPreviewMode, promotionPreviewState } = await import('../app/lib/promotionPreview.ts');
+  const expired = Date.parse('2026-12-01T12:00:00-06:00');
+  assert.equal(promotionPreviewState(expired, 'automatic').phase, 'ended');
+  assert.equal(promotionPreviewState(expired, 'automatic').preview, false);
+  const active = promotionPreviewState(expired, 'active');
+  assert.equal(active.phase, 'active');
+  assert.equal(active.preview, true);
+  const upcoming = promotionPreviewState(expired, 'upcoming');
+  assert.equal(upcoming.phase, 'upcoming');
+  assert.equal(promotionDaysLeft(upcoming.now), 7);
+  assert.equal(promotionPreviewState(Date.parse('2026-11-15T12:00:00-06:00'), 'upcoming').phase, 'upcoming');
+  for (const invalid of [null, '', 'ended', 'ACTIVE', '{"mode":"active"}']) assert.equal(promotionPreviewMode(invalid), 'automatic');
+});
+
+test('saved preview needs an unexpired server-verified session and rejects malformed deadlines', async () => {
+  const { previewSessionExpiry, authorizedPreviewMode } = await import('../app/lib/promotionPreview.ts');
+  const now = Date.parse('2026-11-05T12:00:00-06:00');
+  for (const body of [null, {}, { expiresAt: 'tomorrow' }, { expiresAt: NaN }, { expiresAt: Infinity }, { expiresAt: now }, { expiresAt: now + 9 * 3600000 }]) assert.equal(previewSessionExpiry(body, now), null);
+  assert.equal(previewSessionExpiry({ expiresAt: now + 3600000 }, now), now + 3600000);
+  assert.equal(authorizedPreviewMode('active', 0, now), 'automatic');
+  assert.equal(authorizedPreviewMode('upcoming', now - 1, now), 'automatic');
+  assert.equal(authorizedPreviewMode('active', now + 1, now), 'active');
+  assert.equal(authorizedPreviewMode('active', now, now), 'automatic');
+});

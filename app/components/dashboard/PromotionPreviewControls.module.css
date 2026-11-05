@@ -1,0 +1,8 @@
+.panel { margin-bottom: 24px; border: 1px solid var(--line); border-radius: 8px; }
+.panel summary { padding: 14px 16px; font-weight: 500; cursor: pointer; }
+.content { padding: 0 16px 16px; }
+.content p { font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--muted); }
+.options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.options button { padding: 10px 14px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; background: var(--sheet); color: var(--foreground); cursor: pointer; }
+.options button[aria-pressed="true"] { background: var(--active); border-color: var(--primary); font-weight: 600; }
+.content a { color: var(--primary); font-weight: 500; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }

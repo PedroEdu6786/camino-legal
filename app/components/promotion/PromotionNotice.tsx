@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { promotion, promotionDaysLeft } from "../../lib/promotion";
-import { promotionPreview, usePromotion } from "./usePromotion";
+import { usePromotion } from "./usePromotion";
 import styles from "./Promotion.module.css";
 
 export function PromotionOffer() {
@@ -16,28 +16,28 @@ export function PromotionOffer() {
 const welcomeKey = promotion.id;
 
 export default function PromotionNotice() {
-  const { now, phase } = usePromotion();
+  const { now, phase, preview } = usePromotion();
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const seen = useRef(false);
   useEffect(() => {
     if (phase !== "active" || seen.current) return;
     // Preview replays on reload; the live campaign remembers the first welcome.
-    if (!promotionPreview) {
+    if (!preview) {
       try { if (localStorage.getItem(welcomeKey)) { seen.current = true; return; } } catch {}
     }
     const timer = window.setInterval(() => {
-      const blockingDialog = promotionPreview ? 'dialog[open]' : 'dialog[open], [role="dialog"]';
+      const blockingDialog = preview ? 'dialog[open]' : 'dialog[open], [role="dialog"]';
       if (document.querySelector(blockingDialog)) return;
       seen.current = true;
       setOpen(true);
-      if (!promotionPreview) {
+      if (!preview) {
         try { localStorage.setItem(welcomeKey, "seen"); } catch {}
       }
       window.clearInterval(timer);
     }, 1500);
     return () => window.clearInterval(timer);
-  }, [phase]);
+  }, [phase, preview]);
   useEffect(() => {
     if (!open || phase !== "active") return;
     const el = dialog.current;
