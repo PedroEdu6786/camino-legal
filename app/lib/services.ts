@@ -1,3 +1,5 @@
+import { promotion } from "./promotion.ts";
+
 export const services = [
   {
     slug: "registro-de-marca", title: "Registro de marca", short: "Tu nombre, con respaldo.",
@@ -60,10 +62,13 @@ export const serviceDetails = [...services, {
 export const money = (cents: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(cents / 100);
 export const trademarkRates = { evaluation: 79900, management: 228700, official: 281377, rules: 61600 };
 
-export function trademarkQuote(classes: number, rules = false) {
+export function trademarkQuote(classes: number, rules = false, promotional = false) {
   if (!Number.isInteger(classes) || classes < 1 || classes > 10) throw new RangeError("Selecciona de 1 a 10 clases.");
-  const evaluation = trademarkRates.evaluation;
-  const management = trademarkRates.management * classes;
+  const evaluation = promotional ? promotion.evaluation : trademarkRates.evaluation;
+  // The study is credited against the package total; additional classes keep regular rates.
+  const management = promotional
+    ? promotion.total - evaluation - trademarkRates.official + trademarkRates.management * (classes - 1)
+    : trademarkRates.management * classes;
   const official = trademarkRates.official * classes;
   const extra = rules ? trademarkRates.rules : 0;
   return { evaluation, management, official, extra, total: evaluation + management + official + extra };
