@@ -25,7 +25,7 @@ export default function PromotionPreviewControls() {
         <button type="button" disabled={pending} aria-pressed={mode === "upcoming"} onClick={() => select("upcoming")}>Próximamente</button>
         <button type="button" disabled={pending} aria-pressed={mode === "automatic"} onClick={() => select("automatic")}>Sitio actual</button>
       </div>
-      <p role="status">{pending ? "Verificando tu sesión…" : error ? "No pudimos activar la vista previa. Comprueba tu sesión y la conexión, permite el almacenamiento de esta pestaña e inténtalo de nuevo." : mode === "active" ? "Verás la promoción y los precios especiales del 13 al 27 de noviembre." : mode === "upcoming" ? "Verás el adelanto con cuenta regresiva y las tarifas habituales." : "Verás el sitio actual, sin promoción ni adelanto. Así lo ven tus visitantes."}</p>
+      <p role="status">{pending ? "Verificando tu sesión…" : error ? "No pudimos activar la vista previa. Comprueba tu sesión y la conexión, permite el almacenamiento de esta pestaña e inténtalo de nuevo." : mode === "active" ? "Verás la promoción y los precios especiales del 13 al 27 de noviembre." : mode === "upcoming" ? "Verás el adelanto con cuenta regresiva y las tarifas habituales." : "Verás lo mismo que tus visitantes: adelanto antes del 13 de noviembre, promoción del 13 al 27 y tarifas habituales al terminar."}</p>
       <a href="/">Ver el sitio con esta vista →</a>
     </div>
   </details>;

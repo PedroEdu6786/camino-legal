@@ -7,12 +7,12 @@ export function promotionPreviewMode(value: string | null): PromotionPreviewMode
   return value === "active" || value === "upcoming" ? value : "automatic";
 }
 
-/** The public campaign is not enabled: only authenticated preview modes reveal its UI. */
+/** Public visitors follow campaign dates; authenticated previews can simulate either phase. */
 export function promotionPreviewState(now: number, mode: PromotionPreviewMode) {
   const preview = mode !== "automatic";
   const effectiveNow = mode === "upcoming" ? Date.parse(promotion.startsAt) - 7 * 86400000
     : mode === "active" ? Date.parse(promotion.startsAt) : now;
-  return { now: effectiveNow, phase: preview ? promotionPhase(effectiveNow) : null, mode, preview };
+  return { now: effectiveNow, phase: promotionPhase(effectiveNow), mode, preview };
 }
 
 /** Only an authenticated server response can authorize the saved display preference. */

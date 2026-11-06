@@ -33,11 +33,21 @@ test('credits the study within the exact promotional package; extras remain at r
   assert.equal(quoteSnapshot('test', 'consultoria-legal', 1, false, 1, true).estimated_total_minor, 39900);
 });
 
-test('private preview shows either campaign state while the public site remains unchanged', async () => {
+test('public campaign follows real dates while private preview can simulate either state', async () => {
   const { promotionPreviewMode, promotionPreviewState } = await import('../app/lib/promotionPreview.ts');
   const expired = Date.parse('2026-12-01T12:00:00-06:00');
-  for (const date of ['2026-11-05T12:00:00-06:00', '2026-11-15T12:00:00-06:00', '2026-12-01T12:00:00-06:00']) {
-    assert.equal(promotionPreviewState(Date.parse(date), 'automatic').phase, null);
+  for (const [date, phase] of [
+    ['2026-11-05T12:00:00-06:00', 'upcoming'],
+    ['2026-11-13T05:59:59.999Z', 'upcoming'],
+    ['2026-11-13T06:00:00Z', 'active'],
+    ['2026-11-28T05:59:59.999Z', 'active'],
+    ['2026-11-28T06:00:00Z', 'ended'],
+    ['2026-12-01T12:00:00-06:00', 'ended'],
+  ]) {
+    const state = promotionPreviewState(Date.parse(date), 'automatic');
+    assert.equal(state.phase, phase);
+    assert.equal(state.preview, false);
+    assert.equal(state.now, Date.parse(date));
   }
   assert.equal(promotionPreviewState(expired, 'automatic').preview, false);
   const active = promotionPreviewState(expired, 'active');
