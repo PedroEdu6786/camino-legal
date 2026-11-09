@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { promotion, promotionDaysLeft } from "../../lib/promotion";
 import { usePromotion } from "./usePromotion";
+import { money, trademarkQuote } from "../../lib/services";
 import styles from "./Promotion.module.css";
 
 export function PromotionOffer() {
+  const regular = trademarkQuote(1);
   return <><div className={styles.offers}>
-    <p>Estudio de viabilidad<strong>$499 <small>MXN</small></strong><span>Abonable al registro de tu marca.</span></p>
-    <p>Registro de marca<strong>$5,699 <small>MXN</small></strong><span>Total por una clase. Derechos IMPI incluidos.</span></p>
-  </div><p className={styles.conditions}>IVA incluido. Los $499 del estudio forman parte del total de $5,699. Clases adicionales y Reglas de Uso se cotizan aparte a tarifa habitual.</p></>;
+    <p>Estudio legal de viabilidad<span className={styles.previousPrice}>Antes <del>{money(regular.evaluation)} MXN</del></span><strong>{money(promotion.evaluation)} <small>MXN</small></strong><span className={styles.savings}>Ahorras {money(regular.evaluation - promotion.evaluation)} MXN</span><span>Abonable al contratar tu registro.</span></p>
+    <p>Registro de marca<span className={styles.previousPrice}>Antes <del>{money(regular.total)} MXN</del></span><strong>{money(promotion.total)} <small>MXN</small></strong><span>Total por una clase. Derechos IMPI incluidos.</span></p>
+  </div><p className={styles.conditions}>IVA incluido. Los $399 del estudio forman parte del total de $5,499. Clases adicionales y Reglas de Uso se cotizan aparte a tarifa habitual.</p></>;
 }
 
 const welcomeKey = promotion.id;
@@ -50,12 +52,12 @@ export default function PromotionNotice() {
   if (!phase || phase === "ended") return null;
   return <>
     <aside className={styles.bar} aria-label={phase === "active" ? "Promoción de noviembre" : "Próximamente en Camino Legal"}>
-      {phase === "upcoming" ? <><span>Tu marca tiene una fecha especial. <strong>13–27 de noviembre.</strong></span><span className={styles.countdown}>Faltan {promotionDaysLeft(now!)} {promotionDaysLeft(now!) === 1 ? "día" : "días"}. Algo bueno viene en Camino.</span></> : <><span><strong>Tu marca, a precio especial.</strong> Estudio $499 · Registro $5,699 MXN</span><button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog">Ver promoción ↗</button></>}
+      {phase === "upcoming" ? <><span>Tu marca tiene una fecha especial. <strong>13–27 de noviembre.</strong></span><span className={styles.countdown}>Faltan {promotionDaysLeft(now!)} {promotionDaysLeft(now!) === 1 ? "día" : "días"}. Algo bueno viene en Camino.</span></> : <><span><strong>Revisa la viabilidad de tu marca a mitad de precio.</strong> Estudio $399 · Registro $5,499 MXN</span><button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog">Ver promoción ↗</button></>}
     </aside>
     {open && phase === "active" && <dialog ref={dialog} className={styles.modal} aria-labelledby="promotion-title" aria-describedby="promotion-dates" onCancel={() => setOpen(false)} onClose={() => setOpen(false)} onClick={event => { if (event.target === event.currentTarget) setOpen(false); }}>
       <div className={styles.content}><button type="button" autoFocus className={styles.close} aria-label="Cerrar promoción" onClick={() => setOpen(false)}>×</button>
         <p className={styles.handwritten}>El siguiente paso es tuyo.</p>
-        <h2 id="promotion-title">Dale a tu marca<br />un buen comienzo.</h2>
+        <h2 id="promotion-title">Revisa la viabilidad de tu marca<br />a mitad de precio.</h2>
         <p id="promotion-dates" className={styles.dates}>{promotion.dates}</p>
         <PromotionOffer />
         <Link className={styles.action} href="/cotizaciones?servicio=registro-de-marca" onClick={() => setOpen(false)}>Cotizar mi marca →</Link>

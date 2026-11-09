@@ -16,14 +16,14 @@ test('opens and closes at Mérida midnight, including the entire November 27', (
 });
 test('credits the study within the exact promotional package; extras remain at regular rates', () => {
   const quote = trademarkQuote(1, false, true);
-  assert.equal(quote.evaluation, 49900);
-  assert.equal(quote.total, 569900);
-  assert.equal(quote.total - quote.evaluation, 520000);
+  assert.equal(quote.evaluation, 39900);
+  assert.equal(quote.total, 549900);
+  assert.equal(quote.total - quote.evaluation, 510000);
   assert.equal(quote.official, 281377);
   for (let classes = 1; classes <= 10; classes++) {
     for (const rules of [false, true]) {
       const q = trademarkQuote(classes, rules, true);
-      assert.equal(q.total, 569900 + (classes - 1) * 510077 + (rules ? 61600 : 0));
+      assert.equal(q.total, 549900 + (classes - 1) * 510077 + (rules ? 61600 : 0));
       assert.equal(q.total, q.evaluation + q.management + q.official + q.extra);
       assert.equal(quoteSnapshot('test', 'registro-de-marca', classes, rules, 3, true).estimated_total_minor, q.total);
     }

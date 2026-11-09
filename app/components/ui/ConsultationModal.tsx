@@ -19,7 +19,7 @@ export default function ConsultationModal({ onClose, quoteContext = {}, kind = "
 }) {
   const { phase } = usePromotion();
   const evaluationPrice = money(trademarkQuote(1, false, phase === "active").evaluation);
-  const campaignMessage = phase === "active" ? evaluationMessage.replace("$799", evaluationPrice).replace("con IVA incluido.", "con IVA incluido, abonable al registro de $5,699 MXN de la promoción del 13 al 27 de noviembre de 2026.") : evaluationMessage;
+  const campaignMessage = phase === "active" ? evaluationMessage.replace("$799", evaluationPrice).replace("con IVA incluido.", "con IVA incluido, abonable al registro de $5,499 MXN de la promoción del 13 al 27 de noviembre de 2026.") : evaluationMessage;
   const evaluation = kind === "evaluation";
   const formId: FormId = evaluation ? "trademark_evaluation" : "quotation_consultation";
   const prefix = evaluation ? "evaluation" : "consultation";

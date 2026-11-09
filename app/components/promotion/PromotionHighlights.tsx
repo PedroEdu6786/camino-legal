@@ -28,6 +28,6 @@ export default function HomePromotion() {
       <span>de noviembre de 2026</span>
       <Image src="/stickers/Recurso 85.png" alt="" width={140} height={70} className={styles.calendarArrow} />
     </aside>
-    <div className={styles.offerCopy}><p>Este noviembre, protege tu marca con <strong>precios especiales.</strong></p><Link className={styles.offerLink} href="/cotizaciones?servicio=registro-de-marca" data-analytics-event="cta_click" data-analytics-action="home.quotations" data-analytics-source="hero">Conocer la promoción <span aria-hidden="true">→</span></Link></div>
+    <div className={styles.offerCopy}><p>Revisa la viabilidad de tu marca <strong>a mitad de precio.</strong></p><Link className={styles.offerLink} href="/cotizaciones?servicio=registro-de-marca" data-analytics-event="cta_click" data-analytics-action="home.quotations" data-analytics-source="hero">Conocer la promoción <span aria-hidden="true">→</span></Link></div>
   </>;
 }

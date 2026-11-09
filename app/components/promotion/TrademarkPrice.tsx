@@ -13,5 +13,5 @@ export default function TrademarkPrice({ study = false, compare = false }: { stu
 export function TrademarkPromotionNote() {
   const { phase } = usePromotion();
   if (phase !== "active") return null;
-  return <span className="service-promotion-note">Promoción · 13–27 de noviembre. Estudio $499 abonable al registro.</span>;
+  return <span className="service-promotion-note">Promoción · 13–27 de noviembre. Estudio $399 abonable al registro.</span>;
 }

@@ -79,7 +79,7 @@ try {
     await wait(page, () => !!document.querySelector('dialog[open] #promotion-title'));
     await page.eval(() => document.querySelector('[aria-label="Cerrar promoción"]').click());
     await page.goto(`${base}/cotizaciones`);
-    await wait(page, () => document.querySelector('.quote-total')?.textContent.includes('5,699'));
+    await wait(page, () => document.querySelector('.quote-total')?.textContent.includes('5,499'));
     await wait(page, () => !!document.querySelector('dialog[open] #promotion-title'));
     await page.eval(() => document.querySelector('[aria-label="Cerrar promoción"]').click());
     await admin(page);

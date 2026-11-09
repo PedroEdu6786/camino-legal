@@ -26,7 +26,7 @@ async function checkPhase(page, phase) {
   if (path === '/servicios/registro-de-marca' || path === '/cotizaciones') {
     const selector = path === '/cotizaciones' ? '.quote-total' : '.service-stage-price';
     await wait(page, () => !!document.querySelector('.quote-total, .service-stage-price'));
-    assert.match(await page.eval(selector => document.querySelector(selector).textContent, selector), phase === 'active' ? /5,699/ : /5,899.77/);
+    assert.match(await page.eval(selector => document.querySelector(selector).textContent, selector), phase === 'active' ? /5,499/ : /5,899.77/);
     assert.equal(await page.eval(selector => !!document.querySelector(`${selector} del`), selector), phase === 'active');
   }
   assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false);
