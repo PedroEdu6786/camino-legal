@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { quoteSnapshot } from '../app/lib/quoteAnalytics.ts';
-import { services, trademarkQuote } from '../app/lib/services.ts';
+import { trademarkQuote } from '../app/lib/services.ts';
 
 test('analytics estimate matches every displayed class/rules combination in integer cents', () => {
   for (let classes = 1; classes <= 10; classes++) {
@@ -20,13 +20,13 @@ test('analytics estimate matches every displayed class/rules combination in inte
   }
 });
 
-test('custom services report unknown prices and no trademark-only controls', () => {
-  for (const service of services.filter(service => ["paquete-web-legal"].includes(service.slug))) {
-    const value = quoteSnapshot('same-quote-instance', service.slug, 10, true, 1);
-    assert.equal(value.service_id, service.slug);
-    assert.equal(value.quote_type, 'custom');
-    for (const field of ['estimated_total_minor', 'evaluation_minor', 'classes', 'payment_count', 'ownership_rules']) {
-      assert.equal(value[field], null, `${service.slug}: ${field}`);
-    }
+test('web legal reports its fixed estimate without trademark-only controls', () => {
+  const value = quoteSnapshot('same-quote-instance', 'marco-legal-digital', 10, true, 1);
+  assert.equal(value.service_id, 'marco-legal-digital');
+  assert.equal(value.quote_type, 'estimate');
+  assert.equal(value.estimated_total_minor, 279900);
+  assert.equal(value.payment_count, 1);
+  for (const field of ['evaluation_minor', 'classes', 'ownership_rules']) {
+    assert.equal(value[field], null, field);
   }
 });

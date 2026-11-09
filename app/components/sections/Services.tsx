@@ -76,8 +76,8 @@ const services: {
     accent: "bg-[#6B3A2A]/10",
   },
   {
-    title: "Paquete Web Legal",
-    slug: "paquete-web-legal",
+    title: "Marco Legal Digital",
+    slug: "marco-legal-digital",
     description: (
       <>
         Desarrollamos los documentos legales necesarios para tu sitio web, como{" "}

@@ -2,6 +2,19 @@ import { serviceDetails } from "./services.ts";
 
 // Amounts in centavos, transcribed from Camino Legal's 2026 quotations.
 export const serviceQuotes = {
+  "marco-legal-digital": {
+    title: "Marco Legal Digital", unit: "Un sitio web o app",
+    lines: [["Aviso de privacidad integral", 130000], ["Términos y condiciones", 149900], ["Cláusula de confidencialidad para correos electrónicos", 0], ["Política de cookies", 0]],
+    plans: [
+      [["Al inicio", 279900]],
+      [["Al inicio", 139900], ["Antes de la entrega final", 140000]],
+      [["Al inicio · diagnóstico", 39900], ["Para iniciar la redacción", 120000], ["A la entrega final", 120000]],
+    ],
+    stages: ["Diagnóstico · según disponibilidad: revisamos cómo funciona tu negocio y tu sitio, qué datos personales recabas y para qué, qué ofreces en línea y cómo cobras.", "Redacción y revisión · 10 días hábiles a partir del diagnóstico y de recibir tu información completa: elaboramos los documentos con base en tu operación, te enviamos el borrador e incluimos una ronda de cambios.", "Versión final y publicación · incluida: entregamos tus documentos en Word y PDF, con un formato adecuado a tu logo y diseño e indicaciones para publicarlos en tu página."],
+    deliverables: ["Aviso de privacidad integral, adaptado a los datos que recabas y su uso.", "Términos y condiciones: reglas, derechos y licencia de uso de tu sitio o app.", "Cláusula de confidencialidad para la firma de tus correos electrónicos.", "Política de cookies: qué rastrea tu sitio y cómo se acepta.", "Documentos finales en Word y PDF, adaptados a tu logo y diseño, con indicaciones de publicación."],
+    notes: ["Incluye una ronda de cambios sobre el borrador.", "Los 10 días hábiles de redacción y revisión corren a partir del diagnóstico y de recibir tu información completa.", "Convenio de confidencialidad para compartir información reservada con clientes, socios o colaboradores: $1,099.00 MXN adicionales, IVA incluido. Es distinto de la cláusula para correos electrónicos incluida en el paquete.", "Los cambios de fondo posteriores a la entrega final, si cambia tu negocio o tu sitio, se cotizan aparte."],
+    firstStep: "Empieza con el diagnóstico por $399 MXN al elegir tres pagos; forma parte del total. También puedes elegir pago único o dos pagos.",
+  },
   "registro-de-aviso-comercial": {
     title: "Registro de aviso comercial", unit: "Un aviso · una clase",
     lines: [["Estudio legal de viabilidad · un aviso", 79900], ["Honorarios de gestión · por clase", 228623], ["Tarifa oficial IMPI · por clase", 281377]],

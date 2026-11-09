@@ -38,13 +38,13 @@ export const services = [
     deliverables: ["Diagnóstico por escrito con riesgos identificados y la vía recomendada", "Cotización personalizada del servicio que necesitas"],
   },
   {
-    slug: "paquete-web-legal", title: "Paquete Web Legal", short: "Tu sitio, con reglas claras.",
-    description: "Preparamos documentos legales adaptados a lo que hace tu sitio y a la relación que tienes con tus usuarios.",
+    slug: "marco-legal-digital", title: "Marco Legal Digital", short: "Tu sitio, con reglas claras.",
+    description: "Preparamos el marco legal digital de tu sitio web o app, con documentos adaptados a tu negocio y a la relación que tienes con tus usuarios.",
     image: "/stickers/Recurso 95.png",
-    includes: ["Términos y Condiciones", "Aviso de Privacidad", "Aviso de Cookies", "Adaptación a la operación de tu sitio"],
-    needs: ["Dirección y descripción de tu sitio web", "Servicios o productos que ofreces", "Información sobre formularios, datos y herramientas que utilizas"],
-    factors: "Los documentos necesarios, la operación del sitio y el tratamiento de datos determinan el alcance. Recibirás una propuesta específica para tu web.",
-    deliverables: ["Documentos incluidos en tu propuesta", "Indicaciones para su uso en tu sitio web"],
+    includes: ["Aviso de privacidad integral", "Términos y condiciones de tu sitio web o app", "Cláusula de confidencialidad para correos electrónicos", "Política de cookies", "Documentos adaptados a tu operación y una ronda de cambios sobre el borrador"],
+    needs: ["Dirección y descripción de tu sitio web o app", "Servicios o productos que ofreces", "Información sobre formularios, datos y herramientas que utilizas"],
+    factors: "El marco legal digital cuesta $2,799 MXN, IVA incluido. Elige pago único, dos o tres pagos; con tres pagos empiezas con $399 MXN por el diagnóstico, incluidos en el total.",
+    deliverables: ["Aviso de privacidad, términos y condiciones, cláusula de confidencialidad para correos y política de cookies", "Documentos finales en Word y PDF, adaptados a tu logo y diseño", "Indicaciones para publicarlos en tu sitio web"],
   },
 ] as const;
 

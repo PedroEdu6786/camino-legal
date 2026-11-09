@@ -13,7 +13,7 @@ Canonical events describe business meaning, not provider-specific calls. Core ev
 | `/servicios/contratos-y-convenios` | `service_detail` | `contratos-y-convenios` |
 | `/servicios/derechos-de-autor` | `service_detail` | `derechos-de-autor` |
 | `/servicios/consultoria-legal` | `service_detail` | `consultoria-legal` |
-| `/servicios/paquete-web-legal` | `service_detail` | `paquete-web-legal` |
+| `/servicios/marco-legal-digital` | `service_detail` | `marco-legal-digital` |
 | `/cotizaciones` | `quotation` | Actual displayed selection; explicit valid `servicio` context separately identified |
 | `/nosotros` | `about` | `unspecified` |
 | `/preguntas` | `faq` | Item/link-specific service only when explicit |

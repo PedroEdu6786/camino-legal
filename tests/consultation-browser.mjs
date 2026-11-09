@@ -51,7 +51,7 @@ try {
     await change('#evaluation-phone-country','US');await change('#evaluation-phone','(202) 555-0123');
     assert.equal(await page.eval(()=>document.querySelector('dialog form').checkValidity()),true);
     await close();
-    for(const slug of ['contratos-y-convenios','derechos-de-autor','consultoria-legal','paquete-web-legal']){
+    for(const slug of ['contratos-y-convenios','derechos-de-autor','consultoria-legal','marco-legal-digital']){
       await change('#quote-service',slug);await open();
       const custom=await page.eval(()=>({title:document.querySelector('#quote-service').selectedOptions[0].text,message:document.querySelector('#consultation-message').value}));
       assert.ok(custom.message.includes(custom.title.toLocaleLowerCase("es-MX")));assert.match(custom.message,/costos y los tiempos/);assert.doesNotMatch(custom.message,/Estimado:|2 clases|Reglas de Uso/);await close();

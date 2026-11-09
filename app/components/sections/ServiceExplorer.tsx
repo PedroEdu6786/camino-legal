@@ -19,7 +19,7 @@ const subtitles: Record<string, string> = {
   "contratos-y-convenios": "Prestación de servicios, NDA, convenios y más",
   "derechos-de-autor": "Respalda la autoría de tu obra, ante INDAUTOR",
   "consultoria-legal": "Asesoría legal personalizada para tu caso",
-  "paquete-web-legal": "Aviso de privacidad, términos y cookies para tu sitio",
+  "marco-legal-digital": "Aviso de privacidad, términos y cookies para tu sitio",
   "registro-de-aviso-comercial": "Registra la frase que distingue a tu negocio, ante el IMPI",
 };
 

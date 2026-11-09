@@ -7,7 +7,7 @@ const origin = new URL(base).origin;
 if (!['localhost','127.0.0.1'].includes(new URL(base).hostname)) throw new Error('Browser harness accepts localhost only');
 if (process.env.ANALYTICS_TEST_SMTP_LOCAL_ONLY !== '1') throw new Error('Set ANALYTICS_TEST_SMTP_LOCAL_ONLY=1 only for the dedicated build with local SMTP4525');
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
-const services = ['registro-de-marca','contratos-y-convenios','derechos-de-autor','consultoria-legal','paquete-web-legal'];
+const services = ['registro-de-marca','contratos-y-convenios','derechos-de-autor','consultoria-legal','marco-legal-digital'];
 let mode = 'accept', transactions = 0, connections = 0, held = [], ambiguous = 0;
 const sockets = new Set();
 const smtp = net.createServer(socket => {
