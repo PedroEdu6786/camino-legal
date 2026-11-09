@@ -76,7 +76,7 @@ const services: {
     accent: "bg-[#6B3A2A]/10",
   },
   {
-    title: "Marco Legal Digital",
+    title: "Paquete Legal Web",
     slug: "marco-legal-digital",
     description: (
       <>

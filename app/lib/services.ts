@@ -38,12 +38,12 @@ export const services = [
     deliverables: ["Diagnóstico por escrito con riesgos identificados y la vía recomendada", "Cotización personalizada del servicio que necesitas"],
   },
   {
-    slug: "marco-legal-digital", title: "Marco Legal Digital", short: "Tu sitio, con reglas claras.",
-    description: "Preparamos el marco legal digital de tu sitio web o app, con documentos adaptados a tu negocio y a la relación que tienes con tus usuarios.",
+    slug: "marco-legal-digital", title: "Paquete Legal Web", short: "Tu sitio, con reglas claras.",
+    description: "Preparamos el paquete legal web para tu sitio web o app, con documentos adaptados a tu negocio y a la relación que tienes con tus usuarios.",
     image: "/stickers/Recurso 95.png",
     includes: ["Aviso de privacidad integral", "Términos y condiciones de tu sitio web o app", "Cláusula de confidencialidad para correos electrónicos", "Política de cookies", "Documentos adaptados a tu operación y una ronda de cambios sobre el borrador"],
     needs: ["Dirección y descripción de tu sitio web o app", "Servicios o productos que ofreces", "Información sobre formularios, datos y herramientas que utilizas"],
-    factors: "El marco legal digital cuesta $2,799 MXN, IVA incluido. Elige pago único, dos o tres pagos; con tres pagos empiezas con $399 MXN por el diagnóstico, incluidos en el total.",
+    factors: "El paquete legal web cuesta $2,799 MXN, IVA incluido. Elige pago único, dos o tres pagos; con tres pagos empiezas con $399 MXN por el diagnóstico, incluidos en el total.",
     deliverables: ["Aviso de privacidad, términos y condiciones, cláusula de confidencialidad para correos y política de cookies", "Documentos finales en Word y PDF, adaptados a tu logo y diseño", "Indicaciones para publicarlos en tu sitio web"],
   },
 ] as const;
