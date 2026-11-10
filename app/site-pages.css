@@ -159,6 +159,7 @@
 .site-main .service-investment { background: var(--panel-emphasis-bg); color: var(--panel-emphasis-text); border: 0; }
 .site-main .service-investment .display-price { color: var(--panel-emphasis-text); font-size: clamp(30px, 3.5vw, 48px); }
 .site-main .service-investment .fine-print { opacity: .85; }
+.site-main .service-investment .text-link { color: var(--panel-emphasis-text); text-decoration: underline; }
 .site-main .preparation-sheet { background: var(--surface); border-radius: 24px; padding: 28px; }
 .site-main .preparation-sheet.preparation-layout { align-items: center; }
 .site-main .preparation-sheet p { margin-bottom: 0; }
