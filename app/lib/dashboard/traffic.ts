@@ -8,11 +8,12 @@ export type LeadRow = { label: string; count: number };
 export type TrafficInsights = {
   provider: 'ga4'; state: SummaryState; period: SummaryPeriod | null;
   retrievedAt: string | null; nextRefreshAt: string | null; message: string;
+  serviceInterest: { label: string; sessions: number }[] | null;
   timeline: TrafficPoint[] | null; pages: TrafficPage[] | null; sources: TrafficSource[] | null;
   landing: LandingPage[] | null; leadsByPage: LeadRow[] | null; leadsBySource: LeadRow[] | null; whatsappByPage: LeadRow[] | null;
 };
-export type TrafficSlice = 'timeline' | 'pages' | 'sources' | 'landing' | 'leadsByPage' | 'leadsBySource' | 'whatsappByPage';
-export const EMPTY_INSIGHTS: Pick<TrafficInsights, TrafficSlice> = { timeline: null, pages: null, sources: null, landing: null, leadsByPage: null, leadsBySource: null, whatsappByPage: null };
+export type TrafficSlice = 'serviceInterest' | 'timeline' | 'pages' | 'sources' | 'landing' | 'leadsByPage' | 'leadsBySource' | 'whatsappByPage';
+export const EMPTY_INSIGHTS: Pick<TrafficInsights, TrafficSlice> = { serviceInterest: null, timeline: null, pages: null, sources: null, landing: null, leadsByPage: null, leadsBySource: null, whatsappByPage: null };
 
 const format = new Intl.NumberFormat('es-MX', { maximumFractionDigits: 1 });
 const share = (part: number, whole: number) => (whole > 0 ? `${format.format((part / whole) * 100)}%` : null);

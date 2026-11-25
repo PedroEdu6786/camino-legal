@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parsers, createGoogleInsightsReader } from '../app/lib/server/dashboard/googleInsights.ts';
+import { serviceDetails } from '../app/lib/services.ts';
 import { trafficFindings, EMPTY_INSIGHTS } from '../app/lib/dashboard/traffic.ts';
 
 const tz = 'America/Merida';
@@ -50,14 +51,39 @@ test('events parser rejects truncated, unexpected and untrusted reports; zero ro
   assert.equal(parsers.events(rep([], { subjectToThresholding: true }), tz), null);
   assert.deepEqual(parsers.events(rep([]), tz), { leadsByPage: [], leadsBySource: [], whatsappByPage: [] });
 });
-const batch = (reports, calls = []) => async (url, init) => { calls.push({ url: String(url), body: JSON.parse(init.body) }); return Response.json({ reports: reports(JSON.parse(init.body).requests.length) }); };
-test('one range is one batchRunReports call; a bad report degrades only its own slice', async () => {
+const serviceReport = rows => ({ ...rep(rows), dimensionHeaders: [{ name: 'customEvent:service_id' }], metricHeaders: [{ name: 'sessions' }] });
+const batch = (reports, calls = [], service = () => Response.json(serviceReport([]))) => async (url, init) => {
+  const body = JSON.parse(init.body);
+  calls.push({ url: String(url), body });
+  return body.requests ? Response.json({ reports: reports(body.requests.length) }) : service();
+};
+test('calculator report counts sessions by catalog service for the applied range and stream', async () => {
+  const calls = [];
+  const fetcher = batch(n => Array(n).fill(rep([])), calls, () => Response.json(serviceReport([row(['registro-de-marca'], [3])])));
+  const out = await createGoogleInsightsReader({ env, fetcher, now })(new URLSearchParams('start=2026-10-01&end=2026-10-04'));
+  assert.deepEqual(out.serviceInterest, [{ label: 'Registro de marca', sessions: 3 }]);
+  const { body, url } = calls.find(call => call.url.endsWith(':runReport'));
+  assert.match(url, /properties\/1:runReport$/);
+  assert.deepEqual(body.dateRanges, [{ startDate: period.start, endDate: period.end }]);
+  assert.deepEqual(body.dimensions, [{ name: 'customEvent:service_id' }]); assert.deepEqual(body.metrics, [{ name: 'sessions' }]);
+  const filters = body.dimensionFilter.andGroup.expressions.map(e => e.filter);
+  for (const [field, value] of [['streamId','2'], ['eventName','quote_change'], ['customEvent:control_id','service']]) assert.ok(filters.some(f => f.fieldName === field && f.stringFilter.matchType === 'EXACT' && f.stringFilter.value === value));
+  assert.deepEqual(filters.find(f => f.fieldName === 'customEvent:service_id').inListFilter.values, serviceDetails.map(service => service.slug));
+});
+test('unavailable dimensions, unknown IDs, malformed counts and restricted reports never become zero', async () => {
+  const good = serviceReport([]);
+  for (const response of [new Response('', { status: 400 }), ...[rep([]), { ...good, rowCount: 2 }, { ...good, metadata: { ...meta, subjectToThresholding: true } }, serviceReport([row([], [1])]), serviceReport([row(['not-in-catalog'], [4])]), serviceReport([row(['registro-de-marca'], ['x'])])].map(r => Response.json(r))]) {
+    const out = await createGoogleInsightsReader({ env, now, fetcher: batch(n => Array(n).fill(rep([])), [], () => response) })(new URLSearchParams('days=7'));
+    assert.equal(out.state, 'partial'); assert.equal(out.serviceInterest, null); assert.deepEqual(out.pages, []);
+  }
+});
+test('original five reports stay batched; a bad report degrades only its own slice', async () => {
   const calls = [];
   const fetcher = batch(n => Array.from({ length: n }, (_, i) => (i === 1 ? rep([], { timeZone: 'UTC' }) : rep([]))), calls);
   const out = await createGoogleInsightsReader({ env, fetcher, now })(new URLSearchParams('days=7'));
   assert.equal(out.state, 'partial'); assert.equal(out.pages, null); assert.ok(Array.isArray(out.timeline)); assert.deepEqual(out.leadsByPage, []);
   assert.ok(!JSON.stringify(out).includes('secret-token'));
-  assert.equal(calls.length, 1); assert.match(calls[0].url, /:batchRunReports$/);
+  assert.equal(calls.length, 2); assert.match(calls[0].url, /:batchRunReports$/);
   const { requests } = calls[0].body;
   assert.equal(requests.length, 5); assert.ok(requests.every(r => !('property' in r)));
   assert.equal(requests[4].limit, '5000');
@@ -70,13 +96,11 @@ test('transport failures fail the whole batch; a wrong report count is an error'
   assert.equal((await run(async () => new Response('x', { status: 500 }))).state, 'error');
   assert.equal((await run(batch(() => [rep([])]))).state, 'error');
 });
-test('budget is counted in HTTP calls: 8 distinct ranges per window, then deferred; cache costs nothing', async () => {
+test('budget is counted in HTTP calls: 4 distinct ranges per window, then deferred; cache costs nothing', async () => {
   const calls = [];
   const read = createGoogleInsightsReader({ env, fetcher: batch(n => Array.from({ length: n }, () => rep([])), calls), now });
   for (const q of ['days=7', 'days=28', 'days=90', 'start=2026-09-01&end=2026-09-05']) assert.equal((await read(new URLSearchParams(q))).state, 'available');
-  assert.equal(calls.length, 4);
-  await read(new URLSearchParams('days=7')); assert.equal(calls.length, 4);
-  for (let d = 2; d <= 5; d++) assert.equal((await read(new URLSearchParams(`start=2026-08-01&end=2026-08-0${d}`))).state, 'available');
+  assert.deepEqual((await read(new URLSearchParams('days=7'))).serviceInterest, []);
   assert.equal(calls.length, 8);
   assert.equal((await read(new URLSearchParams('start=2026-07-01&end=2026-07-05'))).state, 'deferred'); assert.equal(calls.length, 8);
 });

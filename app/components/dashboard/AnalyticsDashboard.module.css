@@ -103,6 +103,10 @@
 .rankGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-bottom: 24px; }
 .rank { border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px 8px; min-width: 0; }
 .rank h3 { margin-bottom: 2px; }
+.serviceTable { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.serviceTable th, .serviceTable td { text-align: left; font-weight: normal; padding: 8px 0; }
+.serviceTable tbody tr { border-top: 1px solid var(--line); }
+.serviceTable tr > :last-child { text-align: right; }
 .rank .caption { margin: 0 0 12px; }
 .rank ol { list-style: none; margin: 0; padding: 0; }
 .rank li { position: relative; display: flex; justify-content: space-between; gap: 12px; align-items: center; min-height: 40px; padding: 0 8px; border-top: 1px solid var(--line); overflow: hidden; }

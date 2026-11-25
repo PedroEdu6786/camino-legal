@@ -3,6 +3,10 @@ import { EMPTY_INSIGHTS, type TrafficInsights, type TrafficSlice } from '../../d
 import { summaryPeriod, type SummaryPeriod, type SummaryState } from '../../dashboard/reporting.ts';
 import { COOLDOWN, WINDOW_BUDGET, createGoogleAccess, type AccessOptions } from './googleAccess.ts';
 
+import { serviceDetails } from '../../services.ts';
+
+const SERVICE_ID = 'customEvent:service_id';
+const serviceNames = new Map(serviceDetails.map(service => [service.slug, service.title]));
 const LIMIT = '10';
 const EVENT_ROWS = '5000'; // merged event report is aggregated here, so Google must not cut it at top-10
 const EVENTS = ['lead_submitted', 'whatsapp_click', 'quote_request_intent'];
@@ -16,7 +20,7 @@ const messages = {
   deferred: 'Este recurso ya se consultó recientemente. El próximo intento estará disponible al finalizar el intervalo.',
 };
 type Row = { dimensionValues?: { value?: string }[]; metricValues?: { value?: string }[] };
-export type ProviderReport = { rows?: Row[]; rowCount?: number; metadata?: { timeZone?: string; subjectToThresholding?: boolean; dataLossFromOtherRow?: boolean; samplingMetadatas?: unknown[]; dataTruncationReasons?: unknown[]; schemaRestrictionResponse?: { activeMetricRestrictions?: unknown[] } } };
+export type ProviderReport = { dimensionHeaders?: { name?: string }[]; metricHeaders?: { name?: string }[]; rows?: Row[]; rowCount?: number; metadata?: { timeZone?: string; subjectToThresholding?: boolean; dataLossFromOtherRow?: boolean; samplingMetadatas?: unknown[]; dataTruncationReasons?: unknown[]; schemaRestrictionResponse?: { activeMetricRestrictions?: unknown[] } } };
 type EventRow = { event: string; page: string; source: string; count: number };
 class Denied extends Error {}
 
@@ -56,6 +60,17 @@ export const parsers = {
   pages: (report: ProviderReport, tz: string) => mapRows(report, tz, (d, m) => ({ path: d[0], views: m[0], users: m[1], sessions: m[2] }), 3),
   sources: (report: ProviderReport, tz: string) => mapRows(report, tz, (d, m) => ({ source: d[0], medium: d[1], sessions: m[0], users: m[1] }), 2),
   landing: (report: ProviderReport, tz: string) => mapRows(report, tz, (d, m) => ({ path: d[0], sessions: m[0], users: m[1] }), 2),
+  serviceInterest(report: ProviderReport, tz: string) {
+    if (report.dimensionHeaders?.length !== 1 || report.dimensionHeaders[0]?.name !== SERVICE_ID || report.metricHeaders?.length !== 1 || report.metricHeaders[0]?.name !== 'sessions') return null;
+    if (report.rowCount !== undefined && report.rowCount !== (report.rows?.length ?? 0)) return null;
+    const seen = new Set<string>();
+    return mapRows(report, tz, (dims, metrics) => {
+      const label = serviceNames.get(dims[0]);
+      if (dims.length !== 1 || !label || seen.has(dims[0])) return null;
+      seen.add(dims[0]);
+      return { label, sessions: metrics[0] };
+    }, 1);
+  },
   events(report: ProviderReport, tz: string) {
     if (typeof report.rowCount === 'number' && report.rowCount > (report.rows?.length ?? 0)) return null; // truncated: never sum a partial table
     const rows = mapRows(report, tz, (d, m) => (EVENTS.includes(d[0]) ? { event: d[0], page: d[1], source: `${d[2]} / ${d[3]}`, count: m[0] } : null), 1);
@@ -94,10 +109,10 @@ export function createGoogleInsightsReader(options: AccessOptions = {}) {
     if (cached?.retrievedAt && timestamp - Date.parse(cached.retrievedAt) < COOLDOWN) return cached;
     const recent = (calls.get(resourceKey) ?? []).filter(time => timestamp - time < COOLDOWN);
     calls.set(resourceKey, recent);
-    const next = Math.max(cooldowns.get(key) ?? 0, recent.length >= WINDOW_BUDGET ? recent[0] + COOLDOWN : 0);
+    const next = Math.max(cooldowns.get(key) ?? 0, recent.length + 2 > WINDOW_BUDGET ? recent[0] + COOLDOWN : 0);
     if (next > timestamp) return cached ? { ...cached, state: 'stale', nextRefreshAt: new Date(next).toISOString(), message: messages.deferred } : { ...base, state: 'deferred', nextRefreshAt: new Date(next).toISOString(), message: messages.deferred };
     cooldowns.set(key, timestamp + COOLDOWN);
-    recent.push(timestamp);
+    recent.push(timestamp, timestamp); // one five-report batch plus the isolated custom-dimension report
     base.nextRefreshAt = new Date(timestamp + COOLDOWN).toISOString();
     const dateRanges = [{ startDate: period.start, endDate: period.end }];
     const web = { andGroup: { expressions: [filter('streamId', streamId), { filter: { fieldName: 'platform', stringFilter: { matchType: 'EXACT', value: 'web', caseSensitive: false } } }] } };
@@ -113,20 +128,28 @@ export function createGoogleInsightsReader(options: AccessOptions = {}) {
     const perform = async (): Promise<TrafficInsights> => {
       try {
         const accessToken = await token(env);
+        const post = (method: string, body: object) => request(`https://analyticsdata.googleapis.com/v1beta/properties/${resourceId}:${method}`, { method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const serviceQuery = { dateRanges, dimensions: [{ name: SERVICE_ID }], metrics: [{ name: 'sessions' }], orderBys: rank('sessions'), dimensionFilter: { andGroup: { expressions: [filter('streamId', streamId), filter('eventName', 'quote_change'), filter('customEvent:control_id', 'service'), { filter: { fieldName: SERVICE_ID, inListFilter: { values: [...serviceNames.keys()], caseSensitive: true } } }] } } };
         // shortcut: batchRunReports limits and the merged event report are unverified against the live property, confirm with one real call before relying on them
-        const response = await request(`https://analyticsdata.googleapis.com/v1beta/properties/${resourceId}:batchRunReports`, { method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ requests: queries.map(query => query.body) }) });
+        const [response, serviceInterest] = await Promise.all([
+          post('batchRunReports', { requests: queries.map(query => query.body) }),
+          post('runReport', serviceQuery).then(async res => {
+            if ([401, 403].includes(res.status)) throw new Denied();
+            return res.ok ? parsers.serviceInterest(await res.json(), timezone) : null;
+          }).catch(error => { if (error instanceof Denied) throw error; return null; }),
+        ]);
         if (!response.ok) throw [401, 403].includes(response.status) ? new Denied() : new Error('provider');
         const { reports } = await response.json() as { reports?: ProviderReport[] };
         if (!Array.isArray(reports) || reports.length !== queries.length) throw new Error('provider');
-        const values: Partial<Record<TrafficSlice, unknown>> = {};
-        let read = 0;
+        const values: Partial<Record<TrafficSlice, unknown>> = { serviceInterest };
+        let read = serviceInterest === null ? 0 : 1;
         queries.forEach(({ slice }, index) => {
           const report = reports[index];
           const parsed = slice === 'timeline' ? parsers.timeline(report, timezone, period) : slice === 'pages' ? parsers.pages(report, timezone) : slice === 'sources' ? parsers.sources(report, timezone) : slice === 'landing' ? parsers.landing(report, timezone) : parsers.events(report, timezone);
           if (!parsed) return;
           Object.assign(values, slice === 'events' ? parsed : { [slice]: parsed }); read++;
         });
-        const state: SummaryState = read === queries.length ? 'available' : read === 0 ? 'error' : 'partial';
+        const state: SummaryState = read === queries.length + 1 ? 'available' : read === 0 ? 'error' : 'partial';
         const report = { ...base, ...values, state, message: messages[state as 'available' | 'partial' | 'error'], retrievedAt: now().toISOString() } as TrafficInsights;
         if (state !== 'error') { cache.set(key, report); if (cache.size > 16) cache.delete(cache.keys().next().value!); }
         return report;
