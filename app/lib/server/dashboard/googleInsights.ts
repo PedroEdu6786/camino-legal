@@ -36,8 +36,9 @@ function mapRows<T>(report: ProviderReport, timezone: string, map: (dims: string
   if (!trusted(report, timezone)) return null;
   const out: T[] = [];
   for (const row of report.rows ?? []) {
-    const dims = (row.dimensionValues ?? []).map(value => value?.value ?? '');
-    const mets = (row.metricValues ?? []).map(value => num(value?.value));
+    if (!Array.isArray(row?.dimensionValues) || !Array.isArray(row.metricValues)) return null;
+    const dims = row.dimensionValues.map(value => typeof value?.value === 'string' ? value.value : '');
+    const mets = row.metricValues.map(value => num(value?.value));
     if (mets.length !== metricCount || mets.some(value => value === null) || dims.some(value => value === '')) return null;
     const mapped = map(dims, mets as number[]);
     if (mapped === null) return null;
@@ -84,7 +85,7 @@ export const parsers = {
     return { leadsByPage: top(lead, item => item.page), leadsBySource: top(lead, item => item.source), whatsappByPage: top(item => !lead(item), item => item.page) };
   },
 };
-const filter = (fieldName: string, value: string) => ({ filter: { fieldName, stringFilter: { matchType: 'EXACT', value } } });
+const filter = (fieldName: string, value: string) => ({ filter: { fieldName, stringFilter: { matchType: 'EXACT', value, caseSensitive: true } } });
 
 export function createGoogleInsightsReader(options: AccessOptions = {}) {
   const { now, request, token } = createGoogleAccess(options);
@@ -128,33 +129,40 @@ export function createGoogleInsightsReader(options: AccessOptions = {}) {
     const perform = async (): Promise<TrafficInsights> => {
       try {
         const accessToken = await token(env);
-        const post = (method: string, body: object) => request(`https://analyticsdata.googleapis.com/v1beta/properties/${resourceId}:${method}`, { method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        async function post<T>(method: string, body: object): Promise<T | null> {
+          try {
+            const response = await request(`https://analyticsdata.googleapis.com/v1beta/properties/${resourceId}:${method}`, { method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if ([401, 403].includes(response.status)) throw new Denied();
+            return response.ok ? await response.json() : null;
+          } catch (error) {
+            if (error instanceof Denied) throw error;
+            return null;
+          }
+        }
         const serviceQuery = { dateRanges, dimensions: [{ name: SERVICE_ID }], metrics: [{ name: 'sessions' }], orderBys: rank('sessions'), dimensionFilter: { andGroup: { expressions: [filter('streamId', streamId), filter('eventName', 'quote_change'), filter('customEvent:control_id', 'service'), { filter: { fieldName: SERVICE_ID, inListFilter: { values: [...serviceNames.keys()], caseSensitive: true } } }] } } };
         // shortcut: batchRunReports limits and the merged event report are unverified against the live property, confirm with one real call before relying on them
-        const [response, serviceInterest] = await Promise.all([
-          post('batchRunReports', { requests: queries.map(query => query.body) }),
-          post('runReport', serviceQuery).then(async res => {
-            if ([401, 403].includes(res.status)) throw new Denied();
-            return res.ok ? parsers.serviceInterest(await res.json(), timezone) : null;
-          }).catch(error => { if (error instanceof Denied) throw error; return null; }),
+        const [batch, serviceReport] = await Promise.all([
+          post<{ reports?: ProviderReport[] }>('batchRunReports', { requests: queries.map(query => query.body) }),
+          post<ProviderReport>('runReport', serviceQuery),
         ]);
-        if (!response.ok) throw [401, 403].includes(response.status) ? new Denied() : new Error('provider');
-        const { reports } = await response.json() as { reports?: ProviderReport[] };
-        if (!Array.isArray(reports) || reports.length !== queries.length) throw new Error('provider');
+        const reports = Array.isArray(batch?.reports) && batch.reports.length === queries.length ? batch.reports : [];
+        const serviceInterest = serviceReport ? parsers.serviceInterest(serviceReport, timezone) : null;
         const values: Partial<Record<TrafficSlice, unknown>> = { serviceInterest };
         let read = serviceInterest === null ? 0 : 1;
         queries.forEach(({ slice }, index) => {
           const report = reports[index];
+          if (!report) return;
           const parsed = slice === 'timeline' ? parsers.timeline(report, timezone, period) : slice === 'pages' ? parsers.pages(report, timezone) : slice === 'sources' ? parsers.sources(report, timezone) : slice === 'landing' ? parsers.landing(report, timezone) : parsers.events(report, timezone);
           if (!parsed) return;
           Object.assign(values, slice === 'events' ? parsed : { [slice]: parsed }); read++;
         });
         const state: SummaryState = read === queries.length + 1 ? 'available' : read === 0 ? 'error' : 'partial';
+        if (state === 'error' && cached) return { ...cached, state: 'stale', message: messages.error };
         const report = { ...base, ...values, state, message: messages[state as 'available' | 'partial' | 'error'], retrievedAt: now().toISOString() } as TrafficInsights;
         if (state !== 'error') { cache.set(key, report); if (cache.size > 16) cache.delete(cache.keys().next().value!); }
         return report;
       } catch (error) {
-        if (error instanceof Denied) return { ...base, state: 'forbidden', message: messages.forbidden };
+        if (error instanceof Denied) { cache.delete(key); return { ...base, state: 'forbidden', message: messages.forbidden }; }
         return cached ? { ...cached, state: 'stale', message: messages.error } : { ...base, state: 'error', message: messages.error };
       }
     };

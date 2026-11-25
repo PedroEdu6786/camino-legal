@@ -68,11 +68,12 @@ test('calculator report counts sessions by catalog service for the applied range
   assert.deepEqual(body.dimensions, [{ name: 'customEvent:service_id' }]); assert.deepEqual(body.metrics, [{ name: 'sessions' }]);
   const filters = body.dimensionFilter.andGroup.expressions.map(e => e.filter);
   for (const [field, value] of [['streamId','2'], ['eventName','quote_change'], ['customEvent:control_id','service']]) assert.ok(filters.some(f => f.fieldName === field && f.stringFilter.matchType === 'EXACT' && f.stringFilter.value === value));
+  for (const field of ['eventName', 'customEvent:control_id']) assert.equal(filters.find(f => f.fieldName === field).stringFilter.caseSensitive, true);
   assert.deepEqual(filters.find(f => f.fieldName === 'customEvent:service_id').inListFilter.values, serviceDetails.map(service => service.slug));
 });
 test('unavailable dimensions, unknown IDs, malformed counts and restricted reports never become zero', async () => {
   const good = serviceReport([]);
-  for (const response of [new Response('', { status: 400 }), ...[rep([]), { ...good, rowCount: 2 }, { ...good, metadata: { ...meta, subjectToThresholding: true } }, serviceReport([row([], [1])]), serviceReport([row(['not-in-catalog'], [4])]), serviceReport([row(['registro-de-marca'], ['x'])])].map(r => Response.json(r))]) {
+  for (const response of [new Response('', { status: 400 }), ...[rep([]), { ...good, rowCount: 2 }, { ...good, metadata: { ...meta, subjectToThresholding: true } }, serviceReport([null]), serviceReport([row([], [1])]), serviceReport([row(['not-in-catalog'], [4])]), serviceReport([row(['registro-de-marca'], ['x'])])].map(r => Response.json(r))]) {
     const out = await createGoogleInsightsReader({ env, now, fetcher: batch(n => Array(n).fill(rep([])), [], () => response) })(new URLSearchParams('days=7'));
     assert.equal(out.state, 'partial'); assert.equal(out.serviceInterest, null); assert.deepEqual(out.pages, []);
   }
@@ -90,11 +91,28 @@ test('original five reports stay batched; a bad report degrades only its own sli
   const names = JSON.stringify(requests[4].dimensionFilter);
   for (const name of ['lead_submitted', 'whatsapp_click', 'quote_request_intent']) assert.ok(names.includes(name));
 });
-test('transport failures fail the whole batch; a wrong report count is an error', async () => {
+test('both requests failing yields no data; an invalid batch cannot discard a valid service report', async () => {
   const run = fetcher => createGoogleInsightsReader({ env, fetcher, now })(new URLSearchParams('days=7'));
   assert.equal((await run(async () => new Response('x', { status: 401 }))).state, 'forbidden');
   assert.equal((await run(async () => new Response('x', { status: 500 }))).state, 'error');
-  assert.equal((await run(batch(() => [rep([])]))).state, 'error');
+  assert.equal((await run(batch(() => [rep([])]))).state, 'partial');
+});
+test('service sessions survive an independent batch failure but a denial from either request hides all data', async () => {
+  const run = (batchResponse, serviceResponse) => createGoogleInsightsReader({ env, now, fetcher: url => url.endsWith(':runReport') ? serviceResponse() : batchResponse() })(new URLSearchParams('days=7'));
+  const services = () => Response.json(serviceReport([row(['registro-de-marca'], [3])]));
+  const validBatch = () => Response.json({ reports: Array(5).fill(rep([])) });
+  const timeout = () => { throw Error('timeout'); };
+  for (const failure of [() => new Response(null, { status: 503 }), timeout, () => Response.json({}), () => new Response('invalid JSON')]) {
+    const out = await run(failure, services);
+    assert.equal(out.state, 'partial'); assert.deepEqual(out.serviceInterest, [{ label: 'Registro de marca', sessions: 3 }]); assert.equal(out.timeline, null);
+  }
+  for (const status of [401, 403]) {
+    const deny = () => new Response(null, { status });
+    for (const pair of [[deny, services], [validBatch, deny], [timeout, deny], [deny, timeout]]) {
+      const out = await run(...pair); assert.equal(out.state, 'forbidden');
+      for (const slice of Object.keys(EMPTY_INSIGHTS)) assert.equal(out[slice], null);
+    }
+  }
 });
 test('budget is counted in HTTP calls: 4 distinct ranges per window, then deferred; cache costs nothing', async () => {
   const calls = [];
