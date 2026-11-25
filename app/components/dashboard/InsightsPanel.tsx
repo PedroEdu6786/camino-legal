@@ -53,16 +53,16 @@ function Ranking({ title, hint, rows, unit }: { title: string; hint: string; row
   </article>;
 }
 
-export default function InsightsPanel({ days }: { days: string }) {
+export default function InsightsPanel({ query }: { query: string }) {
   const [data, setData] = useState<TrafficInsights | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/admin/analytics/insights?days=${encodeURIComponent(days)}`, { signal: controller.signal, cache: 'no-store' })
+    fetch(`/api/admin/analytics/insights?${query}`, { signal: controller.signal, cache: 'no-store' })
       .then(async response => { checkReaderResponse(response); const result = await response.json(); if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'No fue posible consultar el tráfico.'); if (!controller.signal.aborted) { setData(result as TrafficInsights); setError(null); } })
       .catch(reason => { if (!controller.signal.aborted) { setError(reason instanceof Error ? reason.message : 'No fue posible consultar el tráfico.'); setData(null); } });
     return () => controller.abort();
-  }, [days]);
+  }, [query]);
   const findings = data ? trafficFindings(data) : [];
   const leadTotal = data?.leadsByPage ? data.leadsByPage.reduce((total, row) => total + row.count, 0) : null;
   const sessions = data?.timeline ? data.timeline.reduce((total, point) => total + point.sessions, 0) : null;
