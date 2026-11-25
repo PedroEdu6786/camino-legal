@@ -1,7 +1,7 @@
 "use client";
 
 import { trackEvent } from "../../lib/analytics";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 
 export type Tab = "privacidad" | "cookies" | "terminos";
 
@@ -10,6 +10,11 @@ const HASH_TO_TAB: Record<string, Tab> = {
   "#cookies": "cookies",
   "#terminos": "terminos",
 };
+
+function subscribeToHash(notify: () => void) {
+  window.addEventListener("hashchange", notify);
+  return () => window.removeEventListener("hashchange", notify);
+}
 
 interface TermsModalProps {
   open: boolean;
@@ -534,7 +539,7 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 export default function TermsModal({ open, initialTab = "terminos", onOpen, onClose }: TermsModalProps) {
-  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+  const activeTab = useSyncExternalStore(subscribeToHash, () => HASH_TO_TAB[window.location.hash] || initialTab, () => initialTab);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -544,17 +549,9 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
   }, [open]);
 
   useEffect(() => {
-    if (open) {
-      const hashTab = HASH_TO_TAB[window.location.hash];
-      setActiveTab(hashTab || initialTab);
-    }
-  }, [open, initialTab]);
-
-  useEffect(() => {
     const syncFromHash = () => {
       const tab = HASH_TO_TAB[window.location.hash];
       if (tab) {
-        setActiveTab(tab);
         onOpen?.();
       }
     };
@@ -576,11 +573,11 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
 
   const handleTabChange = (tab: Tab) => {
     if (tab !== activeTab) trackEvent("utility_interaction", { action_id: `legal.tab.${tab}`, source_surface: "legal_dialog", utility: "legal", action: "select" });
-    setActiveTab(tab);
     window.history.replaceState(null, "", `#${tab}`);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     trackEvent("utility_interaction", { action_id: "legal.close", source_surface: "legal_dialog", utility: "legal", action: "close" });
     if (HASH_TO_TAB[window.location.hash]) {
       window.history.replaceState(
@@ -590,7 +587,7 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
       );
     }
     onClose();
-  };
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -601,7 +598,7 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [open, handleClose]);
 
   if (!open) return null;
 
