@@ -1,7 +1,7 @@
 "use client";
 
 import { trackEvent } from "../../lib/analytics";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 export type Tab = "privacidad" | "cookies" | "terminos";
 
@@ -11,11 +11,20 @@ const HASH_TO_TAB: Record<string, Tab> = {
   "#terminos": "terminos",
 };
 
-interface TermsModalProps {
-  open: boolean;
-  initialTab?: Tab;
-  onOpen?: () => void;
-  onClose: () => void;
+function subscribeToHash(notify: () => void) {
+  window.addEventListener("hashchange", notify);
+  return () => window.removeEventListener("hashchange", notify);
+}
+
+export function setLegalTab(tab: Tab | null) {
+  window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search + (tab ? `#${tab}` : ""));
+  window.dispatchEvent(new HashChangeEvent("hashchange"));
+}
+
+function handleClose() {
+  if (!HASH_TO_TAB[window.location.hash]) return;
+  trackEvent("utility_interaction", { action_id: "legal.close", source_surface: "legal_dialog", utility: "legal", action: "close" });
+  setLegalTab(null);
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -533,8 +542,9 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "cookies", label: "Aviso de Cookies" },
 ];
 
-export default function TermsModal({ open, initialTab = "terminos", onOpen, onClose }: TermsModalProps) {
-  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+export default function TermsModal() {
+  const activeTab = useSyncExternalStore(subscribeToHash, () => HASH_TO_TAB[window.location.hash] ?? null, () => null);
+  const open = activeTab !== null;
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -542,26 +552,6 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
       modalRef.current?.focus();
     }
   }, [open]);
-
-  useEffect(() => {
-    if (open) {
-      const hashTab = HASH_TO_TAB[window.location.hash];
-      setActiveTab(hashTab || initialTab);
-    }
-  }, [open, initialTab]);
-
-  useEffect(() => {
-    const syncFromHash = () => {
-      const tab = HASH_TO_TAB[window.location.hash];
-      if (tab) {
-        setActiveTab(tab);
-        onOpen?.();
-      }
-    };
-    syncFromHash();
-    window.addEventListener("hashchange", syncFromHash);
-    return () => window.removeEventListener("hashchange", syncFromHash);
-  }, [onOpen]);
 
   useEffect(() => {
     if (open) {
@@ -576,20 +566,7 @@ export default function TermsModal({ open, initialTab = "terminos", onOpen, onCl
 
   const handleTabChange = (tab: Tab) => {
     if (tab !== activeTab) trackEvent("utility_interaction", { action_id: `legal.tab.${tab}`, source_surface: "legal_dialog", utility: "legal", action: "select" });
-    setActiveTab(tab);
-    window.history.replaceState(null, "", `#${tab}`);
-  };
-
-  const handleClose = () => {
-    trackEvent("utility_interaction", { action_id: "legal.close", source_surface: "legal_dialog", utility: "legal", action: "close" });
-    if (HASH_TO_TAB[window.location.hash]) {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + window.location.search,
-      );
-    }
-    onClose();
+    setLegalTab(tab);
   };
 
   useEffect(() => {

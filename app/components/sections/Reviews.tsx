@@ -2,7 +2,7 @@
 
 import { trackEvent } from "../../lib/analytics";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 const reviews = [
   "Camino Legal es una excelente empresa, la atención siempre oportuna, y en todos los paso claridad y acompañamiento. Recomiendo ampliamente sus servicios.",
@@ -29,23 +29,7 @@ export default function Reviews() {
   const touchStart = useRef<number | null>(null);
   const maxIndex = reviews.length - visibleCount;
 
-  useEffect(() => {
-    const update = () => setVisibleCount(getVisibleCount());
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  // Clamp current when visibleCount changes (e.g. window resize)
-  useEffect(() => {
-    if (current > maxIndex) {
-      setCurrent(maxIndex);
-      scrollToCard(maxIndex);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxIndex]);
-
-  const scrollToCard = useCallback((index: number) => {
+  function scrollToCard(index: number) {
     const container = containerRef.current;
     if (!container) return;
     const card = container.children[index] as HTMLElement;
@@ -56,6 +40,17 @@ export default function Reviews() {
       container.getBoundingClientRect().left;
     container.scrollTo({ left: scrollLeft, behavior: "smooth" });
     setCurrent(index);
+  }
+
+  const updateLayout = useEffectEvent(() => {
+    const visible = getVisibleCount();
+    setVisibleCount(visible);
+    if (current > reviews.length - visible) scrollToCard(reviews.length - visible);
+  });
+  useEffect(() => {
+    const observer = new ResizeObserver(updateLayout);
+    observer.observe(document.documentElement);
+    return () => observer.disconnect();
   }, []);
 
   const prev = () => { trackEvent("review_interaction", { source_surface: "reviews", control_id: "previous" }); scrollToCard(Math.max(0, current - 1)); };

@@ -2,14 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { openConsentPreferences, trackEvent } from "../../lib/analytics";
-import TermsModal, { type Tab } from "../ui/TermsModal";
+import TermsModal, { setLegalTab, type Tab } from "../ui/TermsModal";
 
 export default function Footer() {
-  const [termsOpen, setTermsOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<Tab>("terminos");
-
   const openLegalModal = (tab: Tab = "terminos") => {
     trackEvent("utility_interaction", {
       action_id: "footer.legal",
@@ -17,9 +13,7 @@ export default function Footer() {
       utility: "legal",
       action: "open",
     });
-    setSelectedTab(tab);
-    setTermsOpen(true);
-    window.history.replaceState(null, "", `#${tab}`);
+    setLegalTab(tab);
   };
 
   return (
@@ -172,12 +166,7 @@ export default function Footer() {
         </div>
       </footer>
 
-      <TermsModal
-        open={termsOpen}
-        initialTab={selectedTab}
-        onOpen={() => setTermsOpen(true)}
-        onClose={() => setTermsOpen(false)}
-      />
+      <TermsModal />
     </>
   );
 }

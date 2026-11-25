@@ -5,6 +5,7 @@ import { checkReaderResponse } from '../../lib/dashboard/readerResponse';
 import { useEffect, useState, type PointerEvent } from 'react';
 import { trafficFindings, type TrafficInsights } from '../../lib/dashboard/traffic';
 import styles from './AnalyticsDashboard.module.css';
+import ServiceInterestTable from './ServiceInterestTable';
 
 const number = new Intl.NumberFormat('es-MX');
 const W = 720, H = 200, L = 36, R = 8, T = 10, B = 24;
@@ -80,6 +81,7 @@ export default function InsightsPanel({ query }: { query: string }) {
         <Ranking title="Por dónde entran" hint="Primera página de cada sesión. Es tu verdadera portada." rows={data.landing?.map(page => ({ label: page.path, value: page.sessions })) ?? null} unit="sesiones" />
         <Ranking title="Dónde se generan solicitudes" hint={leadTotal === null ? 'Eventos lead_submitted por página.' : `${number.format(leadTotal)} solicitudes observadas por Google en el período.`} rows={data.leadsByPage?.map(row => ({ label: row.label, value: row.count })) ?? null} unit="solicitudes" />
       </div>
+      <ServiceInterestTable rows={data.serviceInterest} />
       <Ranking title="Dónde tocan WhatsApp" hint="Toques en botones de WhatsApp por página. Es intención de contacto, no un mensaje confirmado." rows={data.whatsappByPage?.map(row => ({ label: row.label, value: row.count })) ?? null} unit="toques" />
       {data.leadsBySource && data.leadsBySource.length > 0 && <Ranking title="Qué origen trae solicitudes" hint="Eventos lead_submitted por origen y medio." rows={data.leadsBySource.map(row => ({ label: row.label, value: row.count }))} unit="solicitudes" />}
       {findings.length > 0 && <><div className={styles.sectionTitle}><h2>Qué dicen los datos</h2></div><ul className={styles.findings}>{findings.map(finding => <li key={finding}>{finding}</li>)}</ul></>}

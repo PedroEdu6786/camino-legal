@@ -53,7 +53,7 @@ const grant = async () => {await textClick('Aceptar');await wait(async()=> (awai
 const change = async (selector,value) => page.eval(({selector,value}) => {const el=document.querySelector(selector);const setter=Object.getOwnPropertyDescriptor(el instanceof HTMLTextAreaElement?HTMLTextAreaElement.prototype:el instanceof HTMLSelectElement?HTMLSelectElement.prototype:HTMLInputElement.prototype,'value').set;setter.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));}, {selector,value});
 const fillContact = async () => {for(const [selector,value]of [['#name','Synthetic Canary Person'],['#phone','5512345678'],['#email','analytics-canary@example.test'],['#message','Synthetic private message canary']])await change(selector,value);};
 const fillEvaluation = async () => {await change('#evaluation-name','Synthetic Canary Person');await change('#evaluation-email','analytics-canary@example.test');await change('#evaluation-phone','9991234567');};
-try {
+async function acceptance() {
   page = await browser.newPage({width:1440,height:900,reducedMotion:process.env.ANALYTICS_TEST_MOTION !== 'normal'});
   const hydrationWarnings = [];
   browser.on(page.sessionId,'Runtime.consoleAPICalled',event => {const message=(event.args||[]).map(arg=>arg.value||arg.description||'').join(' ');if(/hydrat|did not match|server rendered/i.test(message))hydrationWarnings.push(message);});
@@ -70,12 +70,43 @@ try {
       await page.send('Fetch.failRequest',{requestId:event.requestId,errorReason:'BlockedByClient'});
     } catch { /* Target may close during cleanup. */ }
   });
-  await goto('/');
+  await goto(process.env.ANALYTICS_TEST_FOCUS === 'legal' ? '/contacto' : '/');
   assert.equal((await events()).length,0,'unknown consent sends no analytics');
   await textClick('Rechazar');await pause(150);assert.equal((await events()).length,0,'denial sends no analytics');
   await textClick('Preferencias de cookies');await grant();
   assert.ok(await page.eval(()=>window.__ga.some(call=>call[0]==='config' && call[1]==='G-TEST123')),'dedicated synthetic build required before SMTP forms');
   console.log('PASS unknown/denied then grant');
+  if (process.env.ANALYTICS_TEST_FOCUS === 'legal') {
+    const selected = () => page.eval(() => document.querySelector('[role="dialog"] [aria-selected="true"]')?.textContent ?? null);
+    const consent = () => page.eval(() => window.__meta.filter(c => c[0] === 'consent').at(-1)?.[1]);
+    await wait(async () => await consent() === 'grant', 'eligible stub granted');
+    await click('footer button');
+    await wait(async () => await selected() === 'Términos y Condiciones' && await consent() === 'revoke', 'footer opens terms and revokes on fragment');
+    await click('[role="tablist"] button:last-child');
+    await wait(async () => await selected() === 'Aviso de Cookies', 'switch to cookies');
+    await page.eval(() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })));
+    await wait(async () => await selected() === null && await consent() === 'grant', 'Escape closes and restores eligible provider');
+    const closes = async () => (await events('utility_interaction')).filter(e => e[2].action_id === 'legal.close').length;
+    const before = await closes();
+    await click('form a[href="#privacidad"]');
+    await wait(async () => await selected() === 'Aviso de Privacidad' && await consent() === 'revoke', 'anchor opens privacy');
+    await page.eval(() => history.back());
+    await wait(async () => await selected() === null && await consent() === 'grant', 'Back dismisses privacy');
+    assert.equal(await closes(), before);
+    await page.eval(() => history.forward());
+    await wait(async () => await selected() === 'Aviso de Privacidad' && await consent() === 'revoke', 'Forward restores privacy');
+    await click('[aria-label="Cerrar modal"]');
+    await wait(async () => await selected() === null && await consent() === 'grant', 'button closes and restores eligible provider');
+    await page.eval(() => history.replaceState(history.state, '', '?preview=1'));
+    await click('footer button');
+    await wait(async () => await consent() === 'revoke', 'unsafe query and fragment');
+    await click('[aria-label="Cerrar modal"]');
+    await wait(async () => await selected() === null, 'close with an unsafe query');
+    assert.equal(await page.eval(() => location.search), '?preview=1');
+    assert.equal(await consent(), 'revoke', 'closing does not grant on an ineligible URL');
+    console.log('PASS legal footer, tab, Escape, native anchor, Back/Forward, close and unsafe-query eligibility with synthetic provider');
+    return;
+  }
   {
     await wait(()=>page.eval(()=>window.__meta.filter(call=>call[0]==='track'&&call[1]==='PageView').length===1),'initial synthetic Pixel pageview');
     const beforeHash=await page.eval(()=>({tracks:window.__meta.filter(call=>call[0]==='track').length,views:window.__meta.filter(call=>call[0]==='track'&&call[1]==='PageView').length,revokes:window.__meta.filter(call=>call[0]==='consent'&&call[1]==='revoke').length,grants:window.__meta.filter(call=>call[0]==='consent'&&call[1]==='grant').length}));
@@ -155,4 +186,5 @@ try {
   }
   }
   console.log(JSON.stringify({result:'passed',smtpTransactions:transactions,smtpConnections:connections}));
-} finally {if(hiddenTarget)await browser.send('Target.closeTarget',{targetId:hiddenTarget.targetId}).catch(()=>{});held.splice(0).forEach(release=>release());for(const socket of sockets)socket.destroy();await browser.close();await new Promise(resolve=>smtp.close(resolve));}
+}
+try { await acceptance(); } finally {if(hiddenTarget)await browser.send('Target.closeTarget',{targetId:hiddenTarget.targetId}).catch(()=>{});held.splice(0).forEach(release=>release());for(const socket of sockets)socket.destroy();await browser.close();await new Promise(resolve=>smtp.close(resolve));}
