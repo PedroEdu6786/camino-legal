@@ -21,6 +21,7 @@ export default function AnalyticsDashboard({ inventory, signOutControl }: { inve
   const [tab, setTab] = useState<Tab>('overview');
   const [provider, setProvider] = useState('all');
   const [classification, setClassification] = useState('all');
+  const [range, setRange] = useState({ query: 'days=28', revision: 0 });
   const assets = inventory.assets.filter(asset => (provider === 'all' || asset.provider === provider) && (classification === 'all' || asset.classification === classification));
   function selectTab(id: Tab) { setTab(id); }
   function keyboard(event: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -40,8 +41,9 @@ export default function AnalyticsDashboard({ inventory, signOutControl }: { inve
         <PromotionPreviewControls />
         <div className={styles.heading}><div><h1>{tabs.find(item => item.id === tab)?.label}</h1><p>{tab === 'overview' ? 'Visitantes, vistas y rebote del sitio, separados de la verificación del seguimiento.' : tab === 'accounts' ? 'Identificadores configurados y recursos revisados, sin mezclar cuentas anteriores.' : 'Comprobaciones concretas para confiar en el seguimiento.'}</p></div><span className={styles.preview}>Google Analytics · seguimiento web</span></div>
         <section id="analytics-panel-overview" role="tabpanel" aria-labelledby="analytics-tab-overview" hidden={tab !== 'overview'}>
-          <GoogleSummary />
-          <InsightsPanel days="28" />
+          <GoogleSummary range={range} onApply={query => setRange(current => ({ query, revision: current.revision + 1 }))} />
+          {/* key remounts the panel on every apply so it shows loading text, not the previous range's numbers */}
+          <InsightsPanel key={range.revision} query={range.query} />
           <div className={styles.sectionTitle}><h2>Cobertura del seguimiento</h2></div>
           <div className={styles.coverage}>
             <article><h3>Google Analytics</h3><dl><div><dt>Implementación</dt><dd>{inventory.events.length} eventos definidos</dd></div><div><dt>Destino</dt><dd>{inventory.events[0]?.destinations.ga4.configured ? 'Identificador configurado' : 'Sin identificador disponible'}</dd></div><div><dt>Configuración en la cuenta</dt><dd>Sin verificar</dd></div><div><dt>Recepción de eventos</dt><dd>Ver «Qué dicen los datos»</dd></div></dl><p>El resumen consulta la propiedad y el flujo web configurados. La lectura de informes no confirma por sí sola todos los ajustes del seguimiento.</p></article>

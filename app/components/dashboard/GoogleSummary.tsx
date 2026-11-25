@@ -13,18 +13,16 @@ const primary: { name: SummaryMetric; label: string; description: string }[] = [
 ];
 function dateLabel(value: string) { return new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`)); }
 
-export default function GoogleSummary() {
+export default function GoogleSummary({ range, onApply }: { range: { query: string }; onApply: (query: string) => void }) {
   const [preset, setPreset] = useState('28');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
-  const [query, setQuery] = useState('days=28');
-  const [revision, setRevision] = useState(0);
   const [loading, setLoading] = useState(true);
   const [report, setReport] = useState<Summary | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/admin/analytics/summary?${query}`, { signal: controller.signal, cache: 'no-store' })
+    fetch(`/api/admin/analytics/summary?${range.query}`, { signal: controller.signal, cache: 'no-store' })
       .then(async response => {
         checkReaderResponse(response);
         const result = await response.json();
@@ -34,7 +32,7 @@ export default function GoogleSummary() {
       .catch(reason => { if (!controller.signal.aborted) { setError(reason instanceof Error ? reason.message : 'No fue posible consultar el informe.'); setReport(null); } })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [query, revision]);
+  }, [range]);
   function apply(event: FormEvent) {
     event.preventDefault();
     if (preset === 'custom') {
@@ -42,15 +40,14 @@ export default function GoogleSummary() {
       if (!Number.isInteger(days) || days < 1 || days > 90) { setError('Selecciona entre 1 y 90 días completos.'); return; }
     }
     setLoading(true); setReport(null); setError(null);
-    setQuery(preset === 'custom' ? new URLSearchParams({ start, end }).toString() : `days=${preset}`);
-    setRevision(value => value + 1);
+    onApply(preset === 'custom' ? new URLSearchParams({ start, end }).toString() : `days=${preset}`);
   }
   return <section aria-label="Rendimiento del sitio" className={styles.performance}>
     <form className={styles.reportControls} onSubmit={apply}>
       <label>Período<select value={preset} onChange={event => setPreset(event.target.value)}><option value="7">Últimos 7 días completos</option><option value="28">Últimos 28 días completos</option><option value="90">Últimos 90 días completos</option><option value="custom">Rango personalizado</option></select></label>
       {preset === 'custom' && <><label>Desde<input type="date" required value={start} onChange={event => setStart(event.target.value)} /></label><label>Hasta<input type="date" required value={end} onChange={event => setEnd(event.target.value)} /></label></>}
       <button type="submit" disabled={loading}>{loading ? 'Consultando…' : 'Consultar período'}</button>
-      <button type="button" disabled={loading} onClick={() => { setLoading(true); setError(null); setRevision(value => value + 1); }}>Actualizar</button>
+      <button type="button" disabled={loading} onClick={() => { setLoading(true); setError(null); onApply(range.query); }}>Actualizar</button>
     </form>
     <div className={styles.reportState} aria-live="polite">
       {error ? <p role="alert">{error}</p> : loading ? <p>Consultando Google Analytics…</p> : <p>{report?.message}</p>}
